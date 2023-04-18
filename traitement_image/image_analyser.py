@@ -1,9 +1,11 @@
 from pytesseract import Output
+from line_checker import LineChecker
 import pytesseract
 
 class ImageAnalyser:
     def __init__(self):
-        pass
+        self.line_checker = LineChecker()
+    
     def get_text_position_from_image(self, image, searched_text):
         text_data = self.get_text_data_from_image(image)
         text = text_data['text']
@@ -17,13 +19,11 @@ class ImageAnalyser:
         raise ValueError("Text not found in image")
         
     def get_text_from_image(self, image):
-        if image == None:
-            raise ValueError("Imagee can not be null")
-        return pytesseract.image_to_string(image, output_type=Output.DICT)
+        res = pytesseract.image_to_string(image).lower()
+        print(self.get_the_number_of_lines(res))
+        return res
     
     def get_text_data_from_image(self, image):
-        if image == None:
-            raise ValueError("Imagee can not be null")
         return pytesseract.image_to_data(image, output_type=Output.DICT)
     
     def check_if_text_is_in_image(self, image, searched_text):
@@ -32,5 +32,17 @@ class ImageAnalyser:
             return True
         return False
     
-    def get_the_number_of_lines_over_the_searched_word_with_coordinate(self, coordinates):
-        pass
+    def get_the_number_of_lines(self, text):
+        text = text.splitlines()
+        index = text.index("33000 bordeaux")
+        print(text)
+        last_good_index = index
+        for i in range(index,0,-1):
+            if not self.line_checker.check_if_line_is_valid(text[i]):
+                break
+            last_good_index -= 1
+        print(index)
+        print(last_good_index)
+        number_of_lines = index-last_good_index
+        return min(number_of_lines,10)
+        

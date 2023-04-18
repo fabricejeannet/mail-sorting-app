@@ -21,7 +21,7 @@ class TextExtractor:
         analysed_image = cv2.imread("images/" + file_name + ".jpg")
         result_image = analysed_image.copy()
         analysed_image = self.image_formatter.get_cleaned_black_and_white_image(analysed_image)
-        analysed_image = self.image_formatter.crop_image_from_text(analysed_image, self.analysed_keyword_target)
+        #analysed_image = self.image_formatter.crop_image_from_text(analysed_image, self.analysed_keyword_target)
 
         custom_config = r'--oem 3 --psm 6'
 
@@ -32,21 +32,13 @@ class TextExtractor:
         
         
         # Converting image to text with pytesseract
-        ocr_output = pytesseract.image_to_string(analysed_image)
-        # Print output text from OCR
-        print(ocr_output)
-        # Print the full first line of the OCR output
-        #print(ocr_output.splitlines()[2])
-            
+        ocr_output = self.image_analyser.get_text_from_image(analysed_image)
         # Extract and draw rectangles for all bounding boxes
         for i in range(n_boxes):
             if ocr_output_details['text'][i] != '' and ocr_output_details['conf'][i] > 50:
                 (x, y, w, h) = (ocr_output_details['left'][i], ocr_output_details['top'][i], ocr_output_details['width'][i], ocr_output_details['height'][i])
                 cv2.rectangle(analysed_image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        
-        # Print OCR Output kesys
-        print(ocr_output_details.keys())
-        
+                
         # Show output image with bounding boxes
         cv2.imshow('Image', analysed_image)
         cv2.waitKey(0)
@@ -89,6 +81,9 @@ class TextExtractor:
         #Return True if there is an empty line on the bottom of the lines
         return lines[len(lines)] == ""
     
+    def check_if_line_is_valid(self, line):
+        return not self.check_if_there_is_a_braquet_in_text_line(line) and not self.check_if_there_is_a_date_in_text_line(line) and not self.check_if_the_line_contains_a_sequence_of_numbers(line)
+    
     def clean_text_output(self,ocr_output):
         lines = self.split_lines_and_remove_empty_ones(ocr_output)
         valid_lines = []
@@ -98,7 +93,7 @@ class TextExtractor:
             while not banned_word_found and banned_words_index < len(self.banned_list):
                 banned_word_found = fuzz.partial_ratio(line,self.banned_list[banned_words_index]) > 90
                 banned_words_index += 1
-            if not banned_word_found and not self.check_if_there_is_a_braquet_in_text_line(line) and not self.check_if_there_is_a_date_in_text_line(line) and not self.check_if_the_line_contains_a_sequence_of_numbers(line):
+            if not banned_word_found and check_if_line_is_valid(line):
                 valid_lines.append([line])
         # Utilisez valid_lines comme nécessaire
         return valid_lines
