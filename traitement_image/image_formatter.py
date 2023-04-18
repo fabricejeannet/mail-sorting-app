@@ -32,16 +32,11 @@ class ImageFormatter:
     def crop_image_from_text_and_margin(self, image, text, margin):
         max_image_width, max_image_height = self.get_image_coordinates(image)
         text_position = self.image_analyser.get_text_position_from_image(image, text)
-        margin_height = text_position[3] - text_position[1]
-        margin_top = margin_height * 3
-        margin_bottom = margin_height 
-        margin_width = text_position[2] - text_position[0]
-        margin_left = margin_width * 2
-        margin_right = margin_width * 6
-        
-        width = text_position[2] - text_position[0] + 2*margin_right
-        height = text_position[3] - text_position[1] + margin_top + margin_bottom
-        return self.crop_image(image, max(text_position[0] - margin_left,0), max(text_position[1] - margin_top,0), width, height)
+        height = text_position[3]- text_position[1]
+        width = text_position[2] - text_position[0]
+        print("width : " + str(width))
+        print("Height : " + str(height))
+        return self.crop_image(image, max(text_position[0] - width,0), max(text_position[1] - 6*height,0), 6*width, 8*height)
         
     # erosion
     # Purpose: decrease the size of the foreground objects

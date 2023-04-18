@@ -5,6 +5,7 @@ from image_manager import ImageManager
 from image_analyser import ImageAnalyser
 import cv2
 import time
+import picamera2
 
 class TextExtractor:
     
@@ -49,8 +50,20 @@ class TextExtractor:
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
+
+    def analyse_image_silently(self,file_name):
+        analysed_image = cv2.imread("images/" + file_name + ".jpg")
+        analysed_image = self.image_formatter.get_cleaned_black_and_white_image(analysed_image)
+        analysed_image = self.image_formatter.crop_image_from_text_and_margin(analysed_image, "Bordeaux", 300)
+        
+        # Converting image to text with pytesseract
+        ocr_output = pytesseract.image_to_string(analysed_image, lang='fra')
+        # Print output text from OCR
+        return(ocr_output.lower())
+             
     def analyse_image_with_taking_picture(self):
         self.image_manager.take_and_save_picture()
-        time.sleep(1)
         self.analyse_image("captured_image")
+            
+    def get_company_name_from_text_output():
         

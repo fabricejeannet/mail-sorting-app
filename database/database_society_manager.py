@@ -25,6 +25,10 @@ class SocietyManager:
         else:
             raise ValueError("La société existe déjà")
             
+    def update_society(self, index, domiciliary_id):
+        pass
+        
+                
     def get_society_id_from_name(self, company_name):
         query = "SELECT id FROM societes WHERE raison_sociale = '{}'".format(company_name)
         self.database_manager.connect_to_database()
