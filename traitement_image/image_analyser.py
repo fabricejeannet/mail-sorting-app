@@ -17,9 +17,13 @@ class ImageAnalyser:
         raise ValueError("Text not found in image")
         
     def get_text_from_image(self, image):
+        if image == None:
+            raise ValueError("Imagee can not be null")
         return pytesseract.image_to_string(image, output_type=Output.DICT)
     
     def get_text_data_from_image(self, image):
+        if image == None:
+            raise ValueError("Imagee can not be null")
         return pytesseract.image_to_data(image, output_type=Output.DICT)
     
     def check_if_text_is_in_image(self, image, searched_text):
@@ -27,3 +31,6 @@ class ImageAnalyser:
         if searched_text in text:
             return True
         return False
+    
+    def get_the_number_of_lines_over_the_searched_word_with_coordinate(self, coordinates):
+        pass

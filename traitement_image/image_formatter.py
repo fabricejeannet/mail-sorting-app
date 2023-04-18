@@ -29,14 +29,11 @@ class ImageFormatter:
     def get_image_coordinates(self, image):
         return image.shape[0], image.shape[1]
     
-    def crop_image_from_text_and_margin(self, image, text, margin):
-        max_image_width, max_image_height = self.get_image_coordinates(image)
+    def crop_image_from_text(self, image, text):
         text_position = self.image_analyser.get_text_position_from_image(image, text)
         height = text_position[3]- text_position[1]
         width = text_position[2] - text_position[0]
-        print("width : " + str(width))
-        print("Height : " + str(height))
-        return self.crop_image(image, max(text_position[0] - width,0), max(text_position[1] - 6*height,0), 6*width, 8*height)
+        return self.crop_image(image, max(text_position[0]-10,0), max(text_position[1] - 6*height,0), 5*width, round(7.5*height))
         
     # erosion
     # Purpose: decrease the size of the foreground objects
