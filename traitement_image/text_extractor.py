@@ -1,8 +1,8 @@
 import pytesseract
 from pytesseract import Output
-from image_formatter import ImageFormatter
-from image_manager import ImageManager
-from image_analyser import ImageAnalyser
+from traitement_image.image_formatter import ImageFormatter
+from traitement_image.image_manager import ImageManager
+from traitement_image.image_analyser import ImageAnalyser
 from fuzzywuzzy import fuzz
 import cv2
 import re
@@ -14,7 +14,7 @@ class TextExtractor:
         self.image_manager = ImageManager()
         self.image_analyser = ImageAnalyser()
         self.image_formatter = ImageFormatter()
-        self.banned_list = ["33000 bordeaux", "9 rue de conde", "rue de conde","titulaire du compte", "bureau 3"]
+        self.banned_list = ["33000 bordeaux", "9 rue de conde", "rue de conde","titulaire du compte", "bureau 3", "destinataire", "numero de tva", "numero de siret", "ecopli"]
         
     def analyse_image(self, file_name):
         
@@ -84,7 +84,7 @@ class TextExtractor:
     def check_if_line_is_valid(self, line):
         return not self.check_if_there_is_a_braquet_in_text_line(line) and not self.check_if_there_is_a_date_in_text_line(line) and not self.check_if_the_line_contains_a_sequence_of_numbers(line)
     
-    def clean_text_output(self,ocr_output):
+    def clean_text_output_lines(self,ocr_output):
         lines = self.split_lines_and_remove_empty_ones(ocr_output)
         valid_lines = []
         for line in lines:
@@ -97,4 +97,7 @@ class TextExtractor:
                 valid_lines.append([line])
         # Utilisez valid_lines comme nécessaire
         return valid_lines
+        
+    def clean_lines(self, splited_lines):
+        pass
         

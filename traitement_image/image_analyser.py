@@ -1,5 +1,5 @@
 from pytesseract import Output
-from line_checker import LineChecker
+from traitement_image.line_checker import LineChecker
 import pytesseract
 
 class ImageAnalyser:

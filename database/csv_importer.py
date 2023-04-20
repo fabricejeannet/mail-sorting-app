@@ -2,16 +2,13 @@ import pandas
 
 import pytest
 
-import mysql.connector
-
-import csv_constants
+import database.csv_constants as csv_constants
 
 
 class CsvManager :
     
 
     def __init__(self):
-
         self.dataframe = pandas.DataFrame()
 
 
@@ -38,7 +35,6 @@ class CsvManager :
     def get_legal_representatives(self) :
 
         return self.dataframe[csv_constants.REPRESENTANT_LEGAL]
-    
 
     def get_subscription_status(self) :
 

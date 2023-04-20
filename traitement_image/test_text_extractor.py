@@ -14,7 +14,7 @@ def test_recupere_correctement_sur_enveloppe_standard():
         print(extracted_text)
         assert ("33000").lower() in extracted_text
         assert fuzz.partial_ratio(extracted_text,company_names[index].lower()) > 95
-        assert text_extractor.clean_text_output(extracted_text) == cleaned_text[index]     
+        assert text_extractor.clean_text_output_lines(extracted_text) == cleaned_text[index]     
 
 def test_fuzz_partial_ration():
     assert fuzz.partial_ratio("9 rue de conde","rue de conde") > 90

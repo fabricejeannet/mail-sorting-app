@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from image_analyser import ImageAnalyser
+from traitement_image.image_analyser import ImageAnalyser
 
 class ImageFormatter:
     def __init__(self):
@@ -25,7 +25,6 @@ class ImageFormatter:
     def crop_image(self, image, x, y, w, h):
         return image[y:y+h, x:x+w]
     
-    
     def get_image_coordinates(self, image):
         return image.shape[0], image.shape[1]
     
@@ -35,6 +34,11 @@ class ImageFormatter:
         width = text_position[2] - text_position[0]
         return self.crop_image(image, max(text_position[0]-10,0), max(text_position[1] - 8*height,0), 6*width, round(8.5*height))
         
+    def crop_image_from_the_rectangle_coordinates(self, image, start_point, end_point):
+        width = end_point[0] - start_point[0]
+        height = end_point[1] - start_point[1]
+        return self.crop_image(image, start_point[0],start_point[1], width, height)
+    
     # erosion
     # Purpose: decrease the size of the foreground objects
     def erode(self, image):
