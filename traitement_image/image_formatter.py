@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from traitement_image.image_analyser import ImageAnalyser
+from image_analyser import ImageAnalyser
 
 class ImageFormatter:
     def __init__(self):
