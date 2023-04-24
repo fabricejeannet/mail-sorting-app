@@ -37,7 +37,7 @@ class DataAnalyser:
             for i in range(len(dico["director_names"])):
                 company_name = dico["director_names"][i].lower()
                 statut = dico["statut"][i]
-                rate = fuzz.ratio(word,company_name)
+                rate = max(fuzz.ratio(word,company_name), fuzz.partial_ratio(word,company_name))
                 for i in range(3):
                     if(results["rate"][i] < rate):
                         results["rate"].pop(2)
