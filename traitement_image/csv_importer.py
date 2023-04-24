@@ -68,6 +68,9 @@ class CsvManager :
 
         return self.get_row_from_index(index)[csv_constants.STATUT]
     
+    def get_subscription_status_from_name(self,name):
+        indice = (df[csv_constants.RAISON_SOCIALE] == 'maison').idxmax()
+        return self.get_row_from_index(indice)[csv_constants.STATUT]
 
     def get_director_name_from_index(self, index) :
 

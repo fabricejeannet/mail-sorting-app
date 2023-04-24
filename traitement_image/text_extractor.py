@@ -17,7 +17,7 @@ class TextExtractor:
         self.image_analyser = ImageAnalyser()
         self.image_formatter = ImageFormatter()
         
-        self.banned_list = ["33000 bordeaux", "9 rue de conde", "rue de conde","9 rue conde","titulaire du compte", "bureau 3", "destinataire", "numero de tva", "numero de siret", "ecopli"]
+        self.banned_list = ["33000 bordeaux", "9 rue de conde", "rue de conde","9 rue conde","titulaire du compte", "bureau 3", "destinataire", "numero de tva", "numero de siret", "ecopli", "etage 3"]
         
     def analyse_image(self, file_name):
         
@@ -110,7 +110,7 @@ class TextExtractor:
                 banned_word_found = False
                 banned_words_index = 0
                 while not banned_word_found and banned_words_index < len(self.banned_list):
-                    banned_word_found = fuzz.ratio(line,self.banned_list[banned_words_index]) > 90
+                    banned_word_found = fuzz.partial_ratio(line,self.banned_list[banned_words_index]) > 90
                     banned_words_index += 1
                 if not banned_word_found and self.check_if_line_is_valid(line):
                     valid_lines.append([line])

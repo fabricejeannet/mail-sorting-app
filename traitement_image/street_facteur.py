@@ -20,8 +20,9 @@ class StreetFacteur :
         self.text_extractor = TextExtractor()
         self.data_analyser = DataAnalyser()
         self.last_image_time = time.time()
+        self.last_mouvement_time = time.time()
         self.picam2 = Picamera2()
-        self.picam2.configure(self.picam2.create_preview_configuration(main={"format": 'RGB888', "size": (640, 480)}))
+        self.picam2.configure(self.picam2.create_preview_configuration(main={"format": 'RGB888', "size": (1280, 720)}))
         self.picam2.start_preview()
         self.picam2.start()
         
@@ -73,11 +74,17 @@ class StreetFacteur :
 
 
 
-    def show_camera_preview_and_detect_movement(self):
+    def show_camera_preview_detect_movement_and_analyse_text(self):
+        analysed = True
         while True:
             im = self.picam2.capture_array()
-            print(time.time() - self.last_image_time)
-            if (self.is_there_movement_on_frame() and time.time() - self.last_image_time > 3):
+            has_moved = self.is_there_movement_on_frame()
+            if (has_moved):
+                self.last_mouvement_time = time.time()
+                analysed = False
+            if (time.time() - self.last_mouvement_time > 2 and not analysed):
+                analysed = True
+                print("analysing")
                 t2 = threading.Thread(target=self.analyse_text)
                 t2.start()
             cv2.rectangle(im, RECTANGLE_START_POINT, RECTANGLE_END_POINT, (0, 255, 0))
@@ -87,15 +94,13 @@ class StreetFacteur :
                 break
 
     def analyse_text(self) :
-        #Let 1 second to the user to focus the letter
-        time.sleep(1)
         im = self.picam2.capture_array()
         self.last_image_time = time.time()
         analysed_image = self.image_formatter.get_cleaned_black_and_white_image(im)
         # Get all OCR output information from pytesseract
         ocr_results = (self.text_extractor.analyse_image_without_preview_with_image(analysed_image))
         for line in ocr_results:
-            print(self.data_analyser.return_the_top_three_matches_for_a_word(line))
+            print(self.data_analyser.print_top_n_matches_with_process(line, 3))
 
 
     def press_space_bar_2_seconds_then_scan(self):
@@ -128,10 +133,7 @@ class StreetFacteur :
                 print("in escape")
                 break
         cv2.destroyAllWindows()
-          
-          
-          
+                   
 street_facteur = StreetFacteur()
-# t1 = threading.Thread(target=street_facteur.show_camera_preview_and_detect_movement)
-# t1.start()
-street_facteur.press_space_bar_2_seconds_then_scan()
+# street_facteur.press_space_bar_2_seconds_then_scan()
+street_facteur.show_camera_preview_detect_movement_and_analyse_text()
