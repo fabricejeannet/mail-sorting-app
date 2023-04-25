@@ -21,8 +21,7 @@ class ImageManager:
 
         # Démarre la capture d'image
         picam.start()
-        # Attendre jusqu'à l'appui d'une touche
-        #input("Waiting..")
+        # Attendre 3 secondes
         time.sleep(3)	
      
         picam.capture_file("images/captured_image.jpg")
