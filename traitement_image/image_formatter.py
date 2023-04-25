@@ -21,21 +21,21 @@ class ImageFormatter:
         return cv2.threshold(image, 200, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
       
 
-    def crop_image(self, image, x, y, w, h):
-        return image[y:y+h, x:x+w]
+    def crop_image(self, image, x, y, width, height):
+        return image[y:y+height, x:x+width]
     
     
     def crop_image_around_text(self, image, text):
-        text_position = self.image_analyser.get_text_position_from_image(image, text)
-        height = text_position[3]- text_position[1]
-        width = text_position[2] - text_position[0]
-        return self.crop_image(image, max(text_position[0]-10,0), max(text_position[1] - 8*height,0), 6*width, round(8.5*height))
+        text_position_coordinates = self.image_analyser.get_text_position_coordinates_from_image(image, text)
+        height = text_position_coordinates[3]- text_position_coordinates[1]
+        width = text_position_coordinates[2] - text_position_coordinates[0]
+        return self.crop_image(image, max(text_position_coordinates[0]-10,0), max(text_position_coordinates[1] - 8*height,0), 6*width, round(8.5*height))
         
         
-    def crop_image_with_rectangle_coordinates(self, image, start_point, end_point):
-        width = end_point[0] - start_point[0]
-        height = end_point[1] - start_point[1]
-        return self.crop_image(image, start_point[0],start_point[1], width, height)
+    def crop_image_with_rectangle_coordinates(self, image, rectangle_start_point, rectangle_end_point):
+        width = rectangle_end_point[0] - rectangle_start_point[0]
+        height = rectangle_end_point[1] - rectangle_start_point[1]
+        return self.crop_image(image, rectangle_start_point[0],rectangle_start_point[1], width, height)
     
 
     def get_black_and_white_image(self, image):
@@ -47,3 +47,4 @@ class ImageFormatter:
         cleaned_image = self.get_noise_removed_image(image)
         gray_image = self.get_grayscaled_image(cleaned_image)
         return self.get_thresholded_image(gray_image)
+    
