@@ -6,14 +6,13 @@ class DataAnalyser:
     def __init__(self):
         csv_manager = CsvManager()
 
-        csv_manager.open_csv("clients.csv")
+        csv_manager.load_dataframe_from_csv_file("clients.csv")
 
         self.clients_data_list = {}
         self.clients_data_list["raison_sociale"] = (csv_manager.get_company_names())
         self.clients_data_list["director_names"] = (csv_manager.get_director_names())
         self.clients_data_list["statut"] = csv_manager.get_subscription_status()
         
-    
     def return_the_top_three_matches_for_a_word(self, word):
         results = {}
         results["match"] = ["","",""]
@@ -23,7 +22,7 @@ class DataAnalyser:
         for i in range(len(dico["raison_sociale"])):
             company_name = dico["raison_sociale"][i].lower()
             statut = dico["statut"][i]
-            rate = fuzz.ratio(word,company_name)
+            rate = max(fuzz.ratio(word,company_name), fuzz.partial_ratio(word,company_name))
             for i in range(3):
                 if(results["rate"][i] < rate):
                     results["rate"].pop(2)

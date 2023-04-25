@@ -19,15 +19,15 @@ class StreetFacteur :
         self.image_formatter = ImageFormatter()
         self.text_extractor = TextExtractor()
         self.data_analyser = DataAnalyser()
-        self.last_image_time = time.time()
-        self.last_mouvement_time = time.time()
+        self.last_movement_time = time.time()
         self.picam2 = Picamera2()
         self.picam2.configure(self.picam2.create_preview_configuration(main={"format": 'RGB888', "size": (1280, 720)}))
         self.picam2.start_preview()
         self.picam2.start()
+        self.captured_image = self.picam2.capture_array()
         
         
-    def is_there_movement_on_frame(self):   
+    def has_detected_a_movement(self):   
         frame_count = 0
         previous_frame = None
         
@@ -74,66 +74,44 @@ class StreetFacteur :
 
 
 
-    def show_camera_preview_detect_movement_and_analyse_text(self):
-        analysed = True
-        while True:
-            im = self.picam2.capture_array()
-            has_moved = self.is_there_movement_on_frame()
-            if (has_moved):
-                self.last_mouvement_time = time.time()
-                analysed = False
-            if (time.time() - self.last_mouvement_time > 2 and not analysed):
-                analysed = True
+    def main(self):
+        image_has_been_analysed = True
+        escape_key_pressed = False
+        
+        while not escape_key_pressed:
+            self.captured_image = self.picam2.capture_array()
+            
+            if (self.has_detected_a_movement()):
+                self.last_movement_time = time.time()
+                image_has_been_analysed = False
+                
+            if (self.image_is_steady() and not image_has_been_analysed):
                 print("analysing")
-                t2 = threading.Thread(target=self.analyse_text)
-                t2.start()
-            cv2.rectangle(im, RECTANGLE_START_POINT, RECTANGLE_END_POINT, (0, 255, 0))
-            im = cv2.resize(im, (600,450))
-            cv2.imshow("Camera", im)
-            if (cv2.waitKey(30) == 27):
-                break
+                apply_ocr_on_image_thread = threading.Thread(target=self.apply_ocr_on_image)
+                apply_ocr_on_image_thread.start()
+                image_has_been_analysed = True
+                
+            self.show_image_preview(self.captured_image)
+            escape_key_pressed = cv2.waitKey(30) == 27
+            
+            
+    def show_image_preview(self, captured_image):
+        cv2.rectangle(captured_image, RECTANGLE_START_POINT, RECTANGLE_END_POINT, (0, 255, 0))
+        captured_image = cv2.resize(captured_image, (600,450))
+        cv2.imshow("Camera", captured_image)
 
-    def analyse_text(self) :
-        im = self.picam2.capture_array()
-        self.last_image_time = time.time()
-        analysed_image = self.image_formatter.get_cleaned_black_and_white_image(im)
-        # Get all OCR output information from pytesseract
-        ocr_results = (self.text_extractor.analyse_image_without_preview_with_image(analysed_image))
+
+    def image_is_steady(self):
+        return time.time() - self.last_movement_time > 2
+
+
+    def apply_ocr_on_image(self) :
+        black_and_white_image = self.image_formatter.get_cleaned_black_and_white_image(self.captured_image)
+        ocr_results = (self.text_extractor.get_cleaned_ocr_text_from_image(black_and_white_image))
         for line in ocr_results:
-            print(self.data_analyser.print_top_n_matches_with_process(line, 3))
+            print(self.data_analyser.return_the_top_three_matches_for_a_word(line))
 
-
-    def press_space_bar_2_seconds_then_scan(self):
-        print("launched")
-        im = self.picam2.capture_array()
-        im = cv2.resize(im, (600,450))
-        cv2.imshow("Camera", im)
-        while True :
-            k = cv2.waitKey(0)
-            print("waiting for key space")
-            if ( k == -1):
-                continue
-            else : print(k)
-            if (k == 32): 
-                self.last_image_time = time.time()
-                analysed = False
-                while True:
-                    im = self.picam2.capture_array()
-                    print(time.time() - self.last_image_time)
-                    if (time.time() - self.last_image_time > 5 and not analysed):
-                        t2 = threading.Thread(target=self.analyse_text)
-                        t2.start()
-                        analysed = True
-                    cv2.rectangle(im, RECTANGLE_START_POINT, RECTANGLE_END_POINT, (0, 255, 0))
-                    im = cv2.resize(im, (600,450))
-                    cv2.imshow("Camera", im)
-                    if (cv2.waitKey(30) == 27 or time.time() - self.last_image_time > 5.1):
-                        break
-            elif (k == 27):
-                print("in escape")
-                break
-        cv2.destroyAllWindows()
                    
 street_facteur = StreetFacteur()
 # street_facteur.press_space_bar_2_seconds_then_scan()
-street_facteur.show_camera_preview_detect_movement_and_analyse_text()
+street_facteur.main()
