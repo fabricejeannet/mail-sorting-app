@@ -113,5 +113,4 @@ class StreetFacteur :
 
                    
 street_facteur = StreetFacteur()
-# street_facteur.press_space_bar_2_seconds_then_scan()
 street_facteur.main()
