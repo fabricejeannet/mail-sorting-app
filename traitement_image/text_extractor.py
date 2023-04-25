@@ -50,7 +50,7 @@ class TextExtractor:
              
     def analyse_image_with_taking_picture(self):
         self.image_manager.take_and_save_picture()
-        self.analyse_image("captured_image")
+        self.analyse_image_silently("captured_image")
         
         
     def check_if_there_is_a_date_in_text_line(self, line):
@@ -66,34 +66,44 @@ class TextExtractor:
     def check_if_the_line_contains_a_sequence_of_numbers(self,line):
         return re.search(r'\d\s*\d\s*\d\s*\d\s*\d\s*\d(?:\s*\d)*', line) != None
     
+    
     def check_if_there_is_empty_line_on_the_top(self, ocr_output):
         #Return True if there is an empty line on the top of the lines
         return ocr_output.splitlines()[0] == ""
+    
     
     def check_if_there_is_empty_line_on_the_bottom(self, ocr_output):
         lines = ocr_output.splitlines()
         #Return True if there is an empty line on the bottom of the lines
         return lines[len(lines)] == ""
     
+    
     def check_if_line_is_valid(self, line):
         return not self.check_if_there_is_a_braquet_in_text_line(line) and not self.check_if_there_is_a_date_in_text_line(line) and not self.check_if_the_line_contains_a_sequence_of_numbers(line)
     
+    
     def clean_text_output_lines(self,ocr_output):
+        #No need to analyse an output if empty
         if(ocr_output != ""):    
-            lines = self.split_text_into_lines_and_remove_empty_ones(ocr_output)
-            print(lines)
+            ocr_lines = self.split_text_into_lines_and_remove_empty_ones(ocr_output)
             valid_lines = []
-            for line in lines:
-                banned_word_found = False
-                banned_words_index = 0
-                while not banned_word_found and banned_words_index < len(self.banned_words_list):
-                    banned_word_found = fuzz.partial_ratio(line,self.banned_words_list[banned_words_index]) > 90
-                    banned_words_index += 1
-                if not banned_word_found and self.check_if_line_is_valid(line):
+            for line in ocr_lines:
+                if not self.line_contain_a_banned_word(line) and self.check_if_line_is_valid(line):
                     valid_lines.append([line])
                     if('&' in line):
                         valid_lines.append(self.return_modified_et_lines(line))
+        print(valid_lines)
         return valid_lines    
+    
+    
+    def line_contain_a_banned_word(self, line):
+        banned_word_found = False
+        banned_words_index = 0
+        while not banned_word_found and banned_words_index < len(self.banned_words_list):
+            banned_word_found = fuzz.partial_ratio(line,self.banned_words_list[banned_words_index]) >= 90
+            banned_words_index += 1
+        return banned_word_found
+    
     
     def return_modified_et_lines(self, line):
         return line.replace('&','et')
