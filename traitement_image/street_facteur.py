@@ -105,11 +105,11 @@ class StreetFacteur :
 
     def apply_ocr_on_image(self) :
         black_and_white_image = self.image_formatter.get_cleaned_black_and_white_image(self.captured_image)
-        cropped_image = self.image_formatter.crop_image_from_the_rectangle_coordinates(black_and_white_image,RECTANGLE_START_POINT,RECTANGLE_END_POINT)
+        cropped_image = self.image_formatter.crop_image_with_rectangle_coordinates(black_and_white_image,RECTANGLE_START_POINT,RECTANGLE_END_POINT)
 
         cleaned_ocr_results = (self.text_extractor.get_cleaned_ocr_text_from_image(cropped_image))
         for line in cleaned_ocr_results:
-            matching_line_results = self.data_analyser.return_the_top_three_matches_for_a_word(line)
+            matching_line_results = self.data_analyser.return_the_top_three_matches_for_a_line(line)
             self.data_analyser.display_results(matching_line_results)
 
                    

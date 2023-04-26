@@ -14,7 +14,7 @@ class DataAnalyser:
         self.clients_data_list["statut"] = csv_manager.get_subscription_status()
         
         
-    def return_the_top_three_matching_names_for_a_line(self, line):
+    def return_the_top_three_matches_for_a_line(self, line):
         results = {}
         results["matching_name"] = ["","",""]
         results["statut"] = ["","",""]
@@ -49,6 +49,6 @@ class DataAnalyser:
                         break
         return results
     
-    def display_results(self, results):
-        for i in range(len(results["matching_name"])):
-            print("Matching name: " + results["matching_name"][i] + " - Statut: " + results["statut"][i] + " - Correspondance rate: " + str(results["correspondance_rate"][i]))
+    def display_results(self, matching_results):
+        for index in range(len(matching_results["matching_name"])):
+            print("Matching name: " + matching_results["matching_name"][index] + " - Statut: " + matching_results["statut"][index] + " - Correspondance rate: " + str(matching_results["correspondance_rate"][index]))
