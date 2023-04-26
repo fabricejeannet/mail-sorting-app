@@ -12,31 +12,24 @@ import time
 class TextExtractor:
     
     def __init__(self):
-        self.analysed_keyword_target = "33000"
+        self.analyse_keyword_target = "33000"
         self.image_manager = ImageManager()
         self.image_analyser = ImageAnalyser()
         self.image_formatter = ImageFormatter()
         
         self.banned_words_list = ["33000 bordeaux", "9 rue de conde", "rue de conde","9 rue conde","titulaire du compte", "bureau 3", "destinataire", "numero de tva", "numero de siret", "ecopli", "etage 3"]
         
-    def analyse_image_silently(self,file_name):
+        
+    def analyse_image_silently(self,file_name):        
         analysed_image = cv2.imread("images/" + file_name + ".jpg")
-        analysed_image = self.image_formatter.get_cleaned_black_and_white_image(analysed_image)
-        start = time.time()
-        analysed_image = self.image_formatter.crop_image_from_text(analysed_image, self.analysed_keyword_target)
-        end = time.time()
-        print(end-start)
-        # Converting image to text with pytesseract
-        start = time.time()
-        ocr_output = pytesseract.image_to_string(analysed_image, lang='fra')
-        end = time.time()
-        print(end-start)
-        # Print output text from OCR
+        black_and_white_image = self.image_formatter.get_cleaned_black_and_white_image(analysed_image)
+        cropped_image = self.image_formatter.crop_image_around_text(black_and_white_image, self.analyse_keyword_target)
+        
+        ocr_output = pytesseract.image_to_string(cropped_image, lang='fra')
         return(ocr_output.lower())
     
     
-    def get_cleaned_ocr_text_from_image(self, black_and_white_image):
-        cropped_image = self.image_formatter.crop_image_from_the_rectangle_coordinates(black_and_white_image,RECTANGLE_START_POINT,RECTANGLE_END_POINT)
+    def get_cleaned_ocr_text_from_image(self, cropped_image):
         # Converting image to text with pytesseract
         ocr_output = pytesseract.image_to_string(cropped_image, lang='fra')
         ocr_output_lowered = ocr_output.lower()
@@ -65,21 +58,10 @@ class TextExtractor:
     
     def check_if_the_line_contains_a_sequence_of_numbers(self,line):
         return re.search(r'\d\s*\d\s*\d\s*\d\s*\d\s*\d(?:\s*\d)*', line) != None
-    
-    
-    def check_if_there_is_empty_line_on_the_top(self, ocr_output):
-        #Return True if there is an empty line on the top of the lines
-        return ocr_output.splitlines()[0] == ""
-    
-    
-    def check_if_there_is_empty_line_on_the_bottom(self, ocr_output):
-        lines = ocr_output.splitlines()
-        #Return True if there is an empty line on the bottom of the lines
-        return lines[len(lines)] == ""
-    
+       
     
     def check_if_line_is_valid(self, line):
-        return not self.check_if_there_is_a_braquet_in_text_line(line) and not self.check_if_there_is_a_date_in_text_line(line) and not self.check_if_the_line_contains_a_sequence_of_numbers(line)
+        return not self.check_if_there_is_a_braquet_in_text_line(line) and not self.check_if_there_is_a_date_in_text_line(line) and not self.check_if_the_line_contains_a_sequence_of_numbers(line) and not line.isspace() and not line == ""
     
     
     def clean_text_output_lines(self,ocr_output):

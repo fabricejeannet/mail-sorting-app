@@ -29,7 +29,7 @@ class ImageFormatter:
         text_position_coordinates = self.image_analyser.get_text_position_coordinates_from_image(image, text)
         height = text_position_coordinates[3]- text_position_coordinates[1]
         width = text_position_coordinates[2] - text_position_coordinates[0]
-        return self.crop_image(image, max(text_position_coordinates[0]-10,0), max(text_position_coordinates[1] - 8*height,0), 6*width, round(8.5*height))
+        return self.crop_image(image, max(text_position_coordinates[0]-10,0), max(text_position_coordinates[1] - 8*height,0), 6*width, round(9.2*height))
         
         
     def crop_image_with_rectangle_coordinates(self, image, rectangle_start_point, rectangle_end_point):
