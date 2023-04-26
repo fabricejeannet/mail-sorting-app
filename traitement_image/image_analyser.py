@@ -3,11 +3,7 @@ from custom_exceptions import NoTextFoundOnPicture
 from fuzzywuzzy import fuzz
 import pytesseract
 
-class ImageAnalyser:
-    
-    def __init__(self):
-        pass
-    
+class ImageAnalyser:   
     
     def get_text_position_coordinates_from_image(self, image, searched_text):
         text_data_of_image = self.get_text_data_from_image(image)

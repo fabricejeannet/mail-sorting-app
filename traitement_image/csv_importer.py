@@ -27,6 +27,13 @@ class CsvManager :
         self.dataframe = pandas.DataFrame()
 
 
+    def get_ids(self):
+        try :
+            res = self.dataframe[csv_constants.ID]
+        except :
+            raise MissingColumnException("id")
+        return res
+
     def get_company_names(self) :
         try :
             res = self.dataframe[csv_constants.RAISON_SOCIALE]

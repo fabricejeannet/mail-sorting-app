@@ -14,6 +14,12 @@ class ImageManager:
             raise FileNotFoundError("Image not found at path: " + path)
         return image
     
+    def get_concat_h(im1, im2):
+        dst = Image.new('RGB', (im1.width + im2.width, im1.height))
+        dst.paste(im1, (0, 0))
+        dst.paste(im2, (im1.width, 0))
+        return dst
+    
     def take_and_save_picture(self):
         picam = Picamera2()
         # Démarre la prévisualisation DRM
