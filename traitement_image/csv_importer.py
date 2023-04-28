@@ -29,7 +29,7 @@ class CsvManager :
 
     def get_ids(self):
         try :
-            res = self.dataframe[csv_constants.ID]
+            res = self.dataframe[csv_constants.IDENTIFIANT]
         except :
             raise MissingColumnException("id")
         return res

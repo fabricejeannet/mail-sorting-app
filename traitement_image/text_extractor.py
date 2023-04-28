@@ -17,7 +17,7 @@ class TextExtractor:
         self.image_analyser = ImageAnalyser()
         self.image_formatter = ImageFormatter()
         
-        self.banned_words_list = ["33000 bordeaux", "9 rue de conde", "rue de conde","9 rue conde","titulaire du compte", "bureau 3", "destinataire", "numero de tva", "numero de siret", "ecopli", "etage 3"]
+        self.banned_words_list = ["33000 bordeaux", "9 rue de conde", "rue de conde","9 rue conde","titulaire du compte", "destinataire lettre","bureau 3", "destinataire", "numero de tva", "numero de siret", "ecopli", "etage 3", "niveau de garantie", "numero de police", "numero de contrat", "numero de telephone", "numero de fax", "numero de compte", "numero de client", "numero de facture", "numero de commande", "numero de dossier"]
         
         
     def analyse_image_silently(self,file_name):        
@@ -30,6 +30,7 @@ class TextExtractor:
     
     
     def get_cleaned_ocr_text_from_image(self, cropped_image):
+        cv2.imwrite("images/cropped_image.jpg", cropped_image)
         # Converting image to text with pytesseract
         ocr_output = pytesseract.image_to_string(cropped_image, lang='fra')
         ocr_output_lowered = ocr_output.lower()
@@ -74,7 +75,6 @@ class TextExtractor:
                     valid_lines.append([line])
                     if('&' in line):
                         valid_lines.append(self.return_modified_et_lines(line))
-        print(valid_lines)
         return valid_lines    
     
     
@@ -82,7 +82,7 @@ class TextExtractor:
         banned_word_found = False
         banned_words_index = 0
         while not banned_word_found and banned_words_index < len(self.banned_words_list):
-            banned_word_found = fuzz.partial_ratio(line,self.banned_words_list[banned_words_index]) >= 90
+            banned_word_found = max(fuzz.partial_ratio(line,self.banned_words_list[banned_words_index]),fuzz.ratio(line, self.banned_words_list[banned_words_index])) >= 85
             banned_words_index += 1
         return banned_word_found
     

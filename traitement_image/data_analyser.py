@@ -1,5 +1,6 @@
 from csv_importer import CsvManager
 from fuzzywuzzy import fuzz
+from tkinter import END
 
 class DataAnalyser:
     
@@ -17,6 +18,7 @@ class DataAnalyser:
         
     def return_the_top_three_matches_for_a_line(self, line):
         results = {}
+        results["searched_line"] = line
         results["matching_name"] = ["","",""]
         results["statut"] = ["","",""]
         results["correspondance_rate"] = [0,0,0]
@@ -54,3 +56,4 @@ class DataAnalyser:
     def display_results(self, matching_results):
         for index in range(len(matching_results["matching_name"])):
             print("Matching name: " + matching_results["matching_name"][index] + " - Statut: " + matching_results["statut"][index] + " - Correspondance rate: " + str(matching_results["correspondance_rate"][index]))
+            

@@ -13,10 +13,9 @@ class ImageAnalyser:
         width_of_text = text_data_of_image['width']
         height_of_text = text_data_of_image['height']
         for index in range(len(text)):
-            if fuzz.ratio(text[index].lower(), searched_text.lower()) > 80:
+            if fuzz.partial_ratio(text[index].lower(), searched_text.lower()) > 80:
                 return (left_point_of_text[index], top_point_of_text[index], left_point_of_text[index] + width_of_text[index], top_point_of_text[index] + height_of_text[index])
-        raise NoTextFoundOnPicture()
-
+        return None
         
     def get_text_from_image(self, image):
         return pytesseract.image_to_string(image).lower()
