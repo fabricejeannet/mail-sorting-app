@@ -29,7 +29,7 @@ class DataAnalyser:
             statut = clients_data_dictionnary["statut"][i]
             correspondance_rate = max(fuzz.ratio(line,company_name), fuzz.partial_ratio(line,company_name))
             for i in range(3):
-                if(results["correspondance_rate"][i] < correspondance_rate and correspondance_rate > 60):
+                if(results["correspondance_rate"][i] < correspondance_rate and correspondance_rate >= 50):
                     results["correspondance_rate"].pop(2)
                     results["statut"].pop(2)
                     results["matching_name"].pop(2)
@@ -43,7 +43,7 @@ class DataAnalyser:
                 statut = clients_data_dictionnary["statut"][i]
                 correspondance_rate = max(fuzz.ratio(line,director_name), fuzz.partial_ratio(line,director_name))
                 for i in range(3):
-                    if(results["correspondance_rate"][i] < correspondance_rate and correspondance_rate > 60):
+                    if(results["correspondance_rate"][i] < correspondance_rate and correspondance_rate >= 50):
                         results["correspondance_rate"].pop(2)
                         results["statut"].pop(2)
                         results["matching_name"].pop(2)

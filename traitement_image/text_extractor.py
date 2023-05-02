@@ -16,8 +16,16 @@ class TextExtractor:
         self.image_manager = ImageManager()
         self.image_analyser = ImageAnalyser()
         self.image_formatter = ImageFormatter()
+        self.regex_sas = r'\b[sS]?[.]?[aA]?[.]?[sS]?[.]?\b'
+        self.regex_sarl = r'\b[sS]?[.]?[aA]?[.]?[rR]?[.]?[lL]?[.]?\b'
+        self.regex_sasu = r'\b[sS]?[.]?[aA]?[.]?[sS]?[.]?[uU]?\b'
+        self.regex_eurl = r'\b[eE]?[.]?[uU]?[.]?[rR]?[.]?[lL]?\b'
+        self.regex_sci = r'\b[sS]?[.]?[cC]?[.]?[iI]?\b'
+        self.regex_snc = r'\b[sS]?[.]?[nN]?[.]?[cC]?\b'
+        self.regex_ei = r'\b[eE]?[.]?[iI]?\b'
+        self.regex_eirl = r'\b[eE]?[.]?[iI]?[.]?[rR]?[.]?[lL]?\b'     
         
-        self.banned_words_list = ["33000 bordeaux", "9 rue de conde", "rue de conde","9 rue conde","titulaire du compte", "destinataire lettre","bureau 3", "destinataire", "numero de tva", "numero de siret", "ecopli", "etage 3", "niveau de garantie", "numero de police", "numero de contrat", "numero de telephone", "numero de fax", "numero de compte", "numero de client", "numero de facture", "numero de commande", "numero de dossier"]
+        self.banned_words_list = ["33000 bordeaux", "9 rue de conde", "rue de conde","9 rue conde","titulaire du compte", "representant legal", "retour à" ,"destinataire lettre","bureau 3", "destinataire", "numero de tva", "numero de siret", "ecopli", "etage 3", "niveau de garantie", "numero de police", "numero de contrat", "numero de telephone", "numero de fax", "numero de compte", "numero de client", "numero de facture", "numero de commande", "numero de dossier"]
         
         
     def analyse_image_silently(self,file_name):        
@@ -68,13 +76,15 @@ class TextExtractor:
     def clean_text_output_lines(self,ocr_output):
         #No need to analyse an output if empty
         if(ocr_output != ""):    
-            ocr_lines = self.split_text_into_lines_and_remove_empty_ones(ocr_output)
+            splitted_ocr_lines = self.split_text_into_lines_and_remove_empty_ones(ocr_output)
             valid_lines = []
-            for line in ocr_lines:
+            for line in splitted_ocr_lines:
                 if not self.line_contain_a_banned_word(line) and self.check_if_line_is_valid(line):
-                    valid_lines.append([line])
-                    if('&' in line):
-                        valid_lines.append(self.return_modified_et_lines(line))
+                    line_witouht_legal_status = self.return_the_line_without_legal_status(line)
+                    line_witouht_legal_status = line_witouht_legal_status.strip()
+                    valid_lines.append([line_witouht_legal_status])
+                    if('&' in line_witouht_legal_status):
+                        valid_lines.append(self.return_modified_et_lines(line_witouht_legal_status))
         return valid_lines    
     
     
@@ -90,4 +100,16 @@ class TextExtractor:
     def return_modified_et_lines(self, line):
         return line.replace('&','et')
 
+
+    def return_the_line_without_legal_status(self, line):
+        cleaned_line = re.sub(self.regex_sas, "", line)
+        cleaned_line = re.sub(self.regex_sarl, "", cleaned_line)
+        cleaned_line = re.sub(self.regex_sasu, "", cleaned_line)
+        cleaned_line = re.sub(self.regex_eurl, "", cleaned_line)
+        cleaned_line = re.sub(self.regex_sci, "", cleaned_line)
+        cleaned_line = re.sub(self.regex_snc, "", cleaned_line)
+        cleaned_line = re.sub(self.regex_ei, "", cleaned_line)
+        cleaned_line = re.sub(self.regex_eirl, "", cleaned_line)
+        return cleaned_line
+        
         

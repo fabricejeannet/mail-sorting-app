@@ -8,7 +8,7 @@ from data_analyser import DataAnalyser
 from image_constants import *
 from text_extractor import TextExtractor
 import time
-from PIL import ImageTk, Image
+from PIL import ImageTk, Image, ImageSequence
 from tkinter import Tk, Label, Frame, Button, BOTTOM, Text, BOTH, Scrollbar, RIGHT, Y, END, TOP, LEFT, X, Entry, StringVar, IntVar, OptionMenu, Menu, messagebox, filedialog, ttk
 
 class TkinterApp:
@@ -31,7 +31,7 @@ class TkinterApp:
 
 		self.window.resizable(width=False, height=False)
 		self.window.configure(background='gray')
-
+  
 
 	def return_resized_image_with_rectangle(self):
 		self.captured_image = self.picam.capture_array()
@@ -45,17 +45,32 @@ class TkinterApp:
 
 
 	def remove_text_from_text_widgets(self):
-		self.text_widget.delete('1.0', END)
+		self.matching_text_widget.delete('1.0', END)
 		self.result_text_widget.delete('1.0', END)
 			
+   
 	def add_result_to_tkinter_text(self):
 		self.remove_text_from_text_widgets()
 		self.result_text_widget.insert(END, "Lignes analysées : \n",('bold','blue'))
 		for line_analyse in self.cleaned_ocr_result:
-			self.result_text_widget.insert(END, str(line_analyse["searched_line"][0]) + "\n")
+			self.result_text_widget.insert(END, str(line_analyse["searched_line"]) + "\n")
 			for index in range(len(line_analyse["matching_name"])):
 				if(line_analyse["matching_name"][index] != ""):
-					self.text_widget.insert(END, "Matching name: " + line_analyse["matching_name"][index] + "\nStatut: " + line_analyse["statut"][index] + "\nCorrespondance rate: " + str(line_analyse["correspondance_rate"][index]) + "\n --- \n")
+					self.matching_text_widget.insert(END, "Matching name: " + line_analyse["matching_name"][index] + "\nStatut: " + line_analyse["statut"][index] + "\nCorrespondance rate: " + str(line_analyse["correspondance_rate"][index]) + "\n --- \n")
+
+
+	def show_the_good_image_depending_on_the_result(self):
+		if(self.cleaned_ocr_result != []):
+			are_all_the_results_subscribed = True
+			for line_analyse in self.cleaned_ocr_result:
+				if(line_analyse["statut"][0] != "ABONNE"):
+					are_all_the_results_subscribed = False,
+			if(are_all_the_results_subscribed):
+				self.show_valid_image()
+			else:
+				self.show_warning_image()
+		else:
+			self.show_invalid_image()
 
 
 	def apply_ocr_on_image(self) :
@@ -64,8 +79,34 @@ class TkinterApp:
 		cropped_image = self.image_formatter.crop_image_with_rectangle_coordinates(black_and_white_image,RECTANGLE_START_POINT,RECTANGLE_END_POINT)
 		cleaned_ocr_result = (self.text_extractor.get_cleaned_ocr_text_from_image(cropped_image))
 		for line in cleaned_ocr_result:
-			matching_line_results = self.data_analyser.return_the_top_three_matches_for_a_line(line)
+			matching_line_results = self.data_analyser.return_the_top_three_matches_for_a_line(line[0])
 			self.cleaned_ocr_result.append(matching_line_results)
+   
+   
+	def show_warning_image(self):
+		image = Image.open("images/warning.png")
+		resized_image = image.resize((150, 150))
+		self.update_result_logo_image(resized_image)
+   
+	def show_loading_image(self):
+		image = Image.open("images/loading.gif")
+		resized_image = image.resize((150, 150))
+		self.update_result_logo_image(resized_image)
+  
+	def show_valid_image(self):
+		image = Image.open("images/valid.png")
+		resized_image = image.resize((150, 150))
+		self.update_result_logo_image(resized_image)
+  
+	def show_invalid_image(self):
+		image = Image.open("images/invalid.png")
+		resized_image = image.resize((150, 150))
+		self.update_result_logo_image(resized_image)
+  
+	def update_result_logo_image(self, resized_image):
+		self.result_logo.image = ImageTk.PhotoImage(resized_image)
+		self.result_logo.configure(image=self.result_logo.image)
+   
    
 	def has_detected_a_movement(self):   
 		frame_count = 0
@@ -116,6 +157,7 @@ class TkinterApp:
 		camera_frame = Frame(self.window, width=550, height=405)
 		camera_frame.pack()
 		camera_frame.place(relx=.01, y=5)
+  
 		# Create a Label Widget to display the text or Image
 		self.label = Label(camera_frame)
 		self.label.pack()
@@ -132,12 +174,12 @@ class TkinterApp:
 
 
 		# Create a Text widget
-		self.text_widget = Text(text_frame, width=25, height=15)
-		self.text_widget.pack(side=LEFT, fill=Y)
-		self.text_widget.tag_configure("blue", foreground="blue")
-		self.text_widget.tag_configure("red", foreground="red")
-		self.text_widget.tag_configure("green", foreground="green")
-		self.text_widget.tag_configure("bold", font=("TkDefaultFont", 12, "bold"))
+		self.matching_text_widget = Text(text_frame, width=25, height=15)
+		self.matching_text_widget.pack(side=LEFT, fill=Y)
+		self.matching_text_widget.tag_configure("blue", foreground="blue")
+		self.matching_text_widget.tag_configure("red", foreground="red")
+		self.matching_text_widget.tag_configure("green", foreground="green")
+		self.matching_text_widget.tag_configure("bold", font=("TkDefaultFont", 12, "bold"))
   
 		# Create a frame for the text lines readed by the OCR
 		result_frame = Frame(self.window, width=550, height=50)
@@ -150,28 +192,39 @@ class TkinterApp:
 		self.result_text_widget.tag_configure("blue", foreground="blue")
 		self.result_text_widget.tag_configure("bold", font=("TkDefaultFont", 12, "bold"))
 		
+		# Create a frame for the result logo of the OCR	
+		result_logo_frame = Frame(self.window, width=150, height=100)
+		result_logo_frame.pack()
+		result_logo_frame.place(relx=.75, rely=.55)
+  
+		# Create a Label Widget to display the result logo
+		self.result_logo = Label(result_logo_frame)
+		self.result_logo.pack()
 		
-
 		image_has_been_analysed = True
 
 		# Start a loop to continuously update the displayed image
 		while True:
 			escape_key_pressed = False
-
 			if not image_has_been_analysed:
-				self.text_widget.insert(END, "Attente d'une seconde avant analyse !\n",('bold','colored'))
+				self.remove_text_from_text_widgets()
+				self.matching_text_widget.insert(END, "Attente d'une seconde avant analyse !\n",('bold','colored'))
+				self.show_loading_image()
 
 			if (self.has_detected_a_movement()):
-				self.text_widget.delete('1.0', END)
-				self.text_widget.insert(END, "Mouvement détecté !\n",('bold','colored'))
+				self.remove_text_from_text_widgets()
+				self.matching_text_widget.insert(END, "Mouvement détecté !\n",('bold','colored'))
 				self.last_movement_time = time.time()
 				image_has_been_analysed = False
 			
 				
 			if (self.image_is_steady() and not image_has_been_analysed):
 				self.apply_ocr_on_image()
+				self.show_the_good_image_depending_on_the_result()
 				image_has_been_analysed = True
 				self.add_result_to_tkinter_text()
+				time.sleep(1)
+    
 			# Capture the actual image
 			final_image = self.return_resized_image_with_rectangle()
 			# Convert the captured image to a Tkinter compatible format
