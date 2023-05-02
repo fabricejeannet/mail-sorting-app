@@ -46,17 +46,18 @@ class TkinterApp:
 
 	def remove_text_from_text_widgets(self):
 		self.matching_text_widget.delete('1.0', END)
-		self.result_text_widget.delete('1.0', END)
+		self.readed_line_widget.delete('1.0', END)
 			
    
 	def add_result_to_tkinter_text(self):
 		self.remove_text_from_text_widgets()
-		self.result_text_widget.insert(END, "Lignes analysées : \n",('bold','blue'))
+		self.readed_line_widget.insert(END, "Lignes analysées : \n",('bold','blue'))
 		for line_analyse in self.cleaned_ocr_result:
-			self.result_text_widget.insert(END, str(line_analyse["searched_line"]) + "\n")
+			self.readed_line_widget.insert(END, str(line_analyse["searched_line"]) + "\n")
 			for index in range(len(line_analyse["matching_name"])):
 				if(line_analyse["matching_name"][index] != ""):
-					self.matching_text_widget.insert(END, "Matching name: " + line_analyse["matching_name"][index] + "\nStatut: " + line_analyse["statut"][index] + "\nCorrespondance rate: " + str(line_analyse["correspondance_rate"][index]) + "\n --- \n")
+					self.insert_a_match_in_txt_result_widget(line_analyse["matching_name"][index], line_analyse["statut"][index], line_analyse["correspondance_rate"][index])
+					self.insert_a_separator_in_txt_result_widget()
 
 
 	def show_the_good_image_depending_on_the_result(self):
@@ -65,12 +66,22 @@ class TkinterApp:
 			for line_analyse in self.cleaned_ocr_result:
 				if(line_analyse["statut"][0] != "ABONNE"):
 					are_all_the_results_subscribed = False,
-			if(are_all_the_results_subscribed):
+			if(are_all_the_results_subscribed and self.check_if_the_first_result_have_a_good_correspondance_rate()):
 				self.show_valid_image()
 			else:
 				self.show_warning_image()
 		else:
 			self.show_invalid_image()
+
+
+	def check_if_the_first_result_have_a_good_correspondance_rate(self):
+		if(self.cleaned_ocr_result != []):
+			if(self.cleaned_ocr_result[0]["correspondance_rate"][0] > CORRESPONDANCE_RATE_THRESHOLD):
+				return True
+			else:
+				return False
+		else:
+			return False
 
 
 	def apply_ocr_on_image(self) :
@@ -104,8 +115,8 @@ class TkinterApp:
 		self.update_result_logo_image(resized_image)
   
 	def update_result_logo_image(self, resized_image):
-		self.result_logo.image = ImageTk.PhotoImage(resized_image)
-		self.result_logo.configure(image=self.result_logo.image)
+		self.result_logo_widget.image = ImageTk.PhotoImage(resized_image)
+		self.result_logo_widget.configure(image=self.result_logo_widget.image)
    
    
 	def has_detected_a_movement(self):   
@@ -153,53 +164,85 @@ class TkinterApp:
 				return False
 
 
-	def main(self):
-		camera_frame = Frame(self.window, width=550, height=405)
-		camera_frame.pack()
-		camera_frame.place(relx=.01, y=5)
-  
-		# Create a Label Widget to display the text or Image
-		self.label = Label(camera_frame)
-		self.label.pack()
-
-		# Create a Quit Button to exit the program
-		self.quitButton = Button(self.window, text="Quitter", command=self.window.destroy)
-		self.quitButton.pack(side=BOTTOM)
-		self.quitButton.place(relx=.8, rely=.90)
-
-		#Create a Text frame to display the text
-		text_frame = Frame(self.window, width=150, height=200, bg="white")
-		text_frame.pack()
-		text_frame.place(relx=.72, rely=.012)
+	def create_the_text_result_frame(self):
+		self.text_frame = Frame(self.window, width=150, height=200, bg="white")
+		self.text_frame.pack()
+		self.text_frame.place(relx=.72, rely=.012)
 
 
+	def create_the_text_result_widget(self):
 		# Create a Text widget
-		self.matching_text_widget = Text(text_frame, width=25, height=15)
+		self.matching_text_widget = Text(self.text_frame, width=25, height=15)
 		self.matching_text_widget.pack(side=LEFT, fill=Y)
 		self.matching_text_widget.tag_configure("blue", foreground="blue")
 		self.matching_text_widget.tag_configure("red", foreground="red")
 		self.matching_text_widget.tag_configure("green", foreground="green")
+		self.matching_text_widget.tag_configure("nom", font=("TkDefaultFont", 12, "bold"), foreground="blue", justify="center")
+		self.matching_text_widget.tag_configure("statut_valide", font=("TkDefaultFont", 12, "bold"), foreground="green", justify="center")
+		self.matching_text_widget.tag_configure("statut_invalide", font=("TkDefaultFont", 12, "bold"), foreground="red", justify="center")
+		self.matching_text_widget.tag_configure("correspondance_rate", font=("Times", 10, "italic"), justify="right")
+		self.matching_text_widget.tag_configure("separator", foreground='gray' , justify="center")
 		self.matching_text_widget.tag_configure("bold", font=("TkDefaultFont", 12, "bold"))
+
+
+	def insert_a_separator_in_txt_result_widget(self):
+		self.matching_text_widget.insert(END, "---------------------\n", "separator")
   
-		# Create a frame for the text lines readed by the OCR
-		result_frame = Frame(self.window, width=550, height=50)
-		result_frame.pack()
-		result_frame.place(relx=.01, rely=.88)
+	def insert_a_match_in_txt_result_widget(self, company_name, status, correspondance_rate):
+		self.matching_text_widget.insert(END, company_name + "\n", "nom")
+		self.matching_text_widget.insert(END, status + "\n", "statut_valide" if status == "ABONNE" else "statut_invalide")
+		self.matching_text_widget.insert(END, str(correspondance_rate) + "%\n", "correspondance_rate")
+
+
+	def create_the_camera_frame(self):
+		self.camera_frame = Frame(self.window, width=550, height=405)
+		self.camera_frame.pack()
+		self.camera_frame.place(relx=.01, y=5)
   
-		# Create a Text widget
-		self.result_text_widget = Text(result_frame, width = 68, height=3)
-		self.result_text_widget.pack(side=LEFT, fill=Y)
-		self.result_text_widget.tag_configure("blue", foreground="blue")
-		self.result_text_widget.tag_configure("bold", font=("TkDefaultFont", 12, "bold"))
+	def create_the_camera_preview_zone(self):
+		self.camera_preview_zone = Label(self.camera_frame)
+		self.camera_preview_zone.pack()
+
+
+	def create_the_readed_line_frame(self):
+		self.readed_line_frame = Frame(self.window, width=550, height=50)
+		self.readed_line_frame.pack()
+		self.readed_line_frame.place(relx=.01, rely=.88)
+  
+	def create_the_readed_line_widget(self):
+		self.readed_line_widget = Text(self.readed_line_frame, width = 68, height=3)
+		self.readed_line_widget.pack(side=LEFT, fill=Y)
+		self.readed_line_widget.tag_configure("blue", foreground="blue")
+		self.readed_line_widget.tag_configure("bold", font=("TkDefaultFont", 12, "bold"))
+
+
+	def create_the_result_logo_frame(self):
+		self.result_logo_frame = Frame(self.window, width=150, height=100)
+		self.result_logo_frame.pack()
+		self.result_logo_frame.place(relx=.75, rely=.55)
+  
+	def create_the_result_logo_widget(self):
+		self.result_logo_widget = Label(self.result_logo_frame)
+		self.result_logo_widget.pack()
+
+	def main(self):
 		
-		# Create a frame for the result logo of the OCR	
-		result_logo_frame = Frame(self.window, width=150, height=100)
-		result_logo_frame.pack()
-		result_logo_frame.place(relx=.75, rely=.55)
+		# Create a frame and a label to display the camera preview
+		self.create_the_camera_frame()
+		self.create_the_camera_preview_zone()
+		
+		#Create a text frame and a text widget to display the result of the OCR
+		self.create_the_text_result_frame()
+		self.create_the_text_result_widget()
+		
   
-		# Create a Label Widget to display the result logo
-		self.result_logo = Label(result_logo_frame)
-		self.result_logo.pack()
+		# Create a frame and a text widget to display the readed line 
+		self.create_the_readed_line_frame()
+		self.create_the_readed_line_widget()		
+		
+		# Create a frame and a label to display the result logo
+		self.create_the_result_logo_frame()
+		self.create_the_result_logo_widget()
 		
 		image_has_been_analysed = True
 
@@ -223,7 +266,6 @@ class TkinterApp:
 				self.show_the_good_image_depending_on_the_result()
 				image_has_been_analysed = True
 				self.add_result_to_tkinter_text()
-				time.sleep(1)
     
 			# Capture the actual image
 			final_image = self.return_resized_image_with_rectangle()
@@ -231,8 +273,8 @@ class TkinterApp:
 			final_image = Image.fromarray(final_image)
 			final_image = ImageTk.PhotoImage(final_image)
 			# Update the image displayed in the Label Widget
-			self.label.configure(image=final_image)
-			self.label.image = final_image
+			self.camera_preview_zone.configure(image=final_image)
+			self.camera_preview_zone.image = final_image
 			# Update the window to show the new image
 			self.window.update()
 		
