@@ -11,7 +11,7 @@ import time
 from PIL import ImageTk, Image, ImageSequence
 from tkinter import Tk, Label, Frame, Button, BOTTOM, Text, BOTH, Scrollbar, RIGHT, Y, END, TOP, LEFT, X, Entry, StringVar, IntVar, OptionMenu, Menu, messagebox, filedialog, ttk
 
-class TkinterApp:
+class StreetFacteurGui:
 
 	def __init__(self):
 		self.picam = Picamera2()
@@ -23,7 +23,7 @@ class TkinterApp:
 		self.text_extractor = TextExtractor()
 		self.data_analyser = DataAnalyser()
 		self.last_movement_time = time.time()
-		self.cleaned_ocr_result = []
+		self.matching_results = []
 		self.window = Tk()
 		self.window.title("Street Facteur")
 		self.window.geometry("800x480")
@@ -32,11 +32,28 @@ class TkinterApp:
 		self.window.resizable(width=False, height=False)
 		self.window.configure(background='gray')
   
+		# Create a frame and a label to display the camera preview
+		self.create_the_camera_frame()
+		self.create_the_camera_preview_zone()
+		
+		#Create a text frame and a text widget to display the result of the OCR
+		self.create_the_text_result_frame()
+		self.create_the_text_result_widget()
+		
+  
+		# Create a frame and a text widget to display the readed line 
+		self.create_the_readed_line_frame()
+		self.create_the_readed_line_widget()		
+		
+		# Create a frame and a label to display the result logo
+		self.create_the_result_logo_frame()
+		self.create_the_result_logo_widget()
+  
 
 	def return_resized_image_with_rectangle(self):
 		self.captured_image = self.picam.capture_array()
 		cv2.rectangle(self.captured_image, RECTANGLE_START_POINT, RECTANGLE_END_POINT, (0, 255, 0), 2)
-		resized_image = cv2.resize(self.captured_image, (550, 405))
+		resized_image = cv2.resize(self.captured_image, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))
 		return resized_image
 
 
@@ -45,26 +62,26 @@ class TkinterApp:
 
 
 	def remove_text_from_text_widgets(self):
-		self.matching_text_widget.delete('1.0', END)
-		self.readed_line_widget.delete('1.0', END)
+		self.matching_text_widget.replace('1.0', END, "")
+		self.readed_line_widget.replace('1.0', END, "")
 			
    
 	def add_result_to_tkinter_text(self):
 		self.remove_text_from_text_widgets()
 		self.readed_line_widget.insert(END, "Lignes analysées : \n",('bold','blue'))
-		for line_analyse in self.cleaned_ocr_result:
-			self.readed_line_widget.insert(END, str(line_analyse["searched_line"]) + "\n")
-			for index in range(len(line_analyse["matching_name"])):
-				if(line_analyse["matching_name"][index] != ""):
-					self.insert_a_match_in_txt_result_widget(line_analyse["matching_name"][index], line_analyse["statut"][index], line_analyse["correspondance_rate"][index])
-					self.insert_a_separator_in_txt_result_widget()
+		for analysed_line_matchs in self.matching_results:
+			self.readed_line_widget.insert(END, str(analysed_line_matchs["searched_line"]) + "\n")
+			for index in range(len(analysed_line_matchs["matching_name"])):
+				if(analysed_line_matchs["matching_name"][index] != ""):
+					self.insert_a_match_in_txt_result_widget(analysed_line_matchs["matching_name"][index], analysed_line_matchs["statut"][index], analysed_line_matchs["correspondance_rate"][index])
+					self.insert_a_separator_in_matching_text_widget()
 
 
 	def show_the_good_image_depending_on_the_result(self):
-		if(self.cleaned_ocr_result != []):
+		if(self.matching_results):
 			are_all_the_results_subscribed = True
-			for line_analyse in self.cleaned_ocr_result:
-				if(line_analyse["statut"][0] != "ABONNE"):
+			for analysed_line_matchs in self.matching_results:
+				if(analysed_line_matchs["statut"][0] != "ABONNE"):
 					are_all_the_results_subscribed = False,
 			if(are_all_the_results_subscribed and self.check_if_the_first_result_have_a_good_correspondance_rate()):
 				self.show_valid_image()
@@ -75,23 +92,31 @@ class TkinterApp:
 
 
 	def check_if_the_first_result_have_a_good_correspondance_rate(self):
-		if(self.cleaned_ocr_result != []):
-			if(self.cleaned_ocr_result[0]["correspondance_rate"][0] > CORRESPONDANCE_RATE_THRESHOLD):
+		if(self.matching_results):
+			if(self.get_first_analysed_line_results()["correspondance_rate"][0] >= CORRESPONDANCE_RATE_THRESHOLD):
 				return True
-			else:
-				return False
-		else:
-			return False
+		return False
+
+
+	def get_first_analysed_line_results(self):
+		return self.matching_results[0]
 
 
 	def apply_ocr_on_image(self) :
-		self.cleaned_ocr_result = []
+		self.reset_ocr_results()
 		black_and_white_image = self.image_formatter.get_cleaned_black_and_white_image(self.captured_image)
 		cropped_image = self.image_formatter.crop_image_with_rectangle_coordinates(black_and_white_image,RECTANGLE_START_POINT,RECTANGLE_END_POINT)
 		cleaned_ocr_result = (self.text_extractor.get_cleaned_ocr_text_from_image(cropped_image))
+		self.add_matching_results_from_cleaned_ocr_result(cleaned_ocr_result)
+   
+   
+	def add_matching_results_from_cleaned_ocr_result(self, cleaned_ocr_result):
 		for line in cleaned_ocr_result:
 			matching_line_results = self.data_analyser.return_the_top_three_matches_for_a_line(line[0])
-			self.cleaned_ocr_result.append(matching_line_results)
+			self.matching_results.append(matching_line_results)
+   
+	def reset_ocr_results(self):
+		self.matching_results = []
    
    
 	def show_warning_image(self):
@@ -99,20 +124,24 @@ class TkinterApp:
 		resized_image = image.resize((150, 150))
 		self.update_result_logo_image(resized_image)
    
+   
 	def show_loading_image(self):
 		image = Image.open("images/loading.gif")
 		resized_image = image.resize((150, 150))
 		self.update_result_logo_image(resized_image)
+  
   
 	def show_valid_image(self):
 		image = Image.open("images/valid.png")
 		resized_image = image.resize((150, 150))
 		self.update_result_logo_image(resized_image)
   
+  
 	def show_invalid_image(self):
 		image = Image.open("images/invalid.png")
 		resized_image = image.resize((150, 150))
 		self.update_result_logo_image(resized_image)
+  
   
 	def update_result_logo_image(self, resized_image):
 		self.result_logo_widget.image = ImageTk.PhotoImage(resized_image)
@@ -151,13 +180,13 @@ class TkinterApp:
 				diff_frame = cv2.dilate(diff_frame, kernel, 1)
 
 				# 5. Only take different areas that are different enough (>20 / 255)
-				thresh_frame = cv2.threshold(src=diff_frame, thresh=20, maxval=255, type=cv2.THRESH_BINARY)[1]
+				thresh_frame = cv2.threshold(src=diff_frame, thresh=21, maxval=255, type=cv2.THRESH_BINARY)[1]
 
 				contours, _ = cv2.findContours(image=thresh_frame, mode=cv2.RETR_EXTERNAL, method=cv2.CHAIN_APPROX_SIMPLE)
 
 				contours, _ = cv2.findContours(image=thresh_frame, mode=cv2.RETR_EXTERNAL, method=cv2.CHAIN_APPROX_SIMPLE)
 				for contour in contours:
-					if cv2.contourArea(contour) < 50:
+					if cv2.contourArea(contour) < 60:
 						# too small: skip!
 						continue
 					return True
@@ -185,8 +214,9 @@ class TkinterApp:
 		self.matching_text_widget.tag_configure("bold", font=("TkDefaultFont", 12, "bold"))
 
 
-	def insert_a_separator_in_txt_result_widget(self):
+	def insert_a_separator_in_matching_text_widget(self):
 		self.matching_text_widget.insert(END, "---------------------\n", "separator")
+  
   
 	def insert_a_match_in_txt_result_widget(self, company_name, status, correspondance_rate):
 		self.matching_text_widget.insert(END, company_name + "\n", "nom")
@@ -225,25 +255,7 @@ class TkinterApp:
 		self.result_logo_widget = Label(self.result_logo_frame)
 		self.result_logo_widget.pack()
 
-	def main(self):
-		
-		# Create a frame and a label to display the camera preview
-		self.create_the_camera_frame()
-		self.create_the_camera_preview_zone()
-		
-		#Create a text frame and a text widget to display the result of the OCR
-		self.create_the_text_result_frame()
-		self.create_the_text_result_widget()
-		
-  
-		# Create a frame and a text widget to display the readed line 
-		self.create_the_readed_line_frame()
-		self.create_the_readed_line_widget()		
-		
-		# Create a frame and a label to display the result logo
-		self.create_the_result_logo_frame()
-		self.create_the_result_logo_widget()
-		
+	def main(self):		
 		image_has_been_analysed = True
 
 		# Start a loop to continuously update the displayed image
@@ -279,5 +291,5 @@ class TkinterApp:
 			self.window.update()
 		
 
-app = TkinterApp()
+app = StreetFacteurGui()
 app.main()
