@@ -2,6 +2,9 @@
 
 StreetFacteur est une application d'aide au tri du courrier, conçue pour aider les entreprises de domiciliation à trier rapidement et efficacement leur courrier. 
 
+## État actuel du projet
+StreetFacteur est encore en développement et n'est pas encore fonctionnel. Actuellement, nous travaillons sur les fonctionnalités de base telles que la numérisation d'enveloppes et l'extraction de l'adresse postale. Nous prévoyons d'ajouter des fonctionnalités supplémentaires telles que la recherche de l'adresse dans un
+
 ## Fonctionnalités principales
 - Numérisation d'enveloppes à l'aide d'une caméra Raspberry Pi
 - Extraction de l'adresse postale à l'aide d'OpenCV et de Pytesseract
