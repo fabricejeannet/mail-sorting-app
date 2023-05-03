@@ -12,6 +12,7 @@ class DataAnalyser:
         self.clients_data_list = {}
         self.clients_data_list["raison_sociale"] = csv_manager.get_company_names()
         self.clients_data_list["director_names"] = csv_manager.get_director_names()
+        self.clients_data_list["marque_commerciale"] = csv_manager.get_trademark_names()
         self.clients_data_list["id"] = csv_manager.get_ids()
         self.clients_data_list["statut"] = csv_manager.get_subscription_status()
         
@@ -50,6 +51,20 @@ class DataAnalyser:
                         results["statut"].insert(i, statut)
                         results["matching_name"].insert(i, director_name)
                         results["correspondance_rate"].insert(i, correspondance_rate)
+                        break
+        if (results["correspondance_rate"][0] < 95):
+            for index in range(len(clients_data_dictionnary["marque_commerciale"])):
+                trademark_name = str(clients_data_dictionnary["marque_commerciale"][index]).lower()
+                statut = clients_data_dictionnary["statut"][i]
+                correspondance_rate = max(fuzz.ratio(line,trademark_name), fuzz.partial_ratio(line,trademark_name))
+                for sort_index in range(3):
+                    if(results["correspondance_rate"][sort_index] < correspondance_rate and correspondance_rate >= 50):
+                        results["correspondance_rate"].pop(2)
+                        results["statut"].pop(2)
+                        results["matching_name"].pop(2)
+                        results["statut"].insert(sort_index, statut)
+                        results["matching_name"].insert(sort_index, trademark_name)
+                        results["correspondance_rate"].insert(sort_index, correspondance_rate)
                         break
         return results
     

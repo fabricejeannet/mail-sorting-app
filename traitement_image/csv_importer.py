@@ -45,9 +45,14 @@ class CsvManager :
     def get_legal_representatives(self) :
         return self.dataframe[csv_constants.REPRESENTANT_LEGAL]
 
+
     def get_subscription_status(self) :
         return self.dataframe[csv_constants.STATUT]
     
 
     def get_director_names(self) :
         return self.dataframe[csv_constants.NOM_PRENOM_DIRIGEANT]    
+
+
+    def get_trademark_names(self) :
+        return self.dataframe[csv_constants.MARQUE_COMMERCIALE]

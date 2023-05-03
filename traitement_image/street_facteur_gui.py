@@ -18,7 +18,6 @@ class StreetFacteurGui:
 		self.picam.configure(self.picam.create_preview_configuration(main={"format": 'RGB888', "size": (1280, 720)}))
 		self.picam.start_preview()
 		self.picam.start()
-		self.captured_image = self.picam.capture_array()
 		self.image_formatter = ImageFormatter()
 		self.text_extractor = TextExtractor()
 		self.data_analyser = DataAnalyser()
@@ -51,9 +50,9 @@ class StreetFacteurGui:
   
 
 	def return_resized_image_with_rectangle(self):
-		self.captured_image = self.picam.capture_array()
-		cv2.rectangle(self.captured_image, RECTANGLE_START_POINT, RECTANGLE_END_POINT, (0, 255, 0), 2)
-		resized_image = cv2.resize(self.captured_image, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))
+		captured_image = self.picam.capture_array()
+		cv2.rectangle(captured_image, RECTANGLE_START_POINT, RECTANGLE_END_POINT, (0, 255, 0), 2)
+		resized_image = cv2.resize(captured_image, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))
 		return resized_image
 
 
@@ -104,8 +103,10 @@ class StreetFacteurGui:
 
 	def apply_ocr_on_image(self) :
 		self.reset_ocr_results()
-		black_and_white_image = self.image_formatter.get_cleaned_black_and_white_image(self.captured_image)
+		black_and_white_image = self.image_formatter.get_cleaned_black_and_white_image(self.picam.capture_array())
+		cv2.imwrite("black_and_white.jpg", black_and_white_image)
 		cropped_image = self.image_formatter.crop_image_with_rectangle_coordinates(black_and_white_image,RECTANGLE_START_POINT,RECTANGLE_END_POINT)
+		cv2.imwrite("cropped_image.jpg", cropped_image)
 		cleaned_ocr_result = (self.text_extractor.get_cleaned_ocr_text_from_image(cropped_image))
 		self.add_matching_results_from_cleaned_ocr_result(cleaned_ocr_result)
    
@@ -114,6 +115,7 @@ class StreetFacteurGui:
 		for line in cleaned_ocr_result:
 			matching_line_results = self.data_analyser.return_the_top_three_matches_for_a_line(line[0])
 			self.matching_results.append(matching_line_results)
+   
    
 	def reset_ocr_results(self):
 		self.matching_results = []

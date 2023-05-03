@@ -61,5 +61,5 @@ class ImageFormatter:
         cleaned_image = self.get_noise_removed_image(image)
         gray_image = self.get_grayscaled_image(cleaned_image)
         barcode_less_image = self.remove_qrcodes_and_barcode_from_gray_image(gray_image)
-        return self.get_thresholded_image(barcode_less_image)
+        return barcode_less_image #self.get_thresholded_image(barcode_less_image)
     
