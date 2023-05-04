@@ -27,15 +27,6 @@ class TextExtractor:
         
         self.banned_words_list = ["33000 bordeaux", "9 rue de conde", "rue de conde","9 rue conde","titulaire du compte", "representant legal", "facture n" , "retour à" ,"destinataire lettre","bureau 3", "destinataire", "numero de tva", "numero de siret", "ecopli", "etage 3", "niveau de garantie", "numero de police", "numero de contrat", "numero de telephone", "numero de fax", "numero de compte", "numero de client", "numero de facture", "numero de commande", "numero de dossier"]
         
-        
-    def analyse_image_silently(self,file_name):        
-        analysed_image = cv2.imread("images/" + file_name + ".jpg")
-        black_and_white_image = self.image_formatter.get_cleaned_black_and_white_image(analysed_image)
-        cropped_image = self.image_formatter.crop_image_around_text(black_and_white_image, self.analyse_keyword_target)
-        
-        ocr_output = pytesseract.image_to_string(cropped_image, lang='fra')
-        return(ocr_output.lower())
-    
     
     def get_cleaned_ocr_text_from_image(self, cropped_image):
         # Converting image to text with pytesseract
@@ -43,11 +34,6 @@ class TextExtractor:
         ocr_output_lowered = ocr_output.lower()
         cleaned_ocr_output = self.clean_text_output_lines(ocr_output_lowered)
         return (cleaned_ocr_output)
-             
-             
-    def analyse_image_with_taking_picture(self):
-        self.image_manager.take_and_save_picture()
-        self.analyse_image_silently("captured_image")
         
         
     def check_if_there_is_a_date_in_text_line(self, line):
@@ -77,7 +63,7 @@ class TextExtractor:
                 if not self.line_contain_a_banned_word(line) and self.line_is_valid(line):
                     line_witouht_legal_status = self.return_the_line_without_legal_status(line)
                     line_witouht_legal_status = line_witouht_legal_status.strip()
-                    valid_lines.append([line_witouht_legal_status])
+                    valid_lines.append(line_witouht_legal_status)
                     if('&' in line_witouht_legal_status):
                         valid_lines.append(self.return_modified_et_lines(line_witouht_legal_status))
         return valid_lines    
@@ -105,6 +91,6 @@ class TextExtractor:
         cleaned_line = re.sub(self.regex_snc, "", cleaned_line)
         cleaned_line = re.sub(self.regex_ei, "", cleaned_line)
         cleaned_line = re.sub(self.regex_eirl, "", cleaned_line)
-        return cleaned_line
+        return cleaned_line.strip()
         
         

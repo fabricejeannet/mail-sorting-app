@@ -16,9 +16,11 @@ import threading
 class StreetFacteur :
     
     def __init__(self):        
-        self.image_formatter = ImageFormatter()
-        self.text_extractor = TextExtractor()
-        self.data_analyser = DataAnalyser()
+        csv_manager = CsvManager()
+
+        csv_manager.load_dataframe_from_csv_file("clients.csv")
+        self.data_analyser = DataAnalyser(csv_manager.get_clients_data_dictionnary())
+        
         self.last_movement_time = time.time()
         self.picam2 = Picamera2()
         self.picam2.configure(self.picam2.create_preview_configuration(main={"format": 'RGB888', "size": (1280, 720)}))
@@ -104,8 +106,12 @@ class StreetFacteur :
 
 
     def apply_ocr_on_image(self) :
+        self.image_formatter = ImageFormatter()
+
         black_and_white_image = self.image_formatter.get_cleaned_black_and_white_image(self.captured_image)
         cropped_image = self.image_formatter.crop_image_with_rectangle_coordinates(black_and_white_image,RECTANGLE_START_POINT,RECTANGLE_END_POINT)
+
+        self.text_extractor = TextExtractor()
 
         cleaned_ocr_results = (self.text_extractor.get_cleaned_ocr_text_from_image(cropped_image))
         for line in cleaned_ocr_results:

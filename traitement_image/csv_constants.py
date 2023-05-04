@@ -4,3 +4,4 @@ STATUT = 'Statut Abonnement'
 NOM_PRENOM_DIRIGEANT = 'nom prenom date de naissance du dirigeant'
 MARQUE_COMMERCIALE = 'Marque commerciale'
 IDENTIFIANT = 'id'
+THRESHOLD = 50

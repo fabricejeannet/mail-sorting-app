@@ -2,8 +2,7 @@ import pandas
 from custom_exceptions import *
 import pytest
 
-import csv_constants as csv_constants
-
+from csv_constants import *
 
 class CsvManager :
     
@@ -29,30 +28,40 @@ class CsvManager :
 
     def get_ids(self):
         try :
-            res = self.dataframe[csv_constants.IDENTIFIANT]
+            res = self.dataframe[IDENTIFIANT]
         except :
             raise MissingColumnException("id")
         return res
 
     def get_company_names(self) :
         try :
-            res = self.dataframe[csv_constants.RAISON_SOCIALE]
+            res = self.dataframe[RAISON_SOCIALE]
         except :
             raise MissingColumnException("company")
-        return self.dataframe[csv_constants.RAISON_SOCIALE]
+        return self.dataframe[RAISON_SOCIALE]
     
 
     def get_legal_representatives(self) :
-        return self.dataframe[csv_constants.REPRESENTANT_LEGAL]
+        return self.dataframe[REPRESENTANT_LEGAL]
 
 
     def get_subscription_status(self) :
-        return self.dataframe[csv_constants.STATUT]
+        return self.dataframe[STATUT]
     
 
     def get_director_names(self) :
-        return self.dataframe[csv_constants.NOM_PRENOM_DIRIGEANT]    
+        return self.dataframe[NOM_PRENOM_DIRIGEANT]    
 
 
     def get_trademark_names(self) :
-        return self.dataframe[csv_constants.MARQUE_COMMERCIALE]
+        return self.dataframe[MARQUE_COMMERCIALE]
+    
+    
+    def get_clients_data_dictionnary(self):
+
+        self.clients_data_list = {}
+        self.clients_data_list[RAISON_SOCIALE] = csv_manager.get_company_names()
+        self.clients_data_list[REPRESENTANT_LEGAL] = csv_manager.get_director_names()
+        self.clients_data_list[MARQUE_COMMERCIALE] = csv_manager.get_trademark_names()
+        self.clients_data_list[STATUT] = csv_manager.get_subscription_status()
+        return self.clients_data_list
