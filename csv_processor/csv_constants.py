@@ -1,7 +1,7 @@
-RAISON_SOCIALE = 'Dénomination sociale'
-REPRESENTANT_LEGAL = 'Représentant légal'
-STATUT = 'Statut Abonnement'
-NOM_PRENOM_DIRIGEANT = 'nom prenom date de naissance du dirigeant'
-MARQUE_COMMERCIALE = 'Marque commerciale'
-IDENTIFIANT = 'id'
+COMPANY_NAME = 'Dénomination sociale'
+LEGAL_REPRESENTATIVE = 'Représentant légal'
+STATUS = 'Statut Abonnement'
+DIRECTOR_NAME = 'nom prenom date de naissance du dirigeant'
+TRADEMARK_NAME = 'Marque commerciale'
+ID = 'id'
 THRESHOLD = 50
