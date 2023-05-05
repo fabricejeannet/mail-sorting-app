@@ -1,5 +1,5 @@
-from text.text_cleaner import TextCleaner
-from text.text_constants import *
+from text_processor.text_cleaner import TextCleaner
+from text_processor.text_constants import *
 text_cleaner = TextCleaner()
 
 def test_can_find_a_date_in_a_string():
