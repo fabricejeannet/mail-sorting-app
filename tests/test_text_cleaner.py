@@ -13,20 +13,20 @@ def test_can_find_a_date_in_a_string():
     assert text_cleaner.contains_a_date("26/1/1880") == True
 
 def test_removes_lines_containing_dates():
-    text_cleaner.text_to_clean ="My first line\nAnother line containing a date 20/10/1980"
+    text_cleaner.text_to_clean ="my first line\nAnother line containing a date 20/10/1980"
     cleaned_text = text_cleaner.clean_text() 
     assert len(cleaned_text) == 1
-    assert cleaned_text[0] == "My first line"
+    assert cleaned_text[0] == "my first line"
     
 def test_can_find_a_bracket_in_a_string():
     assert text_cleaner.contains_a_bracket("This line doesn't contain a bracket") == False
     assert text_cleaner.contains_a_bracket("This line contains a bracket [") == True    
 
 def test_removes_lines_containing_brackets():
-    text_cleaner.text_to_clean ="My first line\nAnother line containing a bracket ["
+    text_cleaner.text_to_clean ="my first line\nAnother line containing a bracket ["
     cleaned_text = text_cleaner.clean_text() 
     assert len(cleaned_text) == 1
-    assert cleaned_text[0] == "My first line"
+    assert cleaned_text[0] == "my first line"
     text_cleaner.text_to_clean = "bracket ["
     cleaned_text = text_cleaner.clean_text()
     assert len(cleaned_text) == 0
@@ -38,10 +38,10 @@ def test_can_find_a_sequence_of_digits():
     assert text_cleaner.contains_a_sequence_of_digits("This line contains a series of consecutive numbers 123456789") == True
     
 def test_removes_lines_containing_a_sequence_of_digits():
-    text_cleaner.text_to_clean ="My first line\nAnother line containing a series of consecutive numbers 123456789"
+    text_cleaner.text_to_clean ="my first line\nAnother line containing a series of consecutive numbers 123456789"
     cleaned_text = text_cleaner.clean_text()
     assert len(cleaned_text) == 1
-    assert cleaned_text[0] == "My first line"
+    assert cleaned_text[0] == "my first line"
     text_cleaner.text_to_clean = "123456789"
     cleaned_text = text_cleaner.clean_text()
     assert len(cleaned_text) == 0
@@ -59,10 +59,10 @@ def test_can_find_a_valid_line():
     
     
 def test_removes_invalid_lines():
-    text_cleaner.text_to_clean ="My first line\nAnother line containing a series of consecutive numbers 123456789\nThis line contains a bracket [\n1\na"
+    text_cleaner.text_to_clean ="my first line\nAnother line containing a series of consecutive numbers 123456789\nThis line contains a bracket [\n1\na"
     cleaned_text = text_cleaner.clean_text()
     assert len(cleaned_text) == 1
-    assert cleaned_text[0] == "My first line"
+    assert cleaned_text[0] == "my first line"
     
     
 def test_removes_legal_status():
@@ -81,10 +81,12 @@ def test_can_find_a_line_contains_a_banned_word():
 
         
 def test_removes_lines_containing_banned_words():
-    text_cleaner.text_to_clean ="My first line\nAnother line containing a banned word " + BANNED_WORDS_LIST[0]
-    cleaned_text = text_cleaner.clean_text()
-    assert len(cleaned_text) == 1
-    assert cleaned_text[0] == "My first line"
+    for index in range(len(BANNED_WORDS_LIST)):
+        text_cleaner.text_to_clean ="my first line\nAnother line containing a banned word " + BANNED_WORDS_LIST[index]
+        cleaned_text = text_cleaner.clean_text()
+        assert len(cleaned_text) == 1
+        assert cleaned_text[0] == "my first line"
+        
     
     
 def test_return_modified_et_lines():
@@ -92,9 +94,38 @@ def test_return_modified_et_lines():
     
     
 def test_add_a_modified_et_line_if_contains_ampersand():
-    text_cleaner.text_to_clean ="My first line\nAnother line containing an &"
+    text_cleaner.text_to_clean ="my first line\nAnother line containing an &"
     cleaned_text = text_cleaner.clean_text()
     assert len(cleaned_text) == 3
-    assert cleaned_text[0] == "My first line"
-    assert cleaned_text[1] == "Another line containing an &"
-    assert cleaned_text[2] == "Another line containing an et"
+    assert cleaned_text[0] == "my first line"
+    assert cleaned_text[1] == "another line containing an &"
+    assert cleaned_text[2] == "another line containing an et"
+    
+    
+def test_remove_bordeaux_line():
+    text_cleaner.text_to_clean ="my first line\n33000 Bordeaux"
+    cleaned_text = text_cleaner.clean_text()
+    assert len(cleaned_text) == 1
+    assert cleaned_text[0] == "my first line"
+
+
+def test_remove_rue_de_conde_line():
+    text_cleaner.text_to_clean ="my first line\n9 rue de conde"
+    cleaned_text = text_cleaner.clean_text()
+    assert len(cleaned_text) == 1
+    assert cleaned_text[0] == "my first line"
+
+
+def test_remove_the_adress():
+    text_cleaner.text_to_clean ="my first line\n9 rue de conde\n33000 Bordeaux"
+    cleaned_text = text_cleaner.clean_text()
+    assert len(cleaned_text) == 1
+    assert cleaned_text[0] == "my first line"
+    
+
+def test_remove_caps_lock_adress():
+    text_cleaner.text_to_clean ="my first line\n9 RUE DE CONDE\n33000 BORDEAUX"
+    cleaned_text = text_cleaner.clean_text()
+    assert len(cleaned_text) == 1
+    assert cleaned_text[0] == "my first line"
+    

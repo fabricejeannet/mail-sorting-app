@@ -42,7 +42,7 @@ class TextCleaner:
         clean_line_array = []
         line_array = self.text_to_clean.splitlines()
         for line in line_array:
-            line = line.strip()
+            line = line.strip().lower()
             if self.is_valid_line(line):
                 clean_line_array.append(line)
                 if '&' in line:
