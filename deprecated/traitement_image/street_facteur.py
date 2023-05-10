@@ -20,10 +20,9 @@ class StreetFacteur :
 
         csv_manager.load_dataframe_from_csv_file("clients.csv")
         self.data_analyser = DataAnalyser(csv_manager.get_clients_data_dictionnary())
-        
+        self.picam2.configure(self.picam2.create_preview_configuration(main={"format": 'RGB888', "size": (1280, 720)}))
         self.last_movement_time = time.time()
         self.picam2 = Picamera2()
-        self.picam2.configure(self.picam2.create_preview_configuration(main={"format": 'RGB888', "size": (1280, 720)}))
         self.picam2.start_preview()
         self.picam2.start()
         self.captured_image = self.picam2.capture_array()

@@ -1,0 +1,182 @@
+INFO:picamera2.picamera2:Initialization successful.
+INFO:picamera2.picamera2:Camera now open.
+INFO:picamera2.picamera2:Configuration successful!
+INFO:picamera2.picamera2:Camera started
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Image stable, analyse !
+INFO:root:cleaned_ocr_result : []
+INFO:root:show_the_good_image_depending_on_the_result
+INFO:root:No matching results
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Image stable, analyse !
+INFO:root:cleaned_ocr_result : []
+INFO:root:show_the_good_image_depending_on_the_result
+INFO:root:No matching results
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Image stable, analyse !
+INFO:root:cleaned_ocr_result : []
+INFO:root:show_the_good_image_depending_on_the_result
+INFO:root:No matching results
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Image stable, analyse !
+INFO:root:cleaned_ocr_result : []
+INFO:root:show_the_good_image_depending_on_the_result
+INFO:root:No matching results
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Image stable, analyse !
+INFO:root:cleaned_ocr_result : []
+INFO:root:show_the_good_image_depending_on_the_result
+INFO:root:No matching results
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Image stable, analyse !
+INFO:root:cleaned_ocr_result : []
+INFO:root:show_the_good_image_depending_on_the_result
+INFO:root:No matching results
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Image stable, analyse !
+INFO:root:cleaned_ocr_result : []
+INFO:root:show_the_good_image_depending_on_the_result
+INFO:root:No matching results
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Image stable, analyse !
+INFO:root:cleaned_ocr_result : []
+INFO:root:show_the_good_image_depending_on_the_result
+INFO:root:No matching results
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Image stable, analyse !
+INFO:root:cleaned_ocr_result : []
+INFO:root:show_the_good_image_depending_on_the_result
+INFO:root:No matching results
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Image stable, analyse !
+INFO:root:cleaned_ocr_result : []
+INFO:root:show_the_good_image_depending_on_the_result
+INFO:root:No matching results
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Image stable, analyse !
+INFO:root:cleaned_ocr_result : []
+INFO:root:show_the_good_image_depending_on_the_result
+INFO:root:No matching results
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Image stable, analyse !
+INFO:root:cleaned_ocr_result : []
+INFO:root:show_the_good_image_depending_on_the_result
+INFO:root:No matching results
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Mouvement détecté !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Attente d'une seconde avant analyse !
+INFO:root:Image stable, analyse !
+INFO:root:cleaned_ocr_result : []
+INFO:root:show_the_good_image_depending_on_the_result
+INFO:root:No matching results

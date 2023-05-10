@@ -25,7 +25,7 @@ class TextCleaner:
         and not self.contains_a_date(line) \
         and not self.contains_a_sequence_of_digits(line) \
         and not line.isspace() \
-        and not len(line) < 2 \
+        and not len(line) <= 2 \
         and not self.contains_a_banned_word(line)
     
     
@@ -43,6 +43,7 @@ class TextCleaner:
         line_array = self.text_to_clean.splitlines()
         for line in line_array:
             line = line.strip().lower()
+            line = self.remove_legal_status(line)
             if self.is_valid_line(line):
                 clean_line_array.append(line)
                 if '&' in line:

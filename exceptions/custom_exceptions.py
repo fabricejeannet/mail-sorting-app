@@ -25,3 +25,8 @@ class TryToOpenEmptyCsvFile(Exception):
 class NoImageGiven(Exception):
     def __init__(self):
         self.message = "No image given"
+        
+        
+class CameraIsNotStarted(Exception):
+    def __init__(self):
+        self.message = "Camera is not started, please start it before taking a picture"

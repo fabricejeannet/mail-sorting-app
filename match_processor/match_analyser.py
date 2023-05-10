@@ -1,10 +1,12 @@
 from fuzzywuzzy import fuzz
 from match_processor.matching_result import MatchingResult
+from text_processor.text_cleaner import TextCleaner
 from csv_processor.csv_constants import *
 
 class MatchAnalyser:
     
     def __init__(self, clients_data_dictionary):
+        self.text_cleaner = TextCleaner()
         self.clients_data_dictionary = clients_data_dictionary
     
     
@@ -33,7 +35,7 @@ class MatchAnalyser:
     def return_the_top_three_matches_for_a_line(self,line):
         result_list = self.add_matching_company_names_to_result_list([], line)
         result_list.sort(key=lambda x: x.correspondance_ratio, reverse=True)
-        if result_list == [] or result_list[0].correspondance_ratio < 90:
+        if result_list == [] or result_list[0].correspondance_ratio <= 90:
             result_list = self.add_matching_directors_names_to_result_list(result_list, line)
             result_list.sort(key=lambda x: x.correspondance_ratio, reverse=True)
         return result_list[:3]
@@ -44,6 +46,7 @@ class MatchAnalyser:
         for research_field in all_research_fields_for_company:
             for index in range(len(research_field)):
                 company_name = str(research_field[index]).lower().strip()
+                company_name = self.text_cleaner.remove_legal_status(company_name)
                 correspondance_ratio = self.get_match_ratio_for_company_names(line,company_name)
                 if (correspondance_ratio > THRESHOLD):
                     matching_result = MatchingResult(company_name, correspondance_ratio, self.clients_data_dictionary[STATUS][index])

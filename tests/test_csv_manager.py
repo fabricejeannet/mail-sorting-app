@@ -30,6 +30,8 @@ def test_trying_to_open_valid_csv_file_does_not_raise_error():
 def test_get_ids():
     csv_manager.dataframe = pandas.DataFrame({ID:[1,2,3]})
     assert csv_manager.get_ids().equals(pandas.Series([1,2,3]))
+    csv_manager.open_csv_file("tests/test.csv")
+    assert csv_manager.get_ids().equals(pandas.Series([1,2,3,4,5,6]))
 
 
 def test_get_ids_on_missing_column_raise_error():

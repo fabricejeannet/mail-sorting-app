@@ -23,7 +23,7 @@ class CsvManager:
     def get_ids(self):
         try :
             dataframe_ids = self.dataframe[ID]
-        except :
+        except KeyError:
             raise MissingColumnException(ID)
         return dataframe_ids
     
@@ -31,7 +31,7 @@ class CsvManager:
     def get_company_names(self):
         try :
             dataframe_company_names = self.dataframe[COMPANY_NAME]
-        except :
+        except KeyError:
             raise MissingColumnException(COMPANY_NAME)
         return dataframe_company_names
     
@@ -39,7 +39,7 @@ class CsvManager:
     def get_legal_representatives(self):
         try :
             dataframe_legal_representatives = self.dataframe[LEGAL_REPRESENTATIVE]
-        except :
+        except KeyError:
             raise MissingColumnException(LEGAL_REPRESENTATIVE)
         return dataframe_legal_representatives
     
@@ -47,7 +47,7 @@ class CsvManager:
     def get_subscription_status(self):
         try :
             dataframe_subscription_status = self.dataframe[STATUS]
-        except :
+        except KeyError:
             raise MissingColumnException(STATUS)
         return dataframe_subscription_status
     
@@ -55,7 +55,7 @@ class CsvManager:
     def get_director_names(self):
         try :
             dataframe_director_names = self.dataframe[DIRECTOR_NAME]
-        except :
+        except KeyError:
             raise MissingColumnException(DIRECTOR_NAME)
         return dataframe_director_names
     
@@ -63,7 +63,7 @@ class CsvManager:
     def get_trademark_names(self):
         try :
             dataframe_trademark_names = self.dataframe[TRADEMARK_NAME]
-        except :
+        except KeyError:
             raise MissingColumnException(TRADEMARK_NAME)
         return dataframe_trademark_names
     
