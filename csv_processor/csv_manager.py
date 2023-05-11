@@ -1,16 +1,33 @@
 import pandas
+import glob
+import os
+import re
 from exceptions.custom_exceptions import *
 from csv_processor.csv_constants import *
+from config_processor.config_importer import ConfigImporter
 
 class CsvManager:
     
     def __init__(self):
         self.dataframe = pandas.DataFrame()
+        self.config_importer = ConfigImporter()
+        self.csv_file_path = self.config_importer.get_csv_file_path()
         
         
     def is_a_csv_file(self,file_name):
         return file_name.lower().endswith(".csv")
     
+    
+    def get_latest_csv_file(self):
+        list_of_files = glob.glob(self.csv_file_path + "*.csv")
+        if not list_of_files:
+            raise NoCsvFileFound()
+        for file in list_of_files:
+            if not self.is_a_csv_file(file):
+                raise TryToOpenNonCsvFile()
+        latest_file = max(list_of_files, key=os.path.getctime)
+        return latest_file
+        
         
     def open_csv_file(self,file_name):
         if not self.is_a_csv_file(file_name):

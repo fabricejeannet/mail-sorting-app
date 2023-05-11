@@ -1,0 +1,6 @@
+{
+    "csv": {
+        "filepath": "/home/loic/streetfacteur_data/",
+        "regex": "Clients(\\s\\(\\d*\\))?\\.csv"
+    }
+}

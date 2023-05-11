@@ -5,7 +5,8 @@ from text_processor.text_cleaner import TextCleaner
 from text_processor.text_extractor import TextExtractor
 from match_processor.match_analyser import MatchAnalyser
 from csv_processor.csv_manager import CsvManager
-from tkinter import Tk, Label, Frame, Button, BOTTOM, Text, BOTH, Scrollbar, RIGHT, Y, END, TOP, LEFT, X, Entry, StringVar, IntVar, OptionMenu, Menu, messagebox, filedialog, ttk
+from config_processor.config_importer import ConfigImporter
+from tkinter import Tk, Label, Frame, Button, Text, BOTH, Scrollbar, RIGHT, Y, END, TOP, LEFT, X, Entry, StringVar, IntVar, OptionMenu, Menu, messagebox, filedialog, ttk
 from PIL import ImageTk, Image
 import cv2
 import numpy as np
@@ -18,11 +19,13 @@ logging.debug('Log Start')
 class StreetFacteur:
     
     def __init__(self):
+        self.config_importer = ConfigImporter()
+        self.config_importer.import_config()
         self.image_formatter = ImageFormatter()
         self.image_acquisition = ImageAcquisition()
         self.text_cleaner = TextCleaner()
         csv_manager = CsvManager()
-        csv_manager.open_csv_file("streetfacteur_processor/data/clients.csv")
+        csv_manager.open_csv_file(csv_manager.get_latest_csv_file())
         clients_data_dictionary = csv_manager.get_clients_data_dictionnary()
         self.text_extractor = TextExtractor()
         self.match_analyser = MatchAnalyser(clients_data_dictionary)
@@ -140,25 +143,25 @@ class StreetFacteur:
     
 
     def show_warning_image(self):
-        image = Image.open("streetfacteur_processor/data/images//warning.png")
+        image = Image.open(WARNING_IMAGE_PATH)
         resized_image = image.resize((150, 150))
         self.update_result_logo_image(resized_image)
 
 
     def show_loading_image(self):
-        image = Image.open("streetfacteur_processor/data/images//loading.gif")
+        image = Image.open(LOADING_IMAGE_PATH)
         resized_image = image.resize((150, 150))
         self.update_result_logo_image(resized_image)
 
 
     def show_valid_image(self):
-        image = Image.open("streetfacteur_processor/data/images//valid.png")
+        image = Image.open(VALID_IMAGE_PATH)
         resized_image = image.resize((150, 150))
         self.update_result_logo_image(resized_image)
 
 
     def show_invalid_image(self):
-        image = Image.open("streetfacteur_processor/data/images//invalid.png")
+        image = Image.open(INVALID_IMAGE_PATH)
         resized_image = image.resize((150, 150))
         self.update_result_logo_image(resized_image)
 

@@ -30,3 +30,8 @@ class NoImageGiven(Exception):
 class CameraIsNotStarted(Exception):
     def __init__(self):
         self.message = "Camera is not started, please start it before taking a picture"
+        
+        
+class NoCsvFileFound(Exception):
+    def __init__(self):
+        self.message = "No csv file found"
