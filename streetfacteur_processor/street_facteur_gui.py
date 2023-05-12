@@ -27,11 +27,8 @@ class StreetFacteur:
         self.image_formatter = ImageFormatter()
         self.image_acquisition = ImageAcquisition()
         self.text_cleaner = TextCleaner()
-        csv_manager = CsvManager()
-        csv_manager.open_csv_file(csv_manager.get_latest_csv_file())
-        clients_data_dictionary = csv_manager.get_clients_data_dictionnary()
+        self.init_csv()
         self.text_extractor = TextExtractor()
-        self.match_analyser = MatchAnalyser(clients_data_dictionary)
         self.image_acquisition.start_camera()
         self.last_movement_time = time.time()
         self.create_the_app_window()
@@ -52,7 +49,20 @@ class StreetFacteur:
         # Create a frame and a label to display the result logo
         self.create_the_result_logo_frame()
         self.create_the_result_logo_widget()
-                
+    
+    
+    def init_csv(self):
+        csv_manager = CsvManager()
+        time.sleep(0.5)
+        file_name = csv_manager.get_latest_csv_file()
+        print("Loaded csv file : " + file_name)
+        csv_manager.open_csv_file(file_name)
+        logging.info("Loaded csv file : " + file_name)
+        logging.info("Csv file columns : " + str(csv_manager.dataframe.columns))
+        logging.info("Csv file rows : " + str(csv_manager.dataframe.shape[0]))
+        clients_data_dictionary = csv_manager.get_clients_data_dictionnary()
+        self.match_analyser = MatchAnalyser(clients_data_dictionary)
+    
     
     def create_the_app_window(self):
         self.window = Tk()
