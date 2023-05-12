@@ -6,6 +6,7 @@ from text_processor.text_extractor import TextExtractor
 from match_processor.match_analyser import MatchAnalyser
 from csv_processor.csv_manager import CsvManager
 from config_processor.config_importer import ConfigImporter
+from exceptions.custom_exceptions import NoImageGiven, NoTextFoundOnPicture
 from tkinter import Tk, Label, Frame, Button, Text, BOTH, Scrollbar, RIGHT, Y, END, TOP, LEFT, X, Entry, StringVar, IntVar, OptionMenu, Menu, messagebox, filedialog, ttk
 from PIL import ImageTk, Image
 import cv2
@@ -13,6 +14,7 @@ import sys
 import numpy as np
 import time
 import logging
+import traceback
 
 logging.basicConfig(level=logging.INFO, filename="app.log", filemode="w")
 logging.debug('Log Start')
@@ -222,16 +224,23 @@ class StreetFacteur:
         self.readed_line_widget.insert(END, "Lignes analysées : \n",('bold','blue'))
         for analysed_line in self.analysed_lines:
             self.readed_line_widget.insert(END, str(analysed_line) + "\n")
+        if not self.string_match_found():
+            self.matching_text_widget.insert(END, "Aucun résultat trouvé", ('bold','red'))
+            return
         for analysed_line_matchs in self.matching_results:
-            for index in range(len(analysed_line_matchs)):
-                if(analysed_line_matchs[index].matching_string != ""):
-                    self.insert_a_match_in_txt_result_widget(analysed_line_matchs[index].matching_string, analysed_line_matchs[index].status, analysed_line_matchs[index].correspondance_ratio)
-                    self.insert_a_separator_in_matching_text_widget()
+                for index in range(len(analysed_line_matchs)):
+                        self.insert_a_match_in_txt_result_widget(analysed_line_matchs[index].matching_string, analysed_line_matchs[index].status, analysed_line_matchs[index].correspondance_ratio)
+                        self.insert_a_separator_in_matching_text_widget()
+                        
 
+    def string_match_found(self):
+        if(self.matching_results != [] and len(self.matching_results[0]) > 0):
+            return True
+        return False
+    
 
     def show_the_good_image_depending_on_the_result(self):
-        logging.info("show_the_good_image_depending_on_the_result")
-        if(self.matching_results != []):
+        if self.string_match_found():
             all_the_results_are_subscribed = True
             for analysed_line_matchs in self.matching_results:
                 logging.info(analysed_line_matchs[0].status)
@@ -279,17 +288,24 @@ class StreetFacteur:
             logging.info("line : " + str(line))
             matching_line_results = self.match_analyser.return_the_top_three_matches_for_a_line(line)
             logging.info("matching_line_results : " + str(matching_line_results))
-            logging.info("matching_line_results type : " + str(type(matching_line_results)))
             logging.info("self.matching_results : " + str(self.matching_results))
-            logging.info("self.matching_results type : " + str(type(self.matching_results)))
             self.matching_results.append(matching_line_results)
-            logging.info("self.matching_results : " + self.matching_results)
-            logging.info("Is matching_results empty ? : " + str(self.matching_results == []))
-            if len(self.matching_results) > 0:
-                if len(self.matching_results[0]) > 0 and self.matching_results[0][0].correspondance_ratio == 100:
-                    break
+            if self.check_if_the_first_result_is_a_perfect_match():
+                break
+            
+            
+    def reorder_results_to_show_the_most_corresponding_result_first(self):
+        if(self.matching_results != []):
+            if len(self.matching_results[0]) > 0:
+                self.matching_results.sort(key=lambda x: x[0].correspondance_ratio, reverse=True)
 
 
+    def check_if_the_first_result_is_a_perfect_match(self):
+        if(self.matching_results):
+            if len(self.matching_results[0]) > 0:
+                if(self.get_first_analysed_line_results()[0].correspondance_ratio == 100):
+                    return True
+        return False
             
             
     def apply_ocr_on_image(self):
@@ -299,9 +315,13 @@ class StreetFacteur:
         self.add_matching_results_from_cleaned_ocr_result(cleaned_ocr_text)
             
             
+    def no_text_found_display(self):
+        self.remove_text_from_text_widgets()
+        self.show_invalid_image()
+        self.matching_text_widget.insert(END, "Aucun texte détecté !\n",('bold','colored'))      
+            
     def main(self):		
         image_has_been_analysed = True
-
         # Start a loop to continuously update the displayed image
         while True:
             escape_key_pressed = False
@@ -324,12 +344,19 @@ class StreetFacteur:
                 try:
                     self.apply_ocr_on_image()
                     image_has_been_analysed = True
+                    self.reorder_results_to_show_the_most_corresponding_result_first()
                     self.show_the_good_image_depending_on_the_result()
                     self.add_result_to_tkinter_text()
+                except NoTextFoundOnPicture:
+                    self.no_text_found_display()
                 except:
                     logging.info("Erreur lors de l'analyse !")
-                    logging.info("Unexpected error:" + str(sys.exc_info()[0]))
-                    logging.info("Image has been analysed" + str(image_has_been_analysed))
+                    logging.error("Unexpected error:" + str(sys.exc_info()[0]))
+                    logging.error("Unexpected error:" + str(sys.exc_info()[1]))
+                    logging.error("Unexpected error:" + str(sys.exc_info()[2]))
+                    logging.error("Unexpected error:" + str(traceback.format_exc()))
+                    logging.info("Image has been analysed = " + str(image_has_been_analysed))
+                
 
             # Capture the actual image
             final_image = self.image_formatter.get_image_ready_for_display(self.image_acquisition.get_image())

@@ -47,7 +47,7 @@ def test_removes_lines_containing_a_sequence_of_digits():
     assert len(cleaned_text) == 0
     
 def test_can_find_a_valid_line():
-    line_with_two_chars = "ab"
+    line_with_three_chars = "abc"
     assert text_cleaner.is_valid_line("This line is valid") == True
     assert text_cleaner.is_valid_line("This line contains a date 26/05/1980") == False
     assert text_cleaner.is_valid_line("This line contains a series of consecutive streak of digits 123456789") == False
@@ -55,7 +55,7 @@ def test_can_find_a_valid_line():
     assert text_cleaner.is_valid_line("This line contains a bracket [26/05/1980]") == False
     assert text_cleaner.is_valid_line("") == False
     assert text_cleaner.is_valid_line(" ") == False
-    assert text_cleaner.is_valid_line(line_with_two_chars) == True
+    assert text_cleaner.is_valid_line(line_with_three_chars) == True
     
     
 def test_removes_invalid_lines():

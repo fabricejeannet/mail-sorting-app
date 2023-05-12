@@ -23,12 +23,12 @@ def test_get_cleaned_ocr_text_from_image():
     
     
 def test_dont_give_a_valid_image_raises_error():
-    with pytest.raises(NoImageGiven) as e_info:
+    with pytest.raises(NoImageGiven):
         text_extractor.get_text_from_image("")
-    with pytest.raises(NoImageGiven) as e_info:
+    with pytest.raises(NoImageGiven):
         text_extractor.get_text_from_image(None)
         
         
 def test_dont_find_text_on_image_raises_error():
-    with pytest.raises(NoTextFoundOnPicture) as e_info:
+    with pytest.raises(NoTextFoundOnPicture):
         text_extractor.get_cleaned_text_from_image(empty_image)

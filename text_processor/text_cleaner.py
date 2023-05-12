@@ -53,8 +53,9 @@ class TextCleaner:
     
     def remove_legal_status(self, line):
         for legal_status in LEGAL_STATUS:
-            line = re.sub(legal_status, "", line)            
+            line = re.sub(legal_status, "", line)    
         return line.strip()
+    
     
     def replace_ampersand_by_et(self, line):
         return line.replace("&", "et")
