@@ -18,3 +18,7 @@ class ConfigImporter:
     def get_csv_file_path(self):
         return self.config["csv"]["filepath"]
     
+    
+    def get_csv_file_regex(self):
+        return self.config["csv"]["regex"]
+    

@@ -9,6 +9,7 @@ from config_processor.config_importer import ConfigImporter
 from tkinter import Tk, Label, Frame, Button, Text, BOTH, Scrollbar, RIGHT, Y, END, TOP, LEFT, X, Entry, StringVar, IntVar, OptionMenu, Menu, messagebox, filedialog, ttk
 from PIL import ImageTk, Image
 import cv2
+import sys
 import numpy as np
 import time
 import logging
@@ -278,9 +279,17 @@ class StreetFacteur:
             logging.info("line : " + str(line))
             matching_line_results = self.match_analyser.return_the_top_three_matches_for_a_line(line)
             logging.info("matching_line_results : " + str(matching_line_results))
+            logging.info("matching_line_results type : " + str(type(matching_line_results)))
+            logging.info("self.matching_results : " + str(self.matching_results))
+            logging.info("self.matching_results type : " + str(type(self.matching_results)))
             self.matching_results.append(matching_line_results)
-            if self.matching_results and self.matching_results[0][0].correspondance_ratio == 100:
-                break
+            logging.info("self.matching_results : " + self.matching_results)
+            logging.info("Is matching_results empty ? : " + str(self.matching_results == []))
+            if len(self.matching_results) > 0:
+                if len(self.matching_results[0]) > 0 and self.matching_results[0][0].correspondance_ratio == 100:
+                    break
+
+
             
             
     def apply_ocr_on_image(self):
@@ -314,11 +323,13 @@ class StreetFacteur:
                 logging.info("Image stable, analyse !")
                 try:
                     self.apply_ocr_on_image()
-                    self.show_the_good_image_depending_on_the_result()
                     image_has_been_analysed = True
+                    self.show_the_good_image_depending_on_the_result()
                     self.add_result_to_tkinter_text()
                 except:
                     logging.info("Erreur lors de l'analyse !")
+                    logging.info("Unexpected error:" + str(sys.exc_info()[0]))
+                    logging.info("Image has been analysed" + str(image_has_been_analysed))
 
             # Capture the actual image
             final_image = self.image_formatter.get_image_ready_for_display(self.image_acquisition.get_image())

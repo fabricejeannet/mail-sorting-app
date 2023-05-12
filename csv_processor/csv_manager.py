@@ -12,6 +12,7 @@ class CsvManager:
         self.dataframe = pandas.DataFrame()
         self.config_importer = ConfigImporter()
         self.csv_file_path = self.config_importer.get_csv_file_path()
+        self.csv_file_regex = self.config_importer.get_csv_file_regex()
         
         
     def is_a_csv_file(self,file_name):
@@ -23,7 +24,7 @@ class CsvManager:
         if not list_of_files:
             raise NoCsvFileFound()
         for file in list_of_files:
-            if not self.is_a_csv_file(file):
+            if not self.is_a_csv_file(file) and not re.search(self.csv_file_regex, file):
                 raise TryToOpenNonCsvFile()
         latest_file = max(list_of_files, key=os.path.getctime)
         return latest_file
