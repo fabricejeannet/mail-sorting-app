@@ -22,3 +22,10 @@ class ConfigImporter:
     def get_csv_file_regex(self):
         return self.config["csv"]["regex"]
     
+    
+    def get_image_valid_threshold(self):
+        return self.config["image"]["valid_ratio_threshold"]
+    
+    
+    def get_image_minimum_threshold(self):
+        return self.config["image"]["minimum_valid_ratio_threshold"]

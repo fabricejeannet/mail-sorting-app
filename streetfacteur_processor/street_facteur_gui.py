@@ -6,7 +6,7 @@ from text_processor.text_extractor import TextExtractor
 from match_processor.match_analyser import MatchAnalyser
 from csv_processor.csv_manager import CsvManager
 from config_processor.config_importer import ConfigImporter
-from exceptions.custom_exceptions import NoImageGiven, NoTextFoundOnPicture
+from exceptions.custom_exceptions import NoTextFoundOnPicture
 from tkinter import Tk, Label, Frame, Button, Text, BOTH, Scrollbar, RIGHT, Y, END, TOP, LEFT, X, Entry, StringVar, IntVar, OptionMenu, Menu, messagebox, filedialog, ttk
 from PIL import ImageTk, Image
 import cv2
@@ -15,7 +15,6 @@ import numpy as np
 import time
 import logging
 import traceback
-import threading
 
 
 logging.basicConfig(level=logging.INFO, filename="app.log", filemode="w")
@@ -25,7 +24,6 @@ class StreetFacteur:
     
     def __init__(self):
         self.config_importer = ConfigImporter()
-        self.config_importer.import_config()
         self.image_formatter = ImageFormatter()
         self.text_cleaner = TextCleaner()
         self.init_csv()
@@ -295,14 +293,14 @@ class StreetFacteur:
                 
     def check_if_the_first_result_have_a_good_correspondance_rate(self):
         if(self.matching_results):
-            if(self.get_first_analysed_line_results()[0].correspondance_ratio >= VALID_CORRESPONDANCE_RATE_THRESHOLD):
+            if(self.get_first_analysed_line_results()[0].correspondance_ratio >= self.config_importer.get_image_valid_threshold()):
                 return True
         return False
     
     
     def check_if_the_first_result_have_a_minimum_correspondance_rate(self):
         if(self.matching_results):
-            if(self.get_first_analysed_line_results()[0].correspondance_ratio >= MINIMUM_CORRESPONDANCE_RATE_THRESHOLD):
+            if(self.get_first_analysed_line_results()[0].correspondance_ratio >= self.config_importer.get_image_minimum_threshold()):
                 return True
         return False
 

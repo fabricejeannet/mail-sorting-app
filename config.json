@@ -3,8 +3,8 @@
         "filepath": "/home/loic/streetfacteur_data/",
         "regex": "Clients(\\s\\(\\d*\\))?\\.csv"
     },
-    "correspondance": {
-        "valid_ratio_threshold": 0.85,
-        "minimum_valid_ratio_threshold": 0.5
+    "image": {
+        "valid_ratio_threshold": 85,
+        "minimum_valid_ratio_threshold": 60
     }
 }
