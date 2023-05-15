@@ -317,7 +317,8 @@ class StreetFacteur:
             matching_line_results = self.match_analyser.return_the_top_three_matches_for_a_line(line)
             logging.info("matching_line_results : " + str(matching_line_results))
             logging.info("self.matching_results : " + str(self.matching_results))
-            self.matching_results.append(matching_line_results)
+            if matching_line_results != []:
+                self.matching_results.append(matching_line_results)
             if self.check_if_the_first_result_is_a_perfect_match():
                 break
             
