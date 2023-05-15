@@ -219,22 +219,22 @@ class StreetFacteur:
                 previous_frame = prepared_frame
 
                 # 4. Dilute the image a bit to make differences more seeable; more suitable for contour detection
-                kernel = np.ones((5, 5))
+                kernel = np.ones((10, 10))
                 diff_frame = cv2.dilate(diff_frame, kernel, 1)
 
-                # 5. Only take different areas that are different enough (>20 / 255)
-                thresh_frame = cv2.threshold(src=diff_frame, thresh=21, maxval=255, type=cv2.THRESH_BINARY)[1]
+                # 5. Only take different areas that are different enough (>30 / 255)
+                thresh_frame = cv2.threshold(src=diff_frame, thresh=100, maxval=255, type=cv2.THRESH_BINARY)[1]
 
                 contours, _ = cv2.findContours(image=thresh_frame, mode=cv2.RETR_EXTERNAL, method=cv2.CHAIN_APPROX_SIMPLE)
 
                 contours, _ = cv2.findContours(image=thresh_frame, mode=cv2.RETR_EXTERNAL, method=cv2.CHAIN_APPROX_SIMPLE)
                 for contour in contours:
-                    if cv2.contourArea(contour) < 50:
+                    if cv2.contourArea(contour) < 100:
                         # too small: skip!
                         continue
                     return True
                 return False
-            
+        
             
     def add_result_to_tkinter_text(self):
         self.remove_text_from_text_widgets()
@@ -356,7 +356,7 @@ class StreetFacteur:
             if not image_has_been_analysed:
                 logging.info("Attente d'une seconde avant analyse !")
                 self.remove_text_from_text_widgets()
-                self.matching_text_widget.insert(END, "Attente d'une seconde avant analyse !\n",('bold','colored'))
+                self.matching_text_widget.insert(END, "Attente avant analyse !\n",('bold','colored'))
                 self.show_loading_image()
                 
             if (self.has_detected_a_movement()):
