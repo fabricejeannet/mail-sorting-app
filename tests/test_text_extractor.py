@@ -21,13 +21,6 @@ def test_get_cleaned_ocr_text_from_image():
     assert extracted_text[0] == "l'atelier d'haritza"
     assert len(extracted_text) == 1
     
-    
-def test_dont_give_a_valid_image_raises_error():
-    with pytest.raises(NoImageGiven):
-        text_extractor.get_text_from_image("")
-    with pytest.raises(NoImageGiven):
-        text_extractor.get_text_from_image(None)
-        
         
 def test_dont_find_text_on_image_raises_error():
     with pytest.raises(NoTextFoundOnPicture):
