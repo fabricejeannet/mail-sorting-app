@@ -219,7 +219,7 @@ class StreetFacteur:
                 previous_frame = prepared_frame
 
                 # 4. Dilute the image a bit to make differences more seeable; more suitable for contour detection
-                kernel = np.ones((10, 10))
+                kernel = np.ones((8, 8))
                 diff_frame = cv2.dilate(diff_frame, kernel, 1)
 
                 # 5. Only take different areas that are different enough (>30 / 255)
