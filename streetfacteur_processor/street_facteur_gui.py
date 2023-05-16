@@ -50,7 +50,7 @@ class StreetFacteur:
     
     def init_csv(self):
         csv_manager = CsvManager()
-        time.sleep(0.5)
+        time.sleep(1)
         file_name = csv_manager.get_latest_csv_file()
         print("Loaded csv file : " + file_name)
         csv_manager.open_csv_file(file_name)
@@ -234,7 +234,7 @@ class StreetFacteur:
                         continue
                     return True
                 return False
-        
+            
             
     def add_result_to_tkinter_text(self):
         self.remove_text_from_text_widgets()
@@ -244,14 +244,13 @@ class StreetFacteur:
         if not self.string_match_found():
             self.matching_text_widget.insert(END, "Aucun résultat trouvé", ('bold','red'))
             return
-        for analysed_line_matchs in self.matching_results:
-                for index in range(len(analysed_line_matchs)):
-                        self.insert_a_match_in_txt_result_widget(analysed_line_matchs[index].matching_string, analysed_line_matchs[index].status, analysed_line_matchs[index].correspondance_ratio)
-                        self.insert_a_separator_in_matching_text_widget()
+        for result in self.matching_results:
+            self.insert_a_match_in_txt_result_widget(result.matching_string, result.status, result.correspondance_ratio)
+            self.insert_a_separator_in_matching_text_widget()
                         
 
     def string_match_found(self):
-        if(self.matching_results != [] and len(self.matching_results[0]) > 0):
+        if(self.matching_results != [] and len(self.matching_results) > 0):
             return True
         return False
     
@@ -259,19 +258,17 @@ class StreetFacteur:
     def show_the_good_image_depending_on_the_result(self):
         if self.string_match_found():
             all_the_results_are_subscribed = True
-            for analysed_line_matchs in self.matching_results:
-                for index in range(len(analysed_line_matchs)):
-                    logging.info(analysed_line_matchs[index].status)
-                    if(analysed_line_matchs[index].status != "ABONNE"):
-                        all_the_results_are_subscribed = False
-                        break
+            for index in range(len(self.matching_results)):
+                logging.info(self.matching_results[index].status)
+                if(self.matching_results[index].status != "ABONNE"):
+                    all_the_results_are_subscribed = False
+                    break
             all_the_results_are_unsubscribed = True
-            for analysed_line_matchs in self.matching_results:
-                for index in range(len(analysed_line_matchs)):
-                    logging.info(analysed_line_matchs[index].status)
-                    if(analysed_line_matchs[index].status == "ABONNE"):
-                        all_the_results_are_unsubscribed = False
-                        break
+            for index in range(len(self.matching_results)):
+                logging.info(self.matching_results[index].status)
+                if(self.matching_results[index].status == "ABONNE"):
+                    all_the_results_are_unsubscribed = False
+                    break
             if(all_the_results_are_subscribed and self.check_if_the_first_result_have_a_good_correspondance_rate()):
                 return "valid"
             if(all_the_results_are_unsubscribed or not self.check_if_the_first_result_have_a_minimum_correspondance_rate()):
@@ -293,19 +290,19 @@ class StreetFacteur:
                 
     def check_if_the_first_result_have_a_good_correspondance_rate(self):
         if(self.matching_results):
-            if(self.get_first_analysed_line_results()[0].correspondance_ratio >= self.config_importer.get_image_valid_threshold()):
+            if(self.get_first_result().correspondance_ratio >= self.config_importer.get_image_valid_threshold()):
                 return True
         return False
     
     
     def check_if_the_first_result_have_a_minimum_correspondance_rate(self):
         if(self.matching_results):
-            if(self.get_first_analysed_line_results()[0].correspondance_ratio >= self.config_importer.get_image_minimum_threshold()):
+            if(self.get_first_result().correspondance_ratio >= self.config_importer.get_image_minimum_threshold()):
                 return True
         return False
 
 
-    def get_first_analysed_line_results(self):
+    def get_first_result(self):
         return self.matching_results[0]
     
     
@@ -317,23 +314,22 @@ class StreetFacteur:
             matching_line_results = self.match_analyser.return_the_top_three_matches_for_a_line(line)
             logging.info("matching_line_results : " + str(matching_line_results))
             logging.info("self.matching_results : " + str(self.matching_results))
-            if matching_line_results != []:
-                self.matching_results.append(matching_line_results)
+            for element in matching_line_results:
+                logging.info("element : " + str(element))
+                self.matching_results.append(element)
             if self.check_if_the_first_result_is_a_perfect_match():
                 break
             
             
     def reorder_results_to_show_the_most_corresponding_result_first(self):
         if(self.matching_results != []):
-            if len(self.matching_results[0]) > 0:
-                self.matching_results.sort(key=lambda x: x[0].correspondance_ratio, reverse=True)
+            self.matching_results.sort(key=lambda x: x.correspondance_ratio, reverse=True)
 
 
     def check_if_the_first_result_is_a_perfect_match(self):
         if(self.matching_results):
-            if len(self.matching_results[0]) > 0:
-                if(self.get_first_analysed_line_results()[0].correspondance_ratio == 100):
-                    return True
+            if(self.get_first_result().correspondance_ratio == 100):
+                return True
         return False
             
             
@@ -370,9 +366,9 @@ class StreetFacteur:
                 
             if (self.image_is_steady() and not image_has_been_analysed):
                 logging.info("Image stable, analyse !")
+                image_has_been_analysed = True
                 try:
                     self.apply_ocr_on_image()
-                    image_has_been_analysed = True
                     self.reorder_results_to_show_the_most_corresponding_result_first()
                     image_name = self.show_the_good_image_depending_on_the_result()
                     self.change_the_help_widget_image(image_name)
