@@ -10,6 +10,6 @@ REGEX_SNC = r'\b[sS][.]?[nN][.]?[cC]\b'
 REGEX_EI = r'\b[eE][.]?[iI]\b'
 REGEX_EIRL = r'\b[eE][.]?[iI][.]?[rR][.]?[lL]\b'
 
-BANNED_WORDS_LIST = ["33000 bordeaux", "coolworking","madame monsieur le representant legal", "france", "le dirigeant de l'entreprise" "9 r de conde", "rue de conde","9 rue conde","titulaire du compte", "representant legal", "retour à" ,"destinataire lettre","bureau 3", "destinataire", "numero de tva", "numero de siret", "ecopli", "etage 3", "niveau de garantie", "numero de police", "numero de contrat", "numero de telephone", "numero de fax", "numero de compte", "numero de client", "numero de facture", "numero de commande", "numero de dossier", "\\x0c"]
+BANNED_WORDS_LIST = ["33000 bordeaux", "recommande", "coolworking","madame monsieur le representant legal", "france", "le dirigeant de l'entreprise" "9 r de conde", "rue de conde","9 rue conde","titulaire du compte", "representant legal", "retour à" ,"destinataire lettre","bureau 3", "destinataire", "numero de tva", "numero de siret", "ecopli", "etage 3", "niveau de garantie", "numero de police", "numero de contrat", "numero de telephone", "numero de fax", "numero de compte", "numero de client", "numero de facture", "numero de commande", "numero de dossier", "\\x0c"]
 
 LEGAL_STATUS = [REGEX_SAS, REGEX_SARL, REGEX_SASU, REGEX_EURL, REGEX_SCI, REGEX_SNC, REGEX_EI, REGEX_EIRL]

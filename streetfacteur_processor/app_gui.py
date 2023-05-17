@@ -120,7 +120,7 @@ class AppGui:
     def show_movement_detected_display(self):
         self.remove_text_from_text_widgets()
         self.matching_text_widget.insert(END, "Mouvement détecté !\n",('bold','colored'))
-        self.show_loading_image()
+        self.show_shaking_image()
         
     
     def show_no_text_found_display(self):
@@ -130,7 +130,7 @@ class AppGui:
 
 
     def show_no_match_found_display(self):
-        self.remove_text_from_text_widgets()
+        self.remove_text_from_result_widget()
         self.show_invalid_image()
         self.matching_text_widget.insert(END, "Aucun match trouvé !\n",('bold','colored'))
 
@@ -175,6 +175,12 @@ class AppGui:
 
     def show_invalid_image(self):
         image = Image.open(INVALID_IMAGE_PATH)
+        resized_image = image.resize((150, 150))
+        self.update_result_logo_image(resized_image)
+        
+        
+    def show_shaking_image(self):
+        image = Image.open(SHAKING_IMAGE_PATH)
         resized_image = image.resize((150, 150))
         self.update_result_logo_image(resized_image)
 

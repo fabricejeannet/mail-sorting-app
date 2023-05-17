@@ -31,14 +31,6 @@ class ImageFormatter:
         return image
     
     
-    def remove_qr_codes_and_barcodes_from_image(self, image):
-        detected_barcodes = pyzbar.decode(image)
-        for barcode in detected_barcodes:
-            (x, y, width, height) = barcode.rect
-            cv2.rectangle(image, (x, y), (x + width, y + height), (255, 255, 255), -1)
-        return image
-    
-    
     def get_noise_removed_image(self, image):
         return cv2.medianBlur(image,1)
     
@@ -46,8 +38,7 @@ class ImageFormatter:
     def get_image_ready_for_text_detection(self, image):
         grayscaled_image = self.get_grayscaled_image(image)
         noise_removed_image = self.get_noise_removed_image(grayscaled_image)
-        qrcodes_less_image = self.remove_qr_codes_and_barcodes_from_image(noise_removed_image)
-        return self.crop_image_with_rectangle_coordinates(qrcodes_less_image)
+        return self.crop_image_with_rectangle_coordinates(noise_removed_image)
     
     
     def get_image_ready_for_preview_display(self,image):
@@ -65,7 +56,7 @@ class ImageFormatter:
         
         # group recognized words by lines
         for searched_line in lines:
-            for line_num, words_per_line in df.groupby(["par_num","line_num"]):
+            for line_num, words_per_line in df.groupby(["block_num","par_num","line_num"]):
                 # filter out words with a low confidence
                 words_per_line = words_per_line[words_per_line["conf"] >= 5]
                 if not len(words_per_line):
@@ -75,6 +66,7 @@ class ImageFormatter:
                 line = " ".join(words)
                 print(f"{line_num} '{line}'")
                 print(searched_line)
+                logging.info("Line: " + line)
                 if searched_line in line.lower():
                     print("Found a line with specified text")
                     word_boxes = []

@@ -1,11 +1,12 @@
 RECTANGLE_START_POINT = (150,100)
-RECTANGLE_END_POINT = (1050,550)
+RECTANGLE_END_POINT = (1050,480)
 RESIZED_IMAGE_WIDTH = 550
 RESIZED_IMAGE_HEIGHT = 405
-STEADY_WAIT_TIME = 0.5
+STEADY_WAIT_TIME = 0.4
 VALID_CORRESPONDANCE_RATE_THRESHOLD = 85
 MINIMUM_CORRESPONDANCE_RATE_THRESHOLD = 70
 LOADING_IMAGE_PATH = '/home/loic/mail-sorting-app/streetfacteur_processor/data/images/loading.gif'
 VALID_IMAGE_PATH = '/home/loic/mail-sorting-app/streetfacteur_processor/data/images/valid.png'
 INVALID_IMAGE_PATH = '/home/loic/mail-sorting-app/streetfacteur_processor/data/images/invalid.png'
 WARNING_IMAGE_PATH = '/home/loic/mail-sorting-app/streetfacteur_processor/data/images/warning.png'
+SHAKING_IMAGE_PATH = '/home/loic/mail-sorting-app/streetfacteur_processor/data/images/shaking.png'

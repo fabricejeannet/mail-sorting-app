@@ -1,7 +1,7 @@
 import pytesseract
 from pytesseract import Output
 from text_processor.text_cleaner import TextCleaner
-from exceptions.custom_exceptions import NoImageGiven, NoTextFoundOnPicture
+from exceptions.custom_exceptions import NoTextFoundOnPicture
 import logging
 
 class TextExtractor:
