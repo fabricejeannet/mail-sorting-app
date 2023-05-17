@@ -1,5 +1,5 @@
 import pytest
-from streetfacteur_processor.street_facteur_gui import StreetFacteur
+from streetfacteur_processor.app_gui import StreetFacteur
 from match_processor.matching_result import MatchingResult
 from image_processor.image_constants import *
 
