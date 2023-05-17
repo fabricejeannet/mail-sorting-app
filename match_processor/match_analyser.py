@@ -44,10 +44,9 @@ class MatchAnalyser:
         match_list = []
         companies = self.clients_data_dictionary[COMPANY_NAME]
         trade_marks = self.clients_data_dictionary[TRADEMARK_NAME]
-      
         for index in range(len(companies)):
             company_name = self.text_cleaner.remove_legal_status(companies[index].lower().strip())
-            trade_mark = self.text_cleaner.remove_legal_status(trade_marks[index].lower().strip())
+            trade_mark = self.text_cleaner.remove_legal_status(str(trade_marks[index]).lower().strip())
             
             company_name_match_ratio = self.get_match_ratio_for_company_names(line,company_name)
             trade_mark_match_ratio = self.get_match_ratio_for_company_names(line,trade_mark)
