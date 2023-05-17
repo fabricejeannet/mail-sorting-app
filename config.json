@@ -5,6 +5,6 @@
     },
     "image": {
         "valid_ratio_threshold": 85,
-        "minimum_valid_ratio_threshold": 60
+        "minimum_valid_ratio_threshold": 70
     }
 }

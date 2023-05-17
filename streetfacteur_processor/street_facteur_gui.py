@@ -26,27 +26,11 @@ class StreetFacteur:
         self.config_importer = ConfigImporter()
         self.image_formatter = ImageFormatter()
         self.text_cleaner = TextCleaner()
-        self.init_csv()
         self.text_extractor = TextExtractor()
-        self.create_the_app_window()
-        
-        # Create a frame and a label to display the camera preview
-        self.create_the_camera_frame()
-        self.create_the_camera_preview_zone()
-        
-        #Create a text frame and a text widget to display the result of the OCR
-        self.create_the_text_result_frame()
-        self.create_the_text_result_widget()
-        
+        self.matching_results = []
+     
+        self.init_csv()
 
-        # Create a frame and a text widget to display the readed line 
-        self.create_the_readed_line_frame()
-        self.create_the_readed_line_widget()		
-        
-        # Create a frame and a label to display the result logo
-        self.create_the_result_logo_frame()
-        self.create_the_result_logo_widget()
-    
     
     def init_csv(self):
         csv_manager = CsvManager()
@@ -69,6 +53,23 @@ class StreetFacteur:
 
         self.window.resizable(width=False, height=False)
         self.window.configure(background='gray')
+        
+        # Create a frame and a label to display the camera preview
+        self.create_the_camera_frame()
+        self.create_the_camera_preview_zone()
+        
+        #Create a text frame and a text widget to display the result of the OCR
+        self.create_the_text_result_frame()
+        self.create_the_text_result_widget()
+
+        # Create a frame and a text widget to display the readed line 
+        self.create_the_readed_line_frame()
+        self.create_the_readed_line_widget()		
+        
+        # Create a frame and a label to display the result logo
+        self.create_the_result_logo_frame()
+        self.create_the_result_logo_widget()
+    
         
         
     def image_is_steady(self):
@@ -199,8 +200,8 @@ class StreetFacteur:
 
             # 1. Load image; convert to RGB
             image_brg = self.image_acquisition.get_image()
-            self.last_captured_image = image_brg
             image_rgb = cv2.cvtColor(src=image_brg, code=cv2.COLOR_BGR2RGB)
+            self.last_captured_image = image_rgb
 
             if ((frame_count % 2) == 0):
 
@@ -255,17 +256,15 @@ class StreetFacteur:
         return False
     
 
-    def show_the_good_image_depending_on_the_result(self):
+    def select_the_good_image_for_help_widget(self):
         if self.string_match_found():
             all_the_results_are_subscribed = True
             for index in range(len(self.matching_results)):
-                logging.info(self.matching_results[index].status)
                 if(self.matching_results[index].status != "ABONNE"):
                     all_the_results_are_subscribed = False
                     break
             all_the_results_are_unsubscribed = True
             for index in range(len(self.matching_results)):
-                logging.info(self.matching_results[index].status)
                 if(self.matching_results[index].status == "ABONNE"):
                     all_the_results_are_unsubscribed = False
                     break
@@ -287,6 +286,7 @@ class StreetFacteur:
             self.show_valid_image()
         elif (image_name == "invalid"):
             self.show_invalid_image()
+            
                 
     def check_if_the_first_result_have_a_good_correspondance_rate(self):
         if(self.matching_results):
@@ -317,8 +317,6 @@ class StreetFacteur:
             for element in matching_line_results:
                 logging.info("element : " + str(element))
                 self.matching_results.append(element)
-            if self.check_if_the_first_result_is_a_perfect_match():
-                break
             
             
     def reorder_results_to_show_the_most_corresponding_result_first(self):
@@ -336,6 +334,8 @@ class StreetFacteur:
     def apply_ocr_on_image(self):
         self.reset_ocr_results()
         image_to_analyse = self.image_formatter.get_image_ready_for_text_detection(self.last_captured_image)
+        self.last_prepared_image = image_to_analyse
+        cv2.imwrite("last_prepared_image.jpg", image_to_analyse)
         cleaned_ocr_text = self.text_extractor.get_cleaned_text_from_image(image_to_analyse)
         self.add_matching_results_from_cleaned_ocr_result(cleaned_ocr_text)
             
@@ -345,9 +345,28 @@ class StreetFacteur:
         self.show_invalid_image()
         self.matching_text_widget.insert(END, "Aucun texte détecté !\n",('bold','colored'))      
             
+            
+    def update_the_camera_preview_with_last_image(self, image_to_display):
+        # Capture the actual image
+        # Convert the captured image to a Tkinter compatible format
+        final_image = Image.fromarray(image_to_display)
+        final_image = ImageTk.PhotoImage(final_image)
+        # Update the image displayed in the Label Widget
+        self.camera_preview_zone.configure(image=final_image)
+        self.camera_preview_zone.image = final_image        
+    
+    
+    def add_rectangle_around_analysed_lines(self):
+        if(self.analysed_lines and len(self.analysed_lines) > 0):
+            self.last_captured_image = self.image_formatter.add_rectangle_around_analysed_lines(self.last_prepared_image, self.last_captured_image, self.analysed_lines)
+    
+    
     def main(self):		
+        self.create_the_app_window()
         self.start_camera()
         image_has_been_analysed = True
+        final_image = self.image_formatter.get_image_ready_for_preview_display(self.last_captured_image)
+        self.update_the_camera_preview_with_last_image(final_image)            
         # Start a loop to continuously update the displayed image
         while True:
             if not image_has_been_analysed:
@@ -355,6 +374,8 @@ class StreetFacteur:
                 self.remove_text_from_text_widgets()
                 self.matching_text_widget.insert(END, "Attente avant analyse !\n",('bold','colored'))
                 self.show_loading_image()
+                final_image = self.image_formatter.get_image_ready_for_preview_display(self.last_captured_image)
+                self.update_the_camera_preview_with_last_image(final_image)    
                 
             if (self.has_detected_a_movement()):
                 logging.info("Mouvement détecté !")
@@ -362,36 +383,30 @@ class StreetFacteur:
                 self.matching_text_widget.insert(END, "Mouvement détecté !\n",('bold','colored'))
                 self.last_movement_time = time.time()
                 image_has_been_analysed = False
-            
+                final_image = self.image_formatter.get_image_ready_for_preview_display(self.last_captured_image)
+                self.update_the_camera_preview_with_last_image(final_image)            
                 
             if (self.image_is_steady() and not image_has_been_analysed):
                 logging.info("Image stable, analyse !")
-                image_has_been_analysed = True
                 try:
                     self.apply_ocr_on_image()
                     self.reorder_results_to_show_the_most_corresponding_result_first()
-                    image_name = self.show_the_good_image_depending_on_the_result()
+                    image_name = self.select_the_good_image_for_help_widget()
                     self.change_the_help_widget_image(image_name)
                     self.add_result_to_tkinter_text()
+                    #self.add_rectangle_around_analysed_lines()
+                    self.last_captured_image = self.image_formatter.resize_image(self.last_captured_image)
+                    self.update_the_camera_preview_with_last_image(self.last_captured_image)
+                    image_has_been_analysed = True
                 except NoTextFoundOnPicture:
                     self.no_text_found_display()
                 except:
                     logging.info("Erreur lors de l'analyse !")
-                    logging.error("Unexpected error:" + str(sys.exc_info()[0]))
-                    logging.error("Unexpected error:" + str(sys.exc_info()[1]))
-                    logging.error("Unexpected error:" + str(sys.exc_info()[2]))
                     logging.error("Unexpected error:" + str(traceback.format_exc()))
                     logging.info("Image has been analysed = " + str(image_has_been_analysed))
                 
 
-            # Capture the actual image
-            final_image = self.image_formatter.get_image_ready_for_display(self.last_captured_image)
-            # Convert the captured image to a Tkinter compatible format
-            final_image = Image.fromarray(final_image)
-            final_image = ImageTk.PhotoImage(final_image)
-            # Update the image displayed in the Label Widget
-            self.camera_preview_zone.configure(image=final_image)
-            self.camera_preview_zone.image = final_image
+            
             # Update the window to show the new image
             self.window.update()
         

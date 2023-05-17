@@ -4,4 +4,6 @@ STATUS = 'Statut Abonnement'
 DIRECTOR_NAME = 'nom prenom date de naissance du dirigeant'
 TRADEMARK_NAME = 'Marque commerciale'
 ID = 'id'
-THRESHOLD = 50
+SUBSCRIBED = "ABONNE"
+UNSUBSCRIBED = "DESABONNE"
+STRUCKED_OFF = "RADIE"

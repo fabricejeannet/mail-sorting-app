@@ -1,5 +1,6 @@
 import cv2
 from picamera2 import Picamera2, Preview
+from libcamera import Transform
 from exceptions.custom_exceptions import CameraIsNotStarted
 import os
 import time
@@ -9,7 +10,8 @@ class ImageAcquisition:
     
     def __init__(self):
         self.camera = Picamera2()
-        self.camera.configure(self.camera.create_preview_configuration(main={"format": 'RGB888', "size": (1280, 720)}))
+        self.camera.configure(self.camera.create_preview_configuration(main={"format": 'RGB888', "size": (1280, 720)}, transform=Transform(hflip=1,
+                                                                                                                                           vflip=1)))
         self.is_camera_started = False
         
         

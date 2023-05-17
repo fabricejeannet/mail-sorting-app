@@ -1,6 +1,7 @@
 from match_processor.match_analyser import MatchAnalyser
-from csv_processor.csv_constants import *
 from csv_processor.csv_manager import CsvManager
+from config_processor.config_importer import ConfigImporter
+THRESHOLD = ConfigImporter().get_image_minimum_threshold()
 
 def test_get_best_absolute_match_ratio():
     match_analyser = MatchAnalyser(None)
@@ -54,21 +55,17 @@ def test_return_the_top_three_matches_for_a_line():
     assert results[0].correspondance_ratio > 90
     assert results[1].matching_string == "paul dupont"
     assert results[1].correspondance_ratio > 80
-    assert results[2].matching_string == "paule martin"
-    assert results[2].correspondance_ratio > 50
     results = match_analyser.return_the_top_three_matches_for_a_line("cottonwood")
     assert results[0].matching_string == "cottonwood"
     assert results[0].correspondance_ratio > 90
     assert results[1].matching_string == "cottrwood"
     assert results[1].correspondance_ratio > 80
-    assert results[2].matching_string == "cottrwood inc"
-    assert results[2].correspondance_ratio > 50
+
     results = match_analyser.return_the_top_three_matches_for_a_line("td express")
     print(results)
     assert results[1].matching_string == "t d express"
     assert results[0].correspondance_ratio >= 90
     assert results[0].matching_string == "t d express tetd express tetd express"
     assert results[1].correspondance_ratio > 80
-    assert results[2].correspondance_ratio > 50
     
     

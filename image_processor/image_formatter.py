@@ -1,6 +1,10 @@
 import cv2
 from pyzbar import pyzbar
+import pytesseract
+import numpy as np
+import logging
 from image_processor.image_constants import RECTANGLE_START_POINT, RECTANGLE_END_POINT, RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT
+from image_processor.image_constants import RECTANGLE_START_POINT, RECTANGLE_END_POINT
 
 class ImageFormatter:
     
@@ -46,7 +50,42 @@ class ImageFormatter:
         return self.crop_image_with_rectangle_coordinates(qrcodes_less_image)
     
     
-    def get_image_ready_for_display(self,image):
+    def get_image_ready_for_preview_display(self,image):
         self.draw_rectangle_with_coordinates(image)
-        resized_image = cv2.resize(image, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))
-        return resized_image
+        return self.resize_image(image)
+    
+    
+    def resize_image(self, image):
+        return cv2.resize(image, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))
+    
+    
+    def add_rectangle_around_analysed_lines(self, prepared_image,to_display_image, lines):
+        df = pytesseract.image_to_data(prepared_image, lang="fra", output_type=pytesseract.Output.DATAFRAME)
+        print(df[["text", "conf", "line_num","block_num"]])
+        
+        # group recognized words by lines
+        for searched_line in lines:
+            for line_num, words_per_line in df.groupby(["par_num","line_num"]):
+                # filter out words with a low confidence
+                words_per_line = words_per_line[words_per_line["conf"] >= 5]
+                if not len(words_per_line):
+                    continue
+
+                words = words_per_line["text"].values
+                line = " ".join(words)
+                print(f"{line_num} '{line}'")
+                print(searched_line)
+                if searched_line in line.lower():
+                    print("Found a line with specified text")
+                    word_boxes = []
+                    for left, top, width, height in words_per_line[["left", "top", "width", "height"]].values:
+                        word_boxes.append((left, top))
+                        word_boxes.append((left + width, top + height))
+
+                    x, y, w, h = cv2.boundingRect(np.array(word_boxes))
+                    x = x + RECTANGLE_START_POINT[0]
+                    y = y + RECTANGLE_START_POINT[1]
+                    cv2.rectangle(to_display_image, (x, y), (x + w, y + h), color=(255, 0, 255), thickness=3)
+                    cv2.putText(img=to_display_image, text=line, org=(x, y), fontFace=cv2.FONT_HERSHEY_COMPLEX, fontScale=1, color=(0, 0, 255), thickness=2)
+
+        return to_display_image
