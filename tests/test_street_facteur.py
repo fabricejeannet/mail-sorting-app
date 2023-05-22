@@ -1,9 +1,9 @@
 import pytest
-from streetfacteur_processor.app_gui import StreetFacteur
+from streetfacteur_processor.app_back import AppBack
 from match_processor.matching_result import MatchingResult
 from image_processor.image_constants import *
 
-street_facteur = StreetFacteur()
+street_facteur = AppBack(None)
 
 
 def test_init_csv():
@@ -13,7 +13,7 @@ def test_init_csv():
 
 def test_string_match_found():
     street_facteur.matching_results = ["test"]
-    assert street_facteur.string_match_found() == True
+    assert street_facteur.client_match_found() == True
     
     
 def test_show_valid_image_on_full_match():
@@ -65,12 +65,12 @@ def test_check_if_the_first_result_have_a_good_correspondance_rate():
     client2 = MatchingResult(matching_string="client2", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
     client3 = MatchingResult(matching_string="client3", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
     street_facteur.matching_results = [client1, client2, client3]
-    assert street_facteur.check_if_the_first_result_have_a_good_correspondance_rate() == True
+    assert street_facteur.first_result_have_valid_match_ratio() == True
     client1 = MatchingResult(matching_string="client1", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
     client2 = MatchingResult(matching_string="client2", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
     client3 = MatchingResult(matching_string="client3", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
     street_facteur.matching_results = [client1, client2, client3]
-    assert street_facteur.check_if_the_first_result_have_a_good_correspondance_rate() == False
+    assert street_facteur.first_result_have_valid_match_ratio() == False
     
 
 def test_check_if_the_first_result_have_a_minimum_correspondance_rate():
@@ -78,12 +78,12 @@ def test_check_if_the_first_result_have_a_minimum_correspondance_rate():
     client2 = MatchingResult(matching_string="client2", correspondance_ratio=MINIMUM_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
     client3 = MatchingResult(matching_string="client3", correspondance_ratio=MINIMUM_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
     street_facteur.matching_results = [client1, client2, client3]
-    assert street_facteur.check_if_the_first_result_have_a_minimum_correspondance_rate() == True
+    assert street_facteur.first_result_have_minimum_match_ratio() == True
     client1 = MatchingResult(matching_string="client1", correspondance_ratio=MINIMUM_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
     client2 = MatchingResult(matching_string="client2", correspondance_ratio=MINIMUM_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
     client3 = MatchingResult(matching_string="client3", correspondance_ratio=MINIMUM_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
     street_facteur.matching_results = [client1, client2, client3]
-    assert street_facteur.check_if_the_first_result_have_a_minimum_correspondance_rate() == False
+    assert street_facteur.first_result_have_minimum_match_ratio() == False
     
     
 def test_reorder_results_to_show_the_most_corresponding_result_first():

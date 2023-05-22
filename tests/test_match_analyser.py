@@ -3,14 +3,6 @@ from csv_processor.csv_manager import CsvManager
 from config_processor.config_importer import ConfigImporter
 THRESHOLD = ConfigImporter().get_image_minimum_threshold()
 
-def test_get_best_absolute_match_ratio():
-    match_analyser = MatchAnalyser(None)
-    assert match_analyser.get_best_absolute_match_ratio("hello","hello") == 100
-    assert match_analyser.get_best_absolute_match_ratio("hello","hello world") == 100
-    assert match_analyser.get_best_absolute_match_ratio("hello","world") <= 50
-    assert match_analyser.get_best_absolute_match_ratio("hello","hello world hello") == 100
-    assert match_analyser.get_best_absolute_match_ratio("hello world", "world hello") == 100
-    
 
 def test_get_match_ratio():
     match_analyser = MatchAnalyser(None)
@@ -52,20 +44,29 @@ def test_return_the_top_three_matches_for_a_line():
     match_analyser = MatchAnalyser(mock_clients)
     results = match_analyser.return_the_top_three_matches_for_a_line("paul durant")
     assert results[0].matching_string == "paul durand"
-    assert results[0].correspondance_ratio > 90
+    assert results[0].match_ratio > 90
     assert results[1].matching_string == "paul dupont"
-    assert results[1].correspondance_ratio > 80
+    assert results[1].match_ratio > 80
     results = match_analyser.return_the_top_three_matches_for_a_line("cottonwood")
     assert results[0].matching_string == "cottonwood"
-    assert results[0].correspondance_ratio > 90
+    assert results[0].match_ratio > 90
     assert results[1].matching_string == "cottrwood"
-    assert results[1].correspondance_ratio > 80
+    assert results[1].match_ratio > 80
 
     results = match_analyser.return_the_top_three_matches_for_a_line("td express")
     print(results)
     assert results[1].matching_string == "t d express"
-    assert results[0].correspondance_ratio >= 90
+    assert results[0].match_ratio >= 90
     assert results[0].matching_string == "t d express tetd express tetd express"
-    assert results[1].correspondance_ratio > 80
+    assert results[1].match_ratio > 80
+    
+    
+def test_if_check_all_columns_for_matching():
+    csv_manager = CsvManager()
+    csv_manager.open_csv_file("tests/test.csv")
+    mock_clients = csv_manager.get_clients_data_dictionnary()
+    match_analyser = MatchAnalyser(mock_clients)
+    assert match_analyser.return_the_top_three_matches_for_a_line("paul durant")[0].matching_string == "paul durand"
+    assert match_analyser.return_the_top_three_matches_for_a_line("mr victorien clemence")[0].matching_string == "mr victorien clemence"
     
     

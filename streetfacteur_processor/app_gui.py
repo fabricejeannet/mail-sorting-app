@@ -1,7 +1,7 @@
 from image_processor.image_constants import *
-from tkinter import Tk, Label, Frame, Button, Text,  Y, END, LEFT
+from tkinter import Tk, Label, Frame, Button, Text,  Y, END, LEFT, messagebox
 from PIL import ImageTk, Image
-import time
+import tkinter as tk
 import logging
 
 
@@ -68,6 +68,15 @@ class AppGui:
         self.camera_frame.place(relx=.01, y=5)
 
 
+    def popup_message(self):
+        messagebox.showinfo("Changement du CSV", "Le fichier CSV a été changé par l'utilisateur, l'application peut rencontrer des problèmes durant les prochaines secondes.")
+
+
+    def create_the_pop_up(self):
+        popup_button = tk.Button(self.window, text="Afficher la pop-up", command=self.popup_message)
+        popup_button.pack()
+
+
     def create_the_camera_preview_zone(self):
         self.camera_preview_zone = Label(self.camera_frame)
         self.camera_preview_zone.pack()
@@ -132,7 +141,7 @@ class AppGui:
     def show_no_match_found_display(self):
         self.remove_text_from_result_widget()
         self.show_invalid_image()
-        self.matching_text_widget.insert(END, "Aucun match trouvé !\n",('bold','colored'))
+        self.matching_text_widget.insert(END, "Aucune correspondance trouvée !\n",('bold','colored'))
 
 
     def show_analysed_lines(self, analysed_lines):
@@ -202,3 +211,8 @@ class AppGui:
     
     def update_window(self):
         self.window.update()
+        
+            
+    
+
+

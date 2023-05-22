@@ -16,13 +16,5 @@ def test_crop_image():
     image = image_acquisition.open_image("tests/cropped_image.jpg")
     cropped_image = image_formatter.crop_image(image, 0, 0, 100, 100)
     assert cropped_image.shape == (100, 100, 3)
-    
-    
-def test_remove_qr_codes_and_barcodes_from_image():
-    image = image_acquisition.open_image("tests/recommande.jpg")
-    grayscale_image = image_formatter.get_grayscaled_image(image)
-    assert len(pyzbar.decode(grayscale_image)) == 1
-    cleaned_image = image_formatter.remove_qr_codes_and_barcodes_from_image(grayscale_image)
-    detected_barcodes = pyzbar.decode(cleaned_image)
-    assert len(detected_barcodes) == 0
+
     

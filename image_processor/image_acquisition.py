@@ -10,7 +10,7 @@ class ImageAcquisition:
     
     def __init__(self):
         self.camera = Picamera2()
-        self.camera.configure(self.camera.create_preview_configuration(main={"format": 'RGB888', "size": (1280, 720)}, transform=Transform(hflip=1,
+        self.camera.configure(self.camera.create_preview_configuration(main={"format": 'RGB888', "size": (640, 360)}, transform=Transform(hflip=1,
                                                                                                                                            vflip=1)))
         self.is_camera_started = False
         
