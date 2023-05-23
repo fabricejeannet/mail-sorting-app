@@ -157,11 +157,11 @@ class AppBack:
                 
     def change_the_help_widget_image(self, image_name):
         if (image_name == "warning"):
-            self.app_gui.show_warning_image()
+            self.app_gui.show_warning_display()
         elif (image_name == "valid"):
-            self.app_gui.show_valid_image()
+            self.app_gui.show_valid_display()
         elif (image_name == "invalid"):
-            self.app_gui.show_invalid_image()
+            self.app_gui.show_invalid_display()
             
     # All the following methods are related to the ocr and the match analyser
 

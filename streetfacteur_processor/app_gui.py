@@ -121,6 +121,7 @@ class AppGui:
 
 
     def show_waiting_display(self):
+        self.window['bg'] = 'gray'
         self.remove_text_from_text_widgets()
         self.matching_text_widget.insert(END, "Attente avant analyse !\n",('bold','colored'))
         self.show_loading_image()
@@ -130,25 +131,13 @@ class AppGui:
         self.remove_text_from_text_widgets()
         self.matching_text_widget.insert(END, "Mouvement détecté !\n",('bold','colored'))
         self.show_shaking_image()
-        
-    
-    def show_no_text_found_display(self):
-        self.remove_text_from_text_widgets()
-        self.show_invalid_image()
-        self.matching_text_widget.insert(END, "Aucun texte détecté !\n",('bold','colored'))      
-
-
-    def show_no_match_found_display(self):
-        self.remove_text_from_result_widget()
-        self.show_invalid_image()
-        self.matching_text_widget.insert(END, "Aucune correspondance trouvée !\n",('bold','colored'))
 
 
     def show_analysed_lines(self, analysed_lines):
         self.remove_text_from_analysed_lines_widget()
         self.read_line_widget.insert(END, "Lignes analysées : \n",('bold','blue'))
         for analysed_line in analysed_lines:
-            self.read_line_widget.insert(END, analysed_line + "\n", "blue")
+            self.read_line_widget.insert(END, analysed_line + " , ", "blue")
             
             
     def remove_text_from_text_widgets(self):
@@ -168,6 +157,34 @@ class AppGui:
         image = Image.open(WARNING_IMAGE_PATH)
         resized_image = image.resize((150, 150))
         self.update_result_logo_image(resized_image)
+
+
+    def show_invalid_display(self):
+        self.window['bg'] = 'red'
+        self.show_invalid_image()
+        
+    
+    def show_valid_display(self):
+        self.window['bg'] = 'light green'
+        self.show_valid_image()
+        
+    
+    def show_no_text_found_display(self):
+        self.window['bg'] = 'red'
+        self.remove_text_from_text_widgets()
+        self.show_invalid_image()
+        self.matching_text_widget.insert(END, "Aucun texte détecté !\n",('bold','colored'))   
+    
+    
+    def show_no_match_found_display(self):
+        self.window['bg'] = 'red'
+        self.remove_text_from_result_widget()
+        self.show_invalid_image()
+        self.matching_text_widget.insert(END, "Aucune correspondance trouvée !\n",('bold','colored'))    
+    
+    def show_warning_display(self):
+        self.window['bg'] = 'orange'
+        self.show_warning_image()
 
 
     def show_loading_image(self):

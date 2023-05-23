@@ -16,12 +16,12 @@ StreetFacteur est encore en développement et n'est pas encore fonctionnel. Actu
 
 ### Prérequis
 - Python 3.x
-- Bibliothèques Python : opencv-python, pytesseract, fuzzywuzzy, picamera2
+- Bibliothèques Python : opencv-python, pytesseract, fuzzywuzzy, picamera2, tkinter, pandas
 
 ### Instructions
 1. Clonez le projet depuis le dépôt GitHub
 2. Installez les bibliothèques Python requises en exécutant la commande `pip install -r requirements.txt`
-3. Lancez l'application avec la commande `python main.py`
+3. Lancez l'application avec la commande `python app.py`
 
 ## Utilisation
 1. Connectez votre Raspberry Pi à la caméra et exécutez l'application

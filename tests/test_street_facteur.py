@@ -54,6 +54,14 @@ def test_no_match_found_with_higher_rate_than_threshold():
     client3 = MatchingResult(matching_string="client3", correspondance_ratio=MINIMUM_CORRESPONDANCE_RATE_THRESHOLD - 15, status="RADIE")
     street_facteur.matching_results = [client1, client2, client3]
     assert street_facteur.select_the_good_image_for_help_widget() == "invalid"
+
+
+def test_perfect_matchs_but_at_least_one_is_valid():
+    client1 = MatchingResult(matching_string="client1", correspondance_ratio=100, status="ABONNE")
+    client2 = MatchingResult(matching_string="client2", correspondance_ratio=100, status="DESABONNE")
+    client3 = MatchingResult(matching_string="client3", correspondance_ratio=100, status="RADIE")
+    street_facteur.matching_results = [client1, client2, client3]
+    assert street_facteur.select_the_good_image_for_help_widget() == "valid"
     
     
 def test_no_match_found_at_all():
