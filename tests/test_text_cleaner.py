@@ -12,15 +12,18 @@ def test_can_find_a_date_in_a_string():
     assert text_cleaner.contains_a_date("16/1/80") == True
     assert text_cleaner.contains_a_date("26/1/1880") == True
 
+
 def test_removes_lines_containing_dates():
     text_cleaner.text_to_clean ="my first line\nAnother line containing a date 20/10/1980"
     cleaned_text = text_cleaner.clean_text() 
     assert len(cleaned_text) == 1
     assert cleaned_text[0] == "my first line"
     
+    
 def test_can_find_a_bracket_in_a_string():
     assert text_cleaner.contains_a_bracket("This line doesn't contain a bracket") == False
     assert text_cleaner.contains_a_bracket("This line contains a bracket [") == True    
+
 
 def test_removes_lines_containing_brackets():
     text_cleaner.text_to_clean ="my first line\nAnother line containing a bracket ["
@@ -31,11 +34,13 @@ def test_removes_lines_containing_brackets():
     cleaned_text = text_cleaner.clean_text()
     assert len(cleaned_text) == 0
 
+
 def test_can_find_a_sequence_of_digits():
     assert text_cleaner.contains_a_sequence_of_digits("This line doesn't contain a series of consecutive numbers") == False
     assert text_cleaner.contains_a_sequence_of_digits("26/05/1980") == False
     assert text_cleaner.contains_a_sequence_of_digits("123456789") == True
     assert text_cleaner.contains_a_sequence_of_digits("This line contains a series of consecutive numbers 123456789") == True
+    
     
 def test_removes_lines_containing_a_sequence_of_digits():
     text_cleaner.text_to_clean ="my first line\nAnother line containing a series of consecutive numbers 123456789"
@@ -45,6 +50,7 @@ def test_removes_lines_containing_a_sequence_of_digits():
     text_cleaner.text_to_clean = "123456789"
     cleaned_text = text_cleaner.clean_text()
     assert len(cleaned_text) == 0
+    
     
 def test_can_find_a_valid_line():
     line_with_three_chars = "abc"
@@ -77,12 +83,11 @@ def test_can_find_a_line_contains_a_banned_word():
     assert text_cleaner.contains_a_banned_word("This line doesn't contain a banned word") == False
     for word in BANNED_WORDS_LIST:
         assert text_cleaner.contains_a_banned_word(word) == True
-        assert text_cleaner.contains_a_banned_word("This line contains a banned word " + word) == True
 
         
 def test_removes_lines_containing_banned_words():
     for index in range(len(BANNED_WORDS_LIST)):
-        text_cleaner.text_to_clean ="my first line\nAnother line containing a banned word " + BANNED_WORDS_LIST[index]
+        text_cleaner.text_to_clean ="my first line\n" + BANNED_WORDS_LIST[index]
         cleaned_text = text_cleaner.clean_text()
         assert len(cleaned_text) == 1
         assert cleaned_text[0] == "my first line"
@@ -129,3 +134,14 @@ def test_remove_caps_lock_adress():
     assert len(cleaned_text) == 1
     assert cleaned_text[0] == "my first line"
     
+    
+def test_remove_france_but_not_company_name_with_france():
+    text_cleaner.text_to_clean ="my first line\n9 RUE DE CONDE\n33000 BORDEAUX\nMy company France"
+    cleaned_text = text_cleaner.clean_text()
+    assert len(cleaned_text) == 2
+    assert cleaned_text[0] == "my first line"
+    assert cleaned_text[1] == "my company france"
+    text_cleaner.text_to_clean = "Les compagnons de France \n 9 RUE DE CONDE\n33000 BORDEAUX\n France"
+    cleaned_text = text_cleaner.clean_text()
+    assert len(cleaned_text) == 1
+    assert cleaned_text[0] == "les compagnons de france"

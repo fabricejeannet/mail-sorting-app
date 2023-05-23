@@ -1,6 +1,7 @@
 import re
 from fuzzywuzzy import fuzz
 from text_processor.text_constants import *
+import logging
 
 class TextCleaner:
 
@@ -33,7 +34,8 @@ class TextCleaner:
         banned_word_found = False
         banned_words_index = 0
         while not banned_word_found and banned_words_index < len(BANNED_WORDS_LIST):
-            banned_word_found = max(fuzz.partial_ratio(line,BANNED_WORDS_LIST[banned_words_index]),fuzz.ratio(line, BANNED_WORDS_LIST[banned_words_index])) >= 90
+            banned_word_found = int((fuzz.partial_ratio(line,BANNED_WORDS_LIST[banned_words_index]) + fuzz.ratio(line, BANNED_WORDS_LIST[banned_words_index]))/2) >= 90
+            
             banned_words_index += 1
         return banned_word_found
     

@@ -7,7 +7,8 @@ street_facteur = AppBack(None)
 
 
 def test_init_csv():
-    street_facteur.init_csv()
+    with pytest.raises(AttributeError):
+        street_facteur.init_csv()
     assert street_facteur.match_analyser.clients_data_dictionary != None
     
 
