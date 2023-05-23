@@ -28,7 +28,7 @@ class MatchAnalyser:
     
     
     def get_average_match_ratio(self,line,searched_string):
-        return int((self.get_match_ratio(line,searched_string) + self.get_match_ratio_for_names(line,searched_string)) / 2)
+        return int((self.get_match_ratio(line,searched_string) + fuzz.partial_ratio(line,searched_string) ) / 2)
     
     
     def return_the_top_three_matches_for_a_line(self, line):
@@ -48,8 +48,10 @@ class MatchAnalyser:
             company_name = self.text_cleaner.remove_legal_status(str(companies[index]).lower().strip())
             trade_mark = self.text_cleaner.remove_legal_status(str(trade_marks[index]).lower().strip())
             
-            company_name_match_ratio = self.get_match_ratio_for_company_names(line,company_name)
-            trade_mark_match_ratio = self.get_match_ratio_for_company_names(line,trade_mark)
+
+            company_name_match_ratio = self.get_average_match_ratio(line,company_name)
+            trade_mark_match_ratio = self.get_average_match_ratio(line,trade_mark)
+            
             
             if (company_name_match_ratio > self.threshold):         
                 match_list.append(MatchingResult(company_name, company_name_match_ratio, self.clients_data_dictionary[STATUS][index]))

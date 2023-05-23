@@ -91,7 +91,6 @@ def test_removes_lines_containing_banned_words():
         cleaned_text = text_cleaner.clean_text()
         assert len(cleaned_text) == 1
         assert cleaned_text[0] == "my first line"
-        
     
     
 def test_return_modified_et_lines():
