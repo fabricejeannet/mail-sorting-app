@@ -11,7 +11,7 @@ from match_processor.match_analyser import MatchAnalyser
 from csv_processor.csv_manager import CsvManager
 from csv_processor.csv_constants import *
 from config_processor.config_importer import ConfigImporter
-from exceptions.custom_exceptions import NoTextFoundOnPicture
+from exceptions.custom_exceptions import *
 from image_processor.image_formatter import ImageFormatter
 from image_processor.image_acquisition import ImageAcquisition
 from image_processor.image_constants import *
