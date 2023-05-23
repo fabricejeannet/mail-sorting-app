@@ -13,6 +13,6 @@ REGEX_CABINET = r'\b[cC][aA][bB][iI][nN][eE][tT]\b'
 REGEX_STE = r'\b[sS][tT][eE]\b'
 REGEX_SOCIETE = r'\b[sS][oO][cC][iI][eE][tT][eE]\b'
 
-BANNED_WORDS_LIST = ["33000 bordeaux", "recommande", "coolworking","representant legal", "france", "le dirigeant de l'entreprise" "9 r de conde", "rue de conde","9 rue conde","titulaire du compte", "representant legal", "retour à", "a l'attention du dirigeant" ,"bureau 3", "destinataire", "ecopli", "etage 3", "numero de ", "\\x0c"]
+BANNED_WORDS_LIST = ["33000 bordeaux", "recommande", "coolworking","representant legal", "le dirigeant de l'entreprise" "9 r de conde", "rue de conde","9 rue conde","titulaire du compte", "representant legal", "retour à", "a l'attention du dirigeant" ,"bureau 3", "destinataire", "ecopli", "etage 3", "numero de ", "\\x0c"]
 
 LEGAL_STATUS = [REGEX_SAS, REGEX_SARL, REGEX_SASU, REGEX_EURL, REGEX_SCI, REGEX_SNC, REGEX_EI, REGEX_EIRL, REGEX_CABINET, REGEX_STE, REGEX_SOCIETE]
