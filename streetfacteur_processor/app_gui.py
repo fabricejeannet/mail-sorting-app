@@ -57,7 +57,7 @@ class AppGui:
         self.matching_text_widget.tag_configure("nom", font=("TkDefaultFont", 12, "bold"), foreground="blue", justify="center")
         self.matching_text_widget.tag_configure("statut_valide", font=("TkDefaultFont", 12, "bold"), foreground="green", justify="center")
         self.matching_text_widget.tag_configure("statut_invalide", font=("TkDefaultFont", 12, "bold"), foreground="red", justify="center")
-        self.matching_text_widget.tag_configure("correspondance_rate", font=("Times", 10, "italic"), justify="right")
+        self.matching_text_widget.tag_configure("correspondance_rate", font=("Times", 12, "italic"), justify="right")
         self.matching_text_widget.tag_configure("separator", foreground='gray' , justify="center")
         self.matching_text_widget.tag_configure("bold", font=("TkDefaultFont", 12, "bold"))
 
