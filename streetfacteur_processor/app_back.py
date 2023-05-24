@@ -6,7 +6,6 @@ import numpy as np
 import logging
 import pytesseract
 from text_processor.text_cleaner import TextCleaner
-from text_processor.text_extractor import TextExtractor
 from match_processor.match_analyser import MatchAnalyser
 from csv_processor.csv_manager import CsvManager
 from csv_processor.csv_constants import *
@@ -25,9 +24,9 @@ class AppBack:
         self.csv_manager = CsvManager()
         self.image_formatter = ImageFormatter()
         self.text_cleaner = TextCleaner()
-        self.text_extractor = TextExtractor()
         self.matching_results = []
         self.movement_detected = False
+        self.text_found = False
         self.last_captured_image = None
         self.last_prepared_image = None
      
@@ -124,6 +123,9 @@ class AppBack:
     def display_match_result_on_tkinter_widgets(self):
         self.app_gui.show_analysed_lines(self.analysed_lines)
         self.app_gui.remove_text_from_result_widget()
+        if not self.text_found:
+            self.app_gui.show_no_text_found_display()
+            return
         if not self.client_match_found():
             self.app_gui.show_no_match_found_display()
             return
@@ -229,19 +231,6 @@ class AppBack:
         return False
             
             
-    # def apply_ocr_on_image(self):
-    #     self.reset_ocr_results()
-    #     image_to_analyse = self.image_formatter.get_image_ready_for_text_detection(self.last_captured_image)
-    #     self.last_prepared_image = image_to_analyse
-    #     cv2.imwrite("last_prepared_image.jpg", image_to_analyse)
-    #     cleaned_ocr_text = self.text_extractor.get_cleaned_text_from_image(image_to_analyse)
-    #     self.add_matching_results_from_cleaned_ocr_lines(cleaned_ocr_text)
-    
-    
-    # def add_rectangle_around_analysed_lines(self):
-    #     if(self.analysed_lines and len(self.analysed_lines) > 0):
-    #         self.last_captured_image = self.image_formatter.add_rectangle_around_analysed_lines(self.last_prepared_image, self.last_captured_image, self.analysed_lines)
-    
     def apply_ocr_on_image(self, prepared_image, captured_image):
         df = pytesseract.image_to_data(prepared_image, lang="fra", output_type=pytesseract.Output.DATAFRAME)
         cleaned_ocr_text = []
@@ -253,13 +242,14 @@ class AppBack:
 
             words = words_per_line["text"].values
             line = " ".join(words)
-            line = line.strip().lower()
-            print(f"{line_num} '{line}'")
             logging.info("Readed Line: " + line)
-
-            if self.text_cleaner.is_valid_line(line):
-                print("Found a line which is valid : " + line)
+            cleaned_line = self.text_cleaner.clean_text(line)
+            
+            if cleaned_line != "":
+                self.text_found = True
+                logging.info("Found a line which is valid : " + cleaned_line)
                 word_boxes = []
+                
                 for left, top, width, height in words_per_line[["left", "top", "width", "height"]].values:
                     word_boxes.append((left, top))
                     word_boxes.append((left + width, top + height))
@@ -268,11 +258,9 @@ class AppBack:
                 x = x + RECTANGLE_START_POINT[0]
                 y = y + RECTANGLE_START_POINT[1]
                 cv2.rectangle(captured_image, (x, y), (x + w, y + h), color=(255, 0, 255), thickness=3)
-                cv2.putText(img=captured_image, text=line, org=(x, y), fontFace=cv2.FONT_HERSHEY_COMPLEX,
+                cv2.putText(img=captured_image, text=cleaned_line, org=(x, y), fontFace=cv2.FONT_HERSHEY_COMPLEX,
                             fontScale=1, color=(0, 0, 255), thickness=2)
-
-                line = self.text_cleaner.remove_legal_status(line)
-                cleaned_ocr_text.append(line)
+                cleaned_ocr_text.append(cleaned_line)
         self.add_matching_results_from_cleaned_ocr_lines(cleaned_ocr_text)
 
         return captured_image
@@ -293,22 +281,20 @@ class AppBack:
             self.reset_ocr_results()
             
             if not image_has_been_analysed:
-                logging.info("Attente avant analyse !")
-                self.app_gui.show_waiting_display()
                 final_image = self.image_formatter.get_image_ready_for_preview_display(self.last_captured_image)
                 self.app_gui.update_the_camera_preview_with_last_image(final_image)
 
             if self.movement_detected:
                 logging.info("Mouvement détecté !")
                 image_has_been_analysed = False
+                self.text_found = False
                 self.app_gui.show_movement_detected_display()
-                final_image = self.image_formatter.get_image_ready_for_preview_display(self.last_captured_image)
-                self.app_gui.update_the_camera_preview_with_last_image(final_image)
 
             if self.image_is_steady() and not image_has_been_analysed:
-                logging.info("Image stable, analyse !")
+                self.app_gui.show_waiting_display()
+                self.app_gui.update_window()
+                logging.info("Analyse !")
                 try:
-                    cv2.imwrite("last_prepared_image.jpg", self.last_prepared_image)
                     modified_image = self.apply_ocr_on_image(self.last_prepared_image, self.last_captured_image)
                     self.reorder_results_to_show_the_most_corresponding_result_first()
                     widget_image_name = self.select_the_good_image_for_help_widget()
@@ -317,8 +303,6 @@ class AppBack:
                     resized_modified_image = self.image_formatter.resize_image(modified_image)
                     self.app_gui.update_the_camera_preview_with_last_image(resized_modified_image)
                     image_has_been_analysed = True
-                except NoTextFoundOnPicture:
-                    self.app_gui.show_no_text_found_display()
                 except:
                     logging.info("Erreur lors de l'analyse !")
                     logging.error("Unexpected error:" + str(traceback.format_exc()))

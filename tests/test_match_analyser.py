@@ -65,7 +65,7 @@ def test_if_check_all_columns_for_matching():
     mock_clients = csv_manager.get_clients_data_dictionnary()
     match_analyser = MatchAnalyser(mock_clients)
     assert match_analyser.return_the_top_three_matches_for_a_line("paul durant")[0].matching_string == "paul durand"
-    assert match_analyser.return_the_top_three_matches_for_a_line("mr victorien clemence")[0].matching_string == "mr victorien clemence"
+    assert match_analyser.return_the_top_three_matches_for_a_line("victorien clemence")[0].matching_string == "victorien clemence"
     
     
 def test_aeg():

@@ -33,14 +33,17 @@ class MatchAnalyser:
     
     def return_the_top_three_matches_for_a_line(self, line):
         result_list = self.get_matching_companies(line)
-        result_list.sort(key=lambda x: x.match_ratio, reverse=True)
-        if result_list == [] or result_list[0].match_ratio <= 90:
+        max_match_ratio = max(result_list, key=lambda x: x.match_ratio).match_ratio
+        
+        if result_list == [] or max_match_ratio <= 90:
             result_list += self.get_matching_directors_names(line)
-            result_list.sort(key=lambda x: x.match_ratio, reverse=True)
+   
+        result_list.sort(key=lambda x: x.match_ratio, reverse=True)
         return result_list[:3]
     
     
     def get_matching_companies(self, line):
+        
         match_list = []
         companies = self.clients_data_dictionary[COMPANY_NAME]
         trade_marks = self.clients_data_dictionary[TRADEMARK_NAME]
@@ -48,10 +51,8 @@ class MatchAnalyser:
             company_name = self.text_cleaner.remove_legal_status(str(companies[index]).lower().strip())
             trade_mark = self.text_cleaner.remove_legal_status(str(trade_marks[index]).lower().strip())
             
-
             company_name_match_ratio = self.get_average_match_ratio(line,company_name)
             trade_mark_match_ratio = self.get_average_match_ratio(line,trade_mark)
-            
             
             if (company_name_match_ratio > self.threshold):         
                 match_list.append(MatchingResult(company_name, company_name_match_ratio, self.clients_data_dictionary[STATUS][index]))
@@ -62,13 +63,20 @@ class MatchAnalyser:
 
 
     def get_matching_directors_names(self, line):
-        result_list = []
-        all_research_fields_for_directors = [self.clients_data_dictionary[DIRECTOR_NAME],self.clients_data_dictionary[LEGAL_REPRESENTATIVE]]
-        for research_field in all_research_fields_for_directors:
-            for index in range(len(research_field)):
-                director_name = str(research_field[index]).lower().strip()
-                correspondance_ratio = self.get_match_ratio_for_names(line,director_name)
-                if (correspondance_ratio > self.threshold):
-                    matching_result = MatchingResult(director_name, correspondance_ratio, self.clients_data_dictionary[STATUS][index])
-                    result_list.append(matching_result)
-        return result_list
+        match_list = []
+        director_names = self.clients_data_dictionary[DIRECTOR_NAME]
+        legal_representatives = self.clients_data_dictionary[LEGAL_REPRESENTATIVE]
+        
+        for index in range(len(director_names)):
+            director_name = self.text_cleaner.remove_gender_markers(str(director_names[index]).lower().strip())
+            legal_representative = self.text_cleaner.remove_gender_markers(str(legal_representatives[index]).lower().strip())
+            
+            director_name_match_ratio = self.get_match_ratio_for_names(line,director_name)
+            legal_representative_match_ratio = self.get_match_ratio_for_names(line,legal_representative)
+            
+            if (director_name_match_ratio > self.threshold):         
+                match_list.append(MatchingResult(director_name, director_name_match_ratio, self.clients_data_dictionary[STATUS][index]))
+            elif (legal_representative_match_ratio > self.threshold):
+                match_list.append(MatchingResult(legal_representative, legal_representative_match_ratio, self.clients_data_dictionary[STATUS][index]))
+                
+        return match_list

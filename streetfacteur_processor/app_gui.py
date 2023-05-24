@@ -113,6 +113,7 @@ class AppGui:
     def insert_a_match_in_txt_result_widget(self, company_name, status, correspondance_rate):
         self.matching_text_widget.insert(END, company_name + "\n", "nom")
         self.matching_text_widget.insert(END, status + "\n", "statut_valide" if status == "ABONNE" else "statut_invalide")
+        self.matching_text_widget.insert(END, "Correspondance : ")
         self.matching_text_widget.insert(END, str(correspondance_rate) + "%\n", "correspondance_rate")
 
 
@@ -128,6 +129,7 @@ class AppGui:
         
         
     def show_movement_detected_display(self):
+        self.window['bg'] = 'gray'
         self.remove_text_from_text_widgets()
         self.matching_text_widget.insert(END, "Mouvement détecté !\n",('bold','colored'))
         self.show_shaking_image()
