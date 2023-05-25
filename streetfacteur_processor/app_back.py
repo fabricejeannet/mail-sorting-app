@@ -271,28 +271,27 @@ class AppBack:
 
     def remove_duplicate_matching_results(self):
         logging.info("Removing duplicate matching results")
+        
         self.matching_results.sort(key=lambda x: x.match_ratio, reverse=False)
         currated_matching_results = self.matching_results.copy()
+        
         for index in range(len(self.matching_results)-1):
-            logging.info("boucle 1 Index : " + str(index))
             
-            not_removed = True
-            index2 = index + 1
-            while not_removed and index2 < len(self.matching_results):
-                logging.info("boucle 2 Index : " + str(index2))
-                if self.matching_results[index].client_id == self.matching_results[index2].client_id:
-                    logging.info("Id identique trouvé : " + str(self.matching_results[index2].client_id))
-                    if self.matching_results[index].match_ratio < self.matching_results[index2].match_ratio:
-                        logging.info("Suppression de l'index : " + str(index))
-                        currated_matching_results.remove(self.matching_results[index])
-                        not_removed = False
-                    else:
-                         logging.info("Pas de suppression ")
-                index2 += 1
+            weak_duplicate_removed = False
+            sub_index = index + 1
+            while not weak_duplicate_removed and sub_index < len(self.matching_results):
+                if self.is_a_weak_duplicate(index, sub_index):
+                    currated_matching_results.remove(self.matching_results[index])
+                    weak_duplicate_removed = True
+                        
+                sub_index += 1
                        
-        logging.info("Currated matching results : " + str(currated_matching_results))
-        logging.info("Matching results : " + str(self.matching_results))
         self.matching_results = currated_matching_results.copy()
+        
+        
+    def is_a_weak_duplicate(self, index, sub_index):
+        return self.matching_results[index].client_id == self.matching_results[sub_index].client_id \
+            and self.matching_results[index].match_ratio < self.matching_results[sub_index].match_ratio
         
         
     def main(self):
