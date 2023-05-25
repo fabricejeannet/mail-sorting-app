@@ -22,7 +22,7 @@ def test_show_valid_image_on_full_match():
     client2 = MatchingResult(matching_string="client2", correspondance_ratio=90, status="ABONNE")
     client3 = MatchingResult(matching_string="client3", correspondance_ratio=80, status="ABONNE")
     street_facteur.matching_results = [client1, client2, client3]
-    assert street_facteur.select_the_good_image_for_help_widget() == "valid"
+    assert street_facteur.get_display_status() == "valid"
     
     
 def test_show_warning_image_if_a_result_is_not_subscribed():
@@ -30,14 +30,14 @@ def test_show_warning_image_if_a_result_is_not_subscribed():
     client2 = MatchingResult(matching_string="client2", correspondance_ratio=90, status="ABONNE")
     client3 = MatchingResult(matching_string="client3", correspondance_ratio=80, status="DESABONNE")
     street_facteur.matching_results = [client1, client2, client3]
-    assert street_facteur.select_the_good_image_for_help_widget() == "warning"
+    assert street_facteur.get_display_status() == "warning"
 
 def test_show_warning_if_all_valid_but_no_match_with_a_good_matching_rate():
     client1 = MatchingResult(matching_string="client1", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
     client2 = MatchingResult(matching_string="client2", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 10, status="ABONNE")
     client3 = MatchingResult(matching_string="client3", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD- 20, status="ABONNE")
     street_facteur.matching_results = [client1, client2, client3]
-    assert street_facteur.select_the_good_image_for_help_widget() == "warning"
+    assert street_facteur.get_display_status() == "warning"
     
 
 def test_multiple_valid_results_but_differents_status_return_warning():
@@ -45,7 +45,7 @@ def test_multiple_valid_results_but_differents_status_return_warning():
     client2 = MatchingResult(matching_string="client2", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 10, status="DESABONNE")
     client3 = MatchingResult(matching_string="client3", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 5, status="RADIE")
     street_facteur.matching_results = [client1, client2, client3]
-    assert street_facteur.select_the_good_image_for_help_widget() == "warning"
+    assert street_facteur.get_display_status() == "warning"
     
     
 def test_no_match_found_with_higher_rate_than_threshold():
@@ -53,7 +53,7 @@ def test_no_match_found_with_higher_rate_than_threshold():
     client2 = MatchingResult(matching_string="client2", correspondance_ratio=MINIMUM_CORRESPONDANCE_RATE_THRESHOLD - 10, status="DESABONNE")
     client3 = MatchingResult(matching_string="client3", correspondance_ratio=MINIMUM_CORRESPONDANCE_RATE_THRESHOLD - 15, status="RADIE")
     street_facteur.matching_results = [client1, client2, client3]
-    assert street_facteur.select_the_good_image_for_help_widget() == "invalid"
+    assert street_facteur.get_display_status() == "invalid"
 
 
 def test_perfect_matchs_but_at_least_one_is_valid():
@@ -61,12 +61,12 @@ def test_perfect_matchs_but_at_least_one_is_valid():
     client2 = MatchingResult(matching_string="client2", correspondance_ratio=100, status="DESABONNE")
     client3 = MatchingResult(matching_string="client3", correspondance_ratio=100, status="RADIE")
     street_facteur.matching_results = [client1, client2, client3]
-    assert street_facteur.select_the_good_image_for_help_widget() == "warning"
+    assert street_facteur.get_display_status() == "warning"
     
     
 def test_no_match_found_at_all():
     street_facteur.matching_results = []
-    assert street_facteur.select_the_good_image_for_help_widget() == "invalid"
+    assert street_facteur.get_display_status() == "invalid"
 
 
 def test_check_if_the_first_result_have_a_good_correspondance_rate():

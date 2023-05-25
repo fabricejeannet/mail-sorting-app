@@ -147,7 +147,7 @@ class AppGui:
         self.read_line_widget.replace('1.0', END, "")
         
         
-    def remove_text_from_result_widget(self):
+    def clear_result_widget(self):
         self.matching_text_widget.replace('1.0', END, "")
         
     
@@ -175,12 +175,12 @@ class AppGui:
         self.window['bg'] = 'red'
         self.remove_text_from_text_widgets()
         self.show_invalid_image()
-        self.matching_text_widget.insert(END, "Aucun texte détecté !\n",('bold','colored'))   
+        self.matching_text_widget.insert(END, "Pas de texte valide détécté !\n",('bold','colored'))   
     
     
     def show_no_match_found_display(self):
         self.window['bg'] = 'red'
-        self.remove_text_from_result_widget()
+        self.clear_result_widget()
         self.show_invalid_image()
         self.matching_text_widget.insert(END, "Aucune correspondance trouvée !\n",('bold','colored'))    
     
