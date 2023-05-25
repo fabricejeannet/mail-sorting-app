@@ -33,12 +33,10 @@ class MatchAnalyser:
     
     def return_the_top_three_matches_for_a_line(self, line):
         result_list = self.get_matching_companies(line)
-        max_match_ratio = max(result_list, key=lambda x: x.match_ratio).match_ratio
-        
-        if result_list == [] or max_match_ratio <= 90:
-            result_list += self.get_matching_directors_names(line)
-   
         result_list.sort(key=lambda x: x.match_ratio, reverse=True)
+        if result_list == [] or result_list[0].match_ratio < 90:
+            result_list += self.get_matching_directors_names(line)
+            result_list.sort(key=lambda x: x.match_ratio, reverse=True)
         return result_list[:3]
     
     
@@ -55,9 +53,9 @@ class MatchAnalyser:
             trade_mark_match_ratio = self.get_average_match_ratio(line,trade_mark)
             
             if (company_name_match_ratio > self.threshold):         
-                match_list.append(MatchingResult(company_name, company_name_match_ratio, self.clients_data_dictionary[STATUS][index]))
+                match_list.append(MatchingResult(company_name, company_name_match_ratio, self.clients_data_dictionary[STATUS][index], self.clients_data_dictionary[ID][index]))
             elif (trade_mark_match_ratio > self.threshold):
-                match_list.append(MatchingResult(trade_mark, trade_mark_match_ratio, self.clients_data_dictionary[STATUS][index]))
+                match_list.append(MatchingResult(trade_mark, trade_mark_match_ratio, self.clients_data_dictionary[STATUS][index], self.clients_data_dictionary[ID][index]))
                 
         return match_list
 
@@ -75,8 +73,8 @@ class MatchAnalyser:
             legal_representative_match_ratio = self.get_match_ratio_for_names(line,legal_representative)
             
             if (director_name_match_ratio > self.threshold):         
-                match_list.append(MatchingResult(director_name, director_name_match_ratio, self.clients_data_dictionary[STATUS][index]))
+                match_list.append(MatchingResult(director_name, director_name_match_ratio, self.clients_data_dictionary[STATUS][index], self.clients_data_dictionary[ID][index]))
             elif (legal_representative_match_ratio > self.threshold):
-                match_list.append(MatchingResult(legal_representative, legal_representative_match_ratio, self.clients_data_dictionary[STATUS][index]))
+                match_list.append(MatchingResult(legal_representative, legal_representative_match_ratio, self.clients_data_dictionary[STATUS][index], self.clients_data_dictionary[ID][index]))
                 
         return match_list

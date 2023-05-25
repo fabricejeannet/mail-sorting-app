@@ -211,14 +211,18 @@ class AppBack:
         # Wait for all threads to complete
         for thread in threads:
             thread.join()
+        
+
                 
                 
     def add_matching_result_for_a_line(self, line):
         matching_line_results = self.match_analyser.return_the_top_three_matches_for_a_line(line)
-        for element in matching_line_results:
-            logging.info("element : " + str(element))
-            self.matching_results.append(element)
-            
+        for match in matching_line_results:
+            logging.info("Matching result : " + str(match))
+            self.matching_results.append(match)
+    
+    
+    
     def reorder_results_to_show_the_most_corresponding_result_first(self):
         if(self.matching_results != []):
             self.matching_results.sort(key=lambda x: x.match_ratio, reverse=True)
@@ -265,7 +269,32 @@ class AppBack:
 
         return captured_image
 
-
+    def remove_duplicate_matching_results(self):
+        logging.info("Removing duplicate matching results")
+        self.matching_results.sort(key=lambda x: x.match_ratio, reverse=False)
+        currated_matching_results = self.matching_results.copy()
+        for index in range(len(self.matching_results)-1):
+            logging.info("boucle 1 Index : " + str(index))
+            
+            not_removed = True
+            index2 = index + 1
+            while not_removed and index2 < len(self.matching_results):
+                logging.info("boucle 2 Index : " + str(index2))
+                if self.matching_results[index].client_id == self.matching_results[index2].client_id:
+                    logging.info("Id identique trouvé : " + str(self.matching_results[index2].client_id))
+                    if self.matching_results[index].match_ratio < self.matching_results[index2].match_ratio:
+                        logging.info("Suppression de l'index : " + str(index))
+                        currated_matching_results.remove(self.matching_results[index])
+                        not_removed = False
+                    else:
+                         logging.info("Pas de suppression ")
+                index2 += 1
+                       
+        logging.info("Currated matching results : " + str(currated_matching_results))
+        logging.info("Matching results : " + str(self.matching_results))
+        self.matching_results = currated_matching_results.copy()
+        
+        
     def main(self):
         self.start_camera()
         self.start_movement_detection()
@@ -296,6 +325,7 @@ class AppBack:
                 logging.info("Analyse !")
                 try:
                     modified_image = self.apply_ocr_on_image(self.last_prepared_image, self.last_captured_image)
+                    self.remove_duplicate_matching_results()
                     self.reorder_results_to_show_the_most_corresponding_result_first()
                     widget_image_name = self.select_the_good_image_for_help_widget()
                     self.change_the_help_widget_image(widget_image_name)

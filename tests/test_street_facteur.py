@@ -115,3 +115,34 @@ def test_check_if_the_first_result_is_a_perfect_match():
     client1 = MatchingResult(matching_string="client1", correspondance_ratio=99, status="ABONNE")
     street_facteur.matching_results = [client1]
     assert street_facteur.check_if_the_first_result_is_a_perfect_match() == False
+    
+def test_removes_duplicate_matching_result():
+    matching_results = [\
+        MatchingResult(matching_string="client1", correspondance_ratio=80, status="ABONNE", client_id=1),
+        MatchingResult(matching_string="client2", correspondance_ratio=90, status="ABONNE", client_id=2),
+        MatchingResult(matching_string="client2", correspondance_ratio=70, status="ABONNE", client_id=2),
+        MatchingResult(matching_string="client3", correspondance_ratio=82, status="ABONNE", client_id=3),
+        MatchingResult(matching_string="client2", correspondance_ratio=100, status="ABONNE", client_id=2),
+    ]
+    
+    street_facteur.matching_results = matching_results
+    street_facteur.remove_duplicate_matching_results()
+    assert len(street_facteur.matching_results) == 3
+    assert street_facteur.matching_results[0].client_id == 1
+    assert street_facteur.matching_results[1].client_id == 3
+    assert street_facteur.matching_results[2].client_id == 2
+    assert street_facteur.matching_results[2].match_ratio == 100
+    
+    
+def test_the_perigord():
+    matching_results = [\
+        MatchingResult(matching_string="client1", correspondance_ratio=95, status="ABONNE", client_id=7058),
+        MatchingResult(matching_string="client1", correspondance_ratio=75, status="ABONNE", client_id=7058),
+    ]
+    street_facteur.matching_results = matching_results
+    street_facteur.remove_duplicate_matching_results()
+    assert len(street_facteur.matching_results) == 1
+    assert street_facteur.matching_results[0].client_id == 7058
+    assert street_facteur.matching_results[0].match_ratio == 95
+    
+    
