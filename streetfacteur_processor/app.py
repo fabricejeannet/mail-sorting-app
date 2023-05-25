@@ -3,8 +3,7 @@ from streetfacteur_processor.app_back import AppBack
 from streetfacteur_processor.app_gui import AppGui
 from csv_processor.csv_handler import CsvHandler
 from watchdog.observers import Observer
-import time
-import cProfile
+
 from config_processor.config_importer import ConfigImporter
 
 
