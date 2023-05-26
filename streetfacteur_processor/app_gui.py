@@ -74,7 +74,7 @@ class AppGui:
         self.popup.geometry("350x200")
         self.center_window(self.popup)
 
-        message = "Le fichier CSV a été changé par l'utilisateur, l'application peut rencontrer des problèmes durant les prochaines secondes.\n Merci de patienter, cette fenêtre se fermera automatiquement."
+        message = "Mise à jour du csv.\n Merci de patienter, cette fenêtre se fermera automatiquement."
         self.popup_label = tk.Label(self.popup, text=message, wraplength=280, justify="center", font=("TkDefaultFont", 12, "bold"))
         self.popup_label.pack(pady=20)
 
