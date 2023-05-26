@@ -50,3 +50,8 @@ class ImageFormatter:
         return cv2.resize(image, (RESIZED_IMAGE_WIDTH, RESIZED_IMAGE_HEIGHT))
     
 
+    def add_rectangles_and_text_from_ocr(self,image,x,y,w,h,text):
+        cv2.rectangle(image, (x, y), (x + w, y + h), color=(255, 0, 255), thickness=3)
+        cv2.putText(img=image, text=text, org=(x, y), fontFace=cv2.FONT_HERSHEY_COMPLEX,
+                    fontScale=0.6, color=(0, 0, 255), thickness=1)
+        return image

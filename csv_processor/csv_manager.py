@@ -21,19 +21,26 @@ class CsvManager:
     
     def get_latest_csv_file(self):
         list_of_files = glob.glob(self.csv_file_path + "*.csv")
-        if not list_of_files:
+        found_csv_file = False
+        while not found_csv_file and list_of_files:
+            latest_file = max(list_of_files, key=os.path.getctime)
+            if re.search(self.csv_file_regex, latest_file):
+                found_csv_file = True
+            else:
+                list_of_files.remove(latest_file)
+                
+        if not found_csv_file:
             raise NoCsvFileFound()
-        for file in list_of_files:
-            if not self.is_a_csv_file(file) and not re.search(self.csv_file_regex, file):
-                raise TryToOpenNonCsvFile()
-        latest_file = max(list_of_files, key=os.path.getctime)
+        
         return latest_file
         
         
-    def open_csv_file(self,file_name):
-        if not self.is_a_csv_file(file_name):
+    def open_csv_file(self,file_path):
+        if not self.is_a_csv_file(file_path):
             raise TryToOpenNonCsvFile()
-        self.dataframe = pandas.read_csv(file_name)
+        
+        self.dataframe = pandas.read_csv(file_path)
+            
         if self.dataframe.empty:
             raise TryToOpenEmptyCsvFile()
     

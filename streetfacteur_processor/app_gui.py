@@ -3,6 +3,7 @@ from tkinter import Tk, Label, Frame, Button, Text,  Y, END, LEFT, messagebox
 from PIL import ImageTk, Image
 import tkinter as tk
 import logging
+from streetfacteur_processor.app_constants import *
 
 
 logging.basicConfig(level=logging.INFO, filename="app.log", filemode="w")
@@ -68,17 +69,18 @@ class AppGui:
         self.camera_frame.place(relx=.01, y=5)
 
 
-    def popup_message(self):
+    def csv_popup_message(self, popup_status):
         self.popup = tk.Toplevel(self.window)
         self.popup.title("Changement du CSV")
         self.popup.geometry("350x200")
         self.center_window(self.popup)
-
-        message = "Mise à jour du csv.\n Merci de patienter, cette fenêtre se fermera automatiquement."
-        self.popup_label = tk.Label(self.popup, text=message, wraplength=280, justify="center", font=("TkDefaultFont", 12, "bold"))
+        if popup_status == PopupStatus.CSV_POPUP:
+            self.popup_label = tk.Label(self.popup, text=CSV_POPUP_MESSAGE, wraplength=280, justify="center", font=("TkDefaultFont", 12, "bold"))
+            self.window.after(5500, self.close_popup_message)
+        else :
+            self.popup_label = tk.Label(self.popup, text=NO_CSV_FILE_POPUP_MESSAGE, wraplength=280, justify="center", font=("TkDefaultFont", 12, "bold"))
         self.popup_label.pack(pady=20)
 
-        self.window.after(5500, self.close_popup_message)
 
 
     def close_popup_message(self):
@@ -138,25 +140,25 @@ class AppGui:
         self.matching_text_widget.insert(END, "---------------------\n", "separator")
 
 
-    def show_waiting_display(self):
+    def show_loading_display(self):
         self.window['bg'] = 'gray'
         self.remove_text_from_text_widgets()
-        self.matching_text_widget.insert(END, "Attente avant analyse !\n",('bold','colored'))
+        self.matching_text_widget.insert(END, ANALYSING_TEXT,('bold','colored'))
         self.show_loading_image()
         
         
     def show_movement_detected_display(self):
         self.window['bg'] = 'gray'
         self.remove_text_from_text_widgets()
-        self.matching_text_widget.insert(END, "Mouvement détecté !\n",('bold','colored'))
+        self.matching_text_widget.insert(END, MOTION_DETECTED,('bold','colored'))
         self.show_shaking_image()
 
 
     def show_analysed_lines(self, analysed_lines):
         self.remove_text_from_analysed_lines_widget()
-        self.read_line_widget.insert(END, "Lignes analysées : \n",('bold','blue'))
+        self.read_line_widget.insert(END, "Lignes analysées : ",('bold','blue'))
         for analysed_line in analysed_lines:
-            self.read_line_widget.insert(END, analysed_line + " , ", "blue")
+            self.read_line_widget.insert(END, analysed_line + "\n", "blue")
             
             
     def remove_text_from_text_widgets(self):
@@ -242,7 +244,8 @@ class AppGui:
         final_image = ImageTk.PhotoImage(final_image)
         # Update the image displayed in the Label Widget
         self.camera_preview_zone.configure(image=final_image)
-        self.camera_preview_zone.image = final_image   
+        self.camera_preview_zone.image = final_image  
+        self.update_window() 
         
     
     def update_window(self):

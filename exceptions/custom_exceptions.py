@@ -16,6 +16,11 @@ class TryToOpenNonCsvFile(Exception):
     def __init__(self):
         self.message = "Try to open a non csv file"
         
+    
+class UnexpectedCsvFile(Exception):
+    def __init__(self):
+        self.message = "Unexpected csv file"
+        
         
 class TryToOpenEmptyCsvFile(Exception):
     def __init__(self):

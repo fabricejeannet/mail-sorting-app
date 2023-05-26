@@ -45,7 +45,9 @@ class MatchAnalyser:
         match_list = []
         companies = self.clients_data_dictionary[COMPANY_NAME]
         trade_marks = self.clients_data_dictionary[TRADEMARK_NAME]
-        for index in range(len(companies)):
+        perfect_match_found = False
+        index = 0
+        while (not perfect_match_found and index < len(companies)):
             company_name = self.text_cleaner.remove_legal_status(str(companies[index]).lower().strip())
             trade_mark = self.text_cleaner.remove_legal_status(str(trade_marks[index]).lower().strip())
             
@@ -56,7 +58,10 @@ class MatchAnalyser:
                 match_list.append(MatchingResult(company_name, company_name_match_ratio, self.clients_data_dictionary[STATUS][index], self.clients_data_dictionary[ID][index]))
             elif (trade_mark_match_ratio > self.threshold):
                 match_list.append(MatchingResult(trade_mark, trade_mark_match_ratio, self.clients_data_dictionary[STATUS][index], self.clients_data_dictionary[ID][index]))
-                
+            if (company_name_match_ratio == 100 or trade_mark_match_ratio == 100):
+                perfect_match_found = True
+            index += 1
+            
         return match_list
 
 
@@ -64,8 +69,9 @@ class MatchAnalyser:
         match_list = []
         director_names = self.clients_data_dictionary[DIRECTOR_NAME]
         legal_representatives = self.clients_data_dictionary[LEGAL_REPRESENTATIVE]
-        
-        for index in range(len(director_names)):
+        perfect_match_found = False
+        index = 0
+        while (not perfect_match_found and index < len(director_names)):
             director_name = self.text_cleaner.remove_gender_markers(str(director_names[index]).lower().strip())
             legal_representative = self.text_cleaner.remove_gender_markers(str(legal_representatives[index]).lower().strip())
             
@@ -77,4 +83,7 @@ class MatchAnalyser:
             elif (legal_representative_match_ratio > self.threshold):
                 match_list.append(MatchingResult(legal_representative, legal_representative_match_ratio, self.clients_data_dictionary[STATUS][index], self.clients_data_dictionary[ID][index]))
                 
+            if (director_name_match_ratio == 100 or legal_representative_match_ratio == 100):
+                perfect_match_found = True
+            index += 1
         return match_list

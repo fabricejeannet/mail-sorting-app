@@ -1,5 +1,3 @@
-import time
-from config_processor.config_importer import ConfigImporter
 from watchdog.events import FileSystemEventHandler
 import logging
 
@@ -14,6 +12,7 @@ class CsvHandler(FileSystemEventHandler):
         if not event.is_directory and event.src_path.endswith('.csv'):
             logging.info("New csv file detected: " + event.src_path)
             logging.info("Processing csv file...")
+            
             self.controller.init_csv()
                 
     

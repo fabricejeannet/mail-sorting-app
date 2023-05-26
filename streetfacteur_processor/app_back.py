@@ -30,25 +30,41 @@ class AppBack:
         self.movement_detected = False
         self.valid_lines_found = False
         self.show_csv_popup = False
+        self.system_is_running = True
+
         self.image_acquisition.last_captured_image = None
         self.image_acquisition.last_prepared_image = None
         
         self.init_csv(False)
         
     
-    def init_csv(self, show_popup=True):
-        self.show_csv_popup = show_popup
-        time.sleep(5)
-        csv_file_name = self.csv_manager.get_latest_csv_file()
-        self.csv_manager.open_csv_file(csv_file_name)
-        logging.info("Loaded csv file : " + csv_file_name)
-        logging.info("Csv file columns : " + str(self.csv_manager.dataframe.columns))
-        logging.info("Csv file number of rows : " + str(self.csv_manager.dataframe.shape[0]))
-        clients_data_dictionary = self.csv_manager.get_clients_data_dictionnary()
-        self.match_analyser = MatchAnalyser(clients_data_dictionary)
+    def init_csv(self, want_to_show_popup=True):
+        
+        try :
+            csv_file_name = self.csv_manager.get_latest_csv_file()
+            if want_to_show_popup:
+                self.show_csv_popup = PopupStatus.CSV_POPUP
+            else:
+                self.show_csv_popup = PopupStatus.NO_POPUP
+            time.sleep(5)
+            self.csv_manager.open_csv_file(csv_file_name)
+            logging.info("Loaded csv file : " + csv_file_name)
+            logging.info("Csv file columns : " + str(self.csv_manager.dataframe.columns))
+            logging.info("Csv file number of rows : " + str(self.csv_manager.dataframe.shape[0]))
+            clients_data_dictionary = self.csv_manager.get_clients_data_dictionnary()
+            self.match_analyser = MatchAnalyser(clients_data_dictionary)
+
+        except NoCsvFileFound:
+            self.show_csv_popup = PopupStatus.NO_CSV_FILE_POPUP
+            logging.error("No csv file found")
+        
+        except FileNotFoundError:
+            self.init_csv()
+            
+        
         
             
-    def display_match_result_on_tkinter_widgets(self):
+    def show_correct_display_depending_on_results(self):
         self.app_gui.show_analysed_lines(self.analysed_lines)
         self.app_gui.clear_result_widget()
         
@@ -122,7 +138,6 @@ class AppBack:
         logging.info("Total cleaned ocr text : " + str(cleaned_ocr_text))
         self.analysed_lines = cleaned_ocr_text
 
-        # List the created threads
         threads = []
 
         for line in cleaned_ocr_text:
@@ -180,9 +195,9 @@ class AppBack:
                 x, y, w, h = cv2.boundingRect(np.array(word_boxes))
                 x = x + RECTANGLE_START_POINT[0]
                 y = y + RECTANGLE_START_POINT[1]
-                cv2.rectangle(captured_image, (x, y), (x + w, y + h), color=(255, 0, 255), thickness=3)
-                cv2.putText(img=captured_image, text=cleaned_line, org=(x, y), fontFace=cv2.FONT_HERSHEY_COMPLEX,
-                            fontScale=1, color=(0, 0, 255), thickness=2)
+                
+                captured_image = self.image_formatter.add_rectangles_and_text_from_ocr(captured_image, x, y, w, h, cleaned_line)
+                
                 cleaned_ocr_text.append(cleaned_line)
         self.add_matching_results_from_cleaned_ocr_lines(cleaned_ocr_text)
 
@@ -224,13 +239,18 @@ class AppBack:
         self.app_gui.update_the_camera_preview_with_last_image(final_image)
 
         # Start a loop to continuously update the displayed image
-        while True:
+        while self.system_is_running:
             self.reset_ocr_results()
             
-            if self.show_csv_popup:
+            if self.show_csv_popup != PopupStatus.NO_POPUP:
                 logging.info("Showing popup message...")
-                self.app_gui.window.after(0, self.app_gui.popup_message)
-                self.show_csv_popup = False
+                self.app_gui.csv_popup_message(self.show_csv_popup)
+                if self.show_csv_popup == PopupStatus.NO_CSV_FILE_POPUP:
+                    time.sleep(5)
+                    self.system_is_running = False
+                
+                self.show_csv_popup = PopupStatus.NO_POPUP
+                    
                 
             if not image_has_been_analysed:
                 final_image = self.image_formatter.get_image_ready_for_preview_display(self.image_acquisition.last_captured_image)
@@ -243,7 +263,7 @@ class AppBack:
                 self.app_gui.show_movement_detected_display()
 
             if self.image_acquisition.image_is_steady() and not image_has_been_analysed:
-                self.app_gui.show_waiting_display()
+                self.app_gui.show_loading_display()
                 self.app_gui.update_window()
                 logging.info("Analyse !")
                 try:
@@ -251,7 +271,7 @@ class AppBack:
                     self.remove_duplicate_matching_results()
                     self.reorder_results_to_show_the_most_corresponding_result_first()
                     self.show_status_icon(self.get_display_status())                    
-                    self.display_match_result_on_tkinter_widgets()
+                    self.show_correct_display_depending_on_results()
                     resized_modified_image = self.image_formatter.resize_image(modified_image)
                     self.app_gui.update_the_camera_preview_with_last_image(resized_modified_image)
                     image_has_been_analysed = True
