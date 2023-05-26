@@ -29,15 +29,15 @@ class AppBack:
         self.matching_results = []
         self.movement_detected = False
         self.valid_lines_found = False
+        self.show_csv_popup = False
         self.image_acquisition.last_captured_image = None
         self.image_acquisition.last_prepared_image = None
-     
+        
         self.init_csv(False)
         
     
     def init_csv(self, show_popup=True):
-        if show_popup:
-            self.app_gui.popup_message()
+        self.show_csv_popup = show_popup
         time.sleep(5)
         csv_file_name = self.csv_manager.get_latest_csv_file()
         self.csv_manager.open_csv_file(csv_file_name)
@@ -227,6 +227,11 @@ class AppBack:
         while True:
             self.reset_ocr_results()
             
+            if self.show_csv_popup:
+                logging.info("Showing popup message...")
+                self.app_gui.window.after(0, self.app_gui.popup_message)
+                self.show_csv_popup = False
+                
             if not image_has_been_analysed:
                 final_image = self.image_formatter.get_image_ready_for_preview_display(self.image_acquisition.last_captured_image)
                 self.app_gui.update_the_camera_preview_with_last_image(final_image)

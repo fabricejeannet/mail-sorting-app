@@ -39,7 +39,7 @@ class AppGui:
         # Create a frame and a label to display the result logo
         self.create_the_result_logo_frame()
         self.create_the_result_logo_widget()
-
+        
         
     def create_the_text_result_frame(self):
         self.text_frame = Frame(self.window, width=150, height=200, bg="white")
@@ -69,12 +69,29 @@ class AppGui:
 
 
     def popup_message(self):
-        messagebox.showinfo("Changement du CSV", "Le fichier CSV a été changé par l'utilisateur, l'application peut rencontrer des problèmes durant les prochaines secondes.")
+        self.popup = tk.Toplevel(self.window)
+        self.popup.title("Changement du CSV")
+        self.popup.geometry("350x200")
+        self.center_window(self.popup)
+
+        message = "Le fichier CSV a été changé par l'utilisateur, l'application peut rencontrer des problèmes durant les prochaines secondes.\n Merci de patienter, cette fenêtre se fermera automatiquement."
+        self.popup_label = tk.Label(self.popup, text=message, wraplength=280, justify="center", font=("TkDefaultFont", 12, "bold"))
+        self.popup_label.pack(pady=20)
+
+        self.window.after(5500, self.close_popup_message)
 
 
-    def create_the_pop_up(self):
-        popup_button = tk.Button(self.window, text="Afficher la pop-up", command=self.popup_message)
-        popup_button.pack()
+    def close_popup_message(self):
+        self.popup.destroy()
+
+
+    def center_window(self, window):
+        window.update_idletasks()
+        width = window.winfo_width()
+        height = window.winfo_height()
+        x = (window.winfo_screenwidth() // 2) - (width // 2)
+        y = (window.winfo_screenheight() // 2) - (height // 2)
+        window.geometry(f"{width}x{height}+{x}+{y}")
 
 
     def create_the_camera_preview_zone(self):
