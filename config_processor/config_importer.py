@@ -29,3 +29,11 @@ class ConfigImporter:
     
     def get_image_minimum_threshold(self):
         return self.config["image"]["minimum_valid_ratio_threshold"]
+    
+    
+    def get_keyboard_icon_path(self):
+        return self.config["icons"]["keyboard_icon_path"]
+    
+    
+    def get_camera_icon_path(self):
+        return self.config["icons"]["camera_icon_path"]

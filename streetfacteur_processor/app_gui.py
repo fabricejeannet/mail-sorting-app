@@ -1,5 +1,6 @@
 from image_processor.image_constants import *
-from tkinter import Tk, Label, Frame, Button, Text,  Y, END, LEFT, messagebox
+from config_processor.config_importer import ConfigImporter
+from tkinter import Tk , Button, Label, Frame, Entry, Text, END, INSERT, LEFT, RIGHT, TOP, BOTTOM, BOTH, X, Y, NONE, Canvas
 from PIL import ImageTk, Image
 import tkinter as tk
 import logging
@@ -12,9 +13,17 @@ logging.debug('Log Start')
 class AppGui:
     
     def __init__(self):
-        self.create_the_app_window()
+        config_importer = ConfigImporter()
         self.popup = None
         logging.info("App window created")
+        
+        self.camera_image_path = config_importer.get_camera_icon_path()
+        
+        
+        self.keyboard_image_path = config_importer.get_keyboard_icon_path()
+        
+        
+        self.create_the_app_window()
 
         
     def create_the_app_window(self):
@@ -26,28 +35,120 @@ class AppGui:
         self.window.resizable(width=False, height=False)
         self.window.configure(background='gray')
         
-        # Create a frame and a label to display the camera preview
+        image = Image.open(self.camera_image_path)
+        image = image.resize((55, 55))  
+        self.camera_icon = ImageTk.PhotoImage(image)
+        
+        image = Image.open(self.keyboard_image_path)
+        image = image.resize((55, 55))  
+        self.keyboard_icon = ImageTk.PhotoImage(image)
+        
         self.create_the_camera_frame()
+        self.create_the_camera_frame_widgets()
+        
+        self.create_the_keyboard_frame()
+        self.create_the_keyboard_widgets()
+        
+        self.show_camera_frame()
+        
+    
+    def create_the_keyboard_frame(self):
+        self.keyboard_frame = Frame(self.window)
+        # Configurer la frame du clavier
+        self.keyboard_frame.pack(fill='both', expand=True)
+        
+        
+    def create_the_keyboard_widgets(self):
+        # Création de sous-frames à l'intérieur de la frame clavier
+        search_frame = Frame(self.keyboard_frame)
+        search_frame.pack()
+        
+        self.user_entry = Entry(search_frame,bg="white",width=35, borderwidth=5, font=('Helvetica', 20), justify='center', relief='sunken', highlightthickness=2, highlightcolor="black", highlightbackground="black")
+        self.user_entry.pack()
+        self.user_entry.focus_set()
+
+        button_frame = Frame(self.keyboard_frame)
+        button_frame.pack()
+        # Création des widgets dans la sous-frame du clavier
+        search_button = Button(search_frame, text="Recherche")
+        search_button.pack()
+        search_frame.place(relx=0.02, rely=0.1)
+
+        clear_button = Button(search_frame, text="Effacer", command=self.clean_text_of_user_entry)
+        clear_button.pack(side="left")
+        
+        self.create_switch_button_frame(self.keyboard_frame)
+        self.create_keyboard_switch_button()
+
+    def create_the_camera_frame(self):
+        self.camera_frame = Frame(self.window)
+        # Configurer la frame de la caméra
+        self.camera_frame.pack(fill='both', expand=True)
+
+
+    def create_switch_button_frame(self, frame):
+        button_frame = Frame(frame)
+        button_frame.pack()
+        button_frame.place(relx=0.01, rely=0.87)
+        self.switch_button_frame = button_frame
+    
+    
+    def create_keyboard_switch_button(self):        
+        # Resizing image to fit on button
+        button = Button(self.switch_button_frame, command=self.show_camera_frame, image=self.camera_icon)
+        button.pack()
+        
+    
+    def create_camera_switch_button(self):
+        # Resizing image to fit on button
+        button = Button(self.switch_button_frame, command=self.show_keyboard_frame, image=self.keyboard_icon)
+        button.pack()
+
+
+    def create_the_camera_frame_widgets(self):
         self.create_the_camera_preview_zone()
         
-        #Create a text frame and a text widget to display the result of the OCR
-        self.create_the_text_result_frame()
-        self.create_the_text_result_widget()
-
-        # Create a frame and a text widget to display the readed line 
-        self.create_the_readed_line_frame()
-        self.create_the_readed_line_widget()		
-        
-        # Create a frame and a label to display the result logo
-        self.create_the_result_logo_frame()
+        self.create_text_result(self.camera_frame)
+        readed_line_frame = self.create_the_readed_line_frame(self.camera_frame)
+        self.create_the_readed_line_widget(readed_line_frame)
+        self.create_the_result_logo_frame(self.camera_frame)
         self.create_the_result_logo_widget()
         
+        self.create_switch_button_frame(self.camera_frame)
+        self.create_camera_switch_button()
+
+
+    def show_keyboard_frame(self):
+        self.camera_frame.pack_forget()
+        self.create_text_result(self.keyboard_frame)
         
-    def create_the_text_result_frame(self):
-        self.text_frame = Frame(self.window, width=150, height=200, bg="white")
+        self.create_the_result_logo_frame(self.keyboard_frame)
+        self.create_the_result_logo_widget()
+        self.keyboard_frame.pack(fill='both', expand=True)
+
+
+    def show_camera_frame(self):
+        self.keyboard_frame.pack_forget()
+        self.create_text_result(self.camera_frame)
+        
+        self.create_the_result_logo_frame(self.camera_frame)
+        self.create_the_result_logo_widget()
+        self.camera_frame.pack(fill='both', expand=True)
+
+
+    def create_text_result(self, frame):
+        self.create_the_text_result_frame(frame)
+        self.create_the_text_result_widget()
+
+        
+    def create_the_text_result_frame(self,frame):
+        self.text_frame = Frame(frame, width=150, height=200, bg="white")
         self.text_frame.pack()
         self.text_frame.place(relx=.72, rely=.012)
-
+        
+        
+    def clean_text_of_user_entry(self):
+        self.user_entry.delete(0, END)
 
     def create_the_text_result_widget(self):
         # Create a Text widget
@@ -62,12 +163,6 @@ class AppGui:
         self.matching_text_widget.tag_configure("correspondance_rate", font=("Times", 14, "italic"), justify="right")
         self.matching_text_widget.tag_configure("separator", foreground='gray' , justify="center")
         self.matching_text_widget.tag_configure("bold", font=("TkDefaultFont", 14, "bold"))
-
-
-    def create_the_camera_frame(self):
-        self.camera_frame = Frame(self.window, width=550, height=405)
-        self.camera_frame.pack()
-        self.camera_frame.place(relx=.01, y=5)
 
 
     def csv_popup_message(self, popup_status):
@@ -100,25 +195,27 @@ class AppGui:
 
 
     def create_the_camera_preview_zone(self):
-        self.camera_preview_zone = Label(self.camera_frame)
+        self.camera_preview_zone = Label(self.camera_frame, width=550, height=405, bg="black")
         self.camera_preview_zone.pack()
+        self.camera_preview_zone.place(relx=.01, y=5)
 
 
-    def create_the_readed_line_frame(self):
-        self.readed_line_frame = Frame(self.window, width=550, height=50)
-        self.readed_line_frame.pack()
-        self.readed_line_frame.place(relx=.01, rely=.88)
+    def create_the_readed_line_frame(self, frame):
+        readed_line_frame = Frame(frame, width=550, height=50)
+        readed_line_frame.pack()
+        readed_line_frame.place(relx=.1, rely=.88)
+        return readed_line_frame
 
 
-    def create_the_readed_line_widget(self):
-        self.read_line_widget = Text(self.readed_line_frame, width = 68, height=3)
+    def create_the_readed_line_widget(self, frame):
+        self.read_line_widget = Text(frame, width = 60, height=3)
         self.read_line_widget.pack(side=LEFT, fill=Y)
         self.read_line_widget.tag_configure("normal", font=("TkDefaultFont", 14, "normal"))
         self.read_line_widget.tag_configure("bold", font=("TkDefaultFont", 14, "bold"))
 
 
-    def create_the_result_logo_frame(self):
-        self.result_logo_frame = Frame(self.window, width=150, height=100)
+    def create_the_result_logo_frame(self, frame):
+        self.result_logo_frame = Frame(frame, width=150, height=100)
         self.result_logo_frame.pack()
         self.result_logo_frame.place(relx=.75, rely=.65)
 
