@@ -13,6 +13,7 @@ class AppGui:
     
     def __init__(self):
         self.create_the_app_window()
+        self.popup = None
         logging.info("App window created")
 
         
@@ -55,12 +56,12 @@ class AppGui:
         self.matching_text_widget.tag_configure("blue", foreground="blue")
         self.matching_text_widget.tag_configure("red", foreground="red")
         self.matching_text_widget.tag_configure("green", foreground="green")
-        self.matching_text_widget.tag_configure("nom", font=("TkDefaultFont", 12, "bold"), foreground="blue", justify="center")
-        self.matching_text_widget.tag_configure("statut_valide", font=("TkDefaultFont", 12, "bold"), foreground="green", justify="center")
-        self.matching_text_widget.tag_configure("statut_invalide", font=("TkDefaultFont", 12, "bold"), foreground="red", justify="center")
-        self.matching_text_widget.tag_configure("correspondance_rate", font=("Times", 12, "italic"), justify="right")
+        self.matching_text_widget.tag_configure("nom", font=("TkDefaultFont", 14, "bold"), foreground="blue", justify="center")
+        self.matching_text_widget.tag_configure("statut_valide", font=("TkDefaultFont", 14, "bold"), foreground="green", justify="center")
+        self.matching_text_widget.tag_configure("statut_invalide", font=("TkDefaultFont", 14, "bold"), foreground="red", justify="center")
+        self.matching_text_widget.tag_configure("correspondance_rate", font=("Times", 14, "italic"), justify="right")
         self.matching_text_widget.tag_configure("separator", foreground='gray' , justify="center")
-        self.matching_text_widget.tag_configure("bold", font=("TkDefaultFont", 12, "bold"))
+        self.matching_text_widget.tag_configure("bold", font=("TkDefaultFont", 14, "bold"))
 
 
     def create_the_camera_frame(self):
@@ -70,21 +71,23 @@ class AppGui:
 
 
     def csv_popup_message(self, popup_status):
+        self.close_popup_message()
         self.popup = tk.Toplevel(self.window)
         self.popup.title("Changement du CSV")
-        self.popup.geometry("350x200")
+        self.popup.attributes('-fullscreen', True)
         self.center_window(self.popup)
         if popup_status == PopupStatus.CSV_POPUP:
-            self.popup_label = tk.Label(self.popup, text=CSV_POPUP_MESSAGE, wraplength=280, justify="center", font=("TkDefaultFont", 12, "bold"))
+            self.popup_label = tk.Label(self.popup, text=CSV_POPUP_MESSAGE, wraplength=400, justify="center", font=("TkDefaultFont", 22, "bold"))
             self.window.after(5500, self.close_popup_message)
         else :
-            self.popup_label = tk.Label(self.popup, text=NO_CSV_FILE_POPUP_MESSAGE, wraplength=280, justify="center", font=("TkDefaultFont", 12, "bold"))
+            self.popup_label = tk.Label(self.popup, text=NO_CSV_FILE_POPUP_MESSAGE, wraplength=400, justify="center", font=("TkDefaultFont", 22, "bold"))
         self.popup_label.pack(pady=20)
 
 
 
     def close_popup_message(self):
-        self.popup.destroy()
+        if self.popup is not None:
+            self.popup.destroy()
 
 
     def center_window(self, window):
@@ -110,8 +113,8 @@ class AppGui:
     def create_the_readed_line_widget(self):
         self.read_line_widget = Text(self.readed_line_frame, width = 68, height=3)
         self.read_line_widget.pack(side=LEFT, fill=Y)
-        self.read_line_widget.tag_configure("blue", foreground="blue")
-        self.read_line_widget.tag_configure("bold", font=("TkDefaultFont", 12, "bold"))
+        self.read_line_widget.tag_configure("normal", font=("TkDefaultFont", 14, "normal"))
+        self.read_line_widget.tag_configure("bold", font=("TkDefaultFont", 14, "bold"))
 
 
     def create_the_result_logo_frame(self):
@@ -158,7 +161,7 @@ class AppGui:
         self.remove_text_from_analysed_lines_widget()
         self.read_line_widget.insert(END, "Lignes analysées : ",('bold','blue'))
         for analysed_line in analysed_lines:
-            self.read_line_widget.insert(END, analysed_line + "\n", "blue")
+            self.read_line_widget.insert(END, analysed_line + "\n", "normal")
             
             
     def remove_text_from_text_widgets(self):

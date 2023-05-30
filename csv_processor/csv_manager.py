@@ -1,7 +1,8 @@
 import pandas
 import glob
-import os
+import pathlib
 import re
+import logging
 from exceptions.custom_exceptions import *
 from csv_processor.csv_constants import *
 from config_processor.config_importer import ConfigImporter
@@ -22,8 +23,12 @@ class CsvManager:
     def get_latest_csv_file(self):
         list_of_files = glob.glob(self.csv_file_path + "*.csv")
         found_csv_file = False
+        logging.info("list_of_files: " + str(list_of_files))
         while not found_csv_file and list_of_files:
-            latest_file = max(list_of_files, key=os.path.getctime)
+            #Get latest file depending on last modification date of the file
+            latest_file = max(list_of_files, key=lambda file: pathlib.Path(file).stat().st_mtime)
+            
+            logging.info("Latest csv file found: " + latest_file)
             if re.search(self.csv_file_regex, latest_file):
                 found_csv_file = True
             else:

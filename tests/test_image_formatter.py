@@ -1,7 +1,5 @@
 from image_processor.image_formatter import ImageFormatter
 from image_processor.image_acquisition import ImageAcquisition
-from image_processor.image_constants import RECTANGLE_START_POINT, RECTANGLE_END_POINT
-from pyzbar import pyzbar
 image_formatter = ImageFormatter()
 image_acquisition = ImageAcquisition()
 

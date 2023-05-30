@@ -31,9 +31,6 @@ class AppBack:
         self.valid_lines_found = False
         self.show_csv_popup = False
         self.system_is_running = True
-
-        self.image_acquisition.last_captured_image = None
-        self.image_acquisition.last_prepared_image = None
         
         self.init_csv(False)
         
@@ -41,12 +38,12 @@ class AppBack:
     def init_csv(self, want_to_show_popup=True):
         
         try :
-            csv_file_name = self.csv_manager.get_latest_csv_file()
             if want_to_show_popup:
                 self.show_csv_popup = PopupStatus.CSV_POPUP
             else:
                 self.show_csv_popup = PopupStatus.NO_POPUP
             time.sleep(5)
+            csv_file_name = self.csv_manager.get_latest_csv_file()
             self.csv_manager.open_csv_file(csv_file_name)
             logging.info("Loaded csv file : " + csv_file_name)
             logging.info("Csv file columns : " + str(self.csv_manager.dataframe.columns))
@@ -56,6 +53,7 @@ class AppBack:
 
         except NoCsvFileFound:
             self.show_csv_popup = PopupStatus.NO_CSV_FILE_POPUP
+            self.match_analyser = MatchAnalyser({})
             logging.error("No csv file found")
         
         except FileNotFoundError:
@@ -229,6 +227,7 @@ class AppBack:
         
         
     def main(self):
+        self.image_acquisition = ImageAcquisition()
         self.image_acquisition.start_camera()
         self.image_acquisition.start_movement_detection()
 
@@ -241,44 +240,42 @@ class AppBack:
         # Start a loop to continuously update the displayed image
         while self.system_is_running:
             self.reset_ocr_results()
-            
+
             if self.show_csv_popup != PopupStatus.NO_POPUP:
+                logging.info("show_csv_popup : " + str(self.show_csv_popup))
+
                 logging.info("Showing popup message...")
-                self.app_gui.csv_popup_message(self.show_csv_popup)
-                if self.show_csv_popup == PopupStatus.NO_CSV_FILE_POPUP:
-                    time.sleep(5)
-                    self.system_is_running = False
-                
+                self.app_gui.csv_popup_message(self.show_csv_popup)                
                 self.show_csv_popup = PopupStatus.NO_POPUP
                     
-                
-            if not image_has_been_analysed:
-                final_image = self.image_formatter.get_image_ready_for_preview_display(self.image_acquisition.last_captured_image)
-                self.app_gui.update_the_camera_preview_with_last_image(final_image)
+            else :    
+                if not image_has_been_analysed:
+                    final_image = self.image_formatter.get_image_ready_for_preview_display(self.image_acquisition.last_captured_image)
+                    self.app_gui.update_the_camera_preview_with_last_image(final_image)
 
-            if self.image_acquisition.motion_detected:
-                logging.info("Mouvement détecté !")
-                image_has_been_analysed = False
-                self.valid_lines_found = False
-                self.app_gui.show_movement_detected_display()
+                if self.image_acquisition.motion_detected:
+                    logging.info("Mouvement détecté !")
+                    image_has_been_analysed = False
+                    self.valid_lines_found = False
+                    self.app_gui.show_movement_detected_display()
 
-            if self.image_acquisition.image_is_steady() and not image_has_been_analysed:
-                self.app_gui.show_loading_display()
-                self.app_gui.update_window()
-                logging.info("Analyse !")
-                try:
-                    modified_image = self.apply_ocr_on_image(self.image_acquisition.last_prepared_image, self.image_acquisition.last_captured_image)
-                    self.remove_duplicate_matching_results()
-                    self.reorder_results_to_show_the_most_corresponding_result_first()
-                    self.show_status_icon(self.get_display_status())                    
-                    self.show_correct_display_depending_on_results()
-                    resized_modified_image = self.image_formatter.resize_image(modified_image)
-                    self.app_gui.update_the_camera_preview_with_last_image(resized_modified_image)
-                    image_has_been_analysed = True
-                except:
-                    logging.info("Erreur lors de l'analyse !")
-                    logging.error("Unexpected error:" + str(traceback.format_exc()))
-                    logging.info("Image has been analysed = " + str(image_has_been_analysed))
+                if self.image_acquisition.image_is_steady() and not image_has_been_analysed:
+                    self.app_gui.show_loading_display()
+                    self.app_gui.update_window()
+                    logging.info("Analyse !")
+                    try:
+                        modified_image = self.apply_ocr_on_image(self.image_acquisition.last_prepared_image, self.image_acquisition.last_captured_image)
+                        self.remove_duplicate_matching_results()
+                        self.reorder_results_to_show_the_most_corresponding_result_first()
+                        self.show_status_icon(self.get_display_status())                    
+                        self.show_correct_display_depending_on_results()
+                        resized_modified_image = self.image_formatter.resize_image(modified_image)
+                        self.app_gui.update_the_camera_preview_with_last_image(resized_modified_image)
+                        image_has_been_analysed = True
+                    except:
+                        logging.info("Erreur lors de l'analyse !")
+                        logging.error("Unexpected error:" + str(traceback.format_exc()))
+                        logging.info("Image has been analysed = " + str(image_has_been_analysed))
 
             # Update the window to show the new image
             self.app_gui.update_window()

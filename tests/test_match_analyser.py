@@ -71,5 +71,5 @@ def test_if_check_all_columns_for_matching():
 def test_aeg():
     mock_clients = csv_manager.get_clients_data_dictionnary()
     match_analyser = MatchAnalyser(mock_clients)
-    assert match_analyser.return_the_top_three_matches_for_a_line("aeg")[0].matching_string == "groupe aeg"
+    assert match_analyser.return_the_top_three_matches_for_a_line("aeg")[0].matching_string == "aeg"
     

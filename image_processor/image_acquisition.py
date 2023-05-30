@@ -13,9 +13,7 @@ class ImageAcquisition:
     
     def __init__(self):
         self.image_formatter = ImageFormatter()
-        self.camera = Picamera2()
-        self.camera.configure(self.camera.create_preview_configuration(main={"format": 'RGB888', "size": (426, 240)}, transform=Transform(hflip=1,
-                                                                                                                                           vflip=1)))
+      
         self.is_camera_started = False
         self.last_movement_time = time.time()
         self.last_captured_image = None
@@ -23,8 +21,14 @@ class ImageAcquisition:
         self.motion_detected = False
 
         
+    def open_image(self, image_path):
+        return cv2.imread(image_path)
+        
         
     def start_camera(self):
+        self.camera = Picamera2()
+        self.camera.configure(self.camera.create_preview_configuration(main={"format": 'RGB888', "size": (426, 240)}, transform=Transform(hflip=1,
+                                                                                                                                           vflip=1)))
         self.camera.start_preview()
         try :
             self.camera.start()

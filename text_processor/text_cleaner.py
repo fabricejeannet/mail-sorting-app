@@ -43,9 +43,18 @@ class TextCleaner:
         line = line.strip().lower()
         line = self.remove_legal_status(line)
         line = self.remove_gender_markers(line)
+        line = self.replace_ampersand_by_et(line)
         if self.is_valid_line(line):
             return line
         return ""
+    
+    
+    def clean_text_without_checking_validity(self, line):
+        line = line.strip().lower()
+        line = self.remove_legal_status(line)
+        line = self.remove_gender_markers(line)
+        line = self.replace_ampersand_by_et(line)
+        return line
     
     
     def remove_legal_status(self, line):
