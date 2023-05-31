@@ -273,7 +273,7 @@ class AppGui:
     
     def show_no_text_found_display(self):
         self.window['bg'] = 'red'
-        self.remove_text_from_text_widgets()
+        self.clear_result_widget()
         self.show_invalid_image()
         self.matching_text_widget.insert(END, "Pas de texte valide détécté !\n",('bold','colored'))   
     

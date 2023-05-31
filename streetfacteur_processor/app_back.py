@@ -27,27 +27,24 @@ class AppBack:
         self.image_formatter = ImageFormatter()
         self.text_cleaner = TextCleaner()
         self.matching_results = []
-        self.movement_detected = False
         self.valid_lines_found = False
         self.show_csv_popup = False
-        self.system_is_running = True
         
-        self.init_csv(False)
+        self.init_csv()
         
     
-    def init_csv(self, want_to_show_popup=True):
+    def init_csv(self):
         
         try :
-            if want_to_show_popup:
-                self.show_csv_popup = PopupStatus.CSV_POPUP
-            else:
-                self.show_csv_popup = PopupStatus.NO_POPUP
+            self.show_csv_popup = PopupStatus.CSV_POPUP
             time.sleep(5)
             csv_file_name = self.csv_manager.get_latest_csv_file()
             self.csv_manager.open_csv_file(csv_file_name)
+            
             logging.info("Loaded csv file : " + csv_file_name)
             logging.info("Csv file columns : " + str(self.csv_manager.dataframe.columns))
             logging.info("Csv file number of rows : " + str(self.csv_manager.dataframe.shape[0]))
+            
             clients_data_dictionary = self.csv_manager.get_clients_data_dictionnary()
             self.match_analyser = MatchAnalyser(clients_data_dictionary)
 
@@ -60,15 +57,13 @@ class AppBack:
             self.init_csv()
             
         
-        
-            
     def show_correct_display_depending_on_results(self):
         self.app_gui.clear_result_widget()
         
         if self.valid_lines_found:
             if self.client_match_found():
-                for result in self.matching_results:
-                    self.app_gui.insert_a_match_in_txt_result_widget(result.matching_string, result.status, result.match_ratio)
+                for client_match_result in self.matching_results:
+                    self.app_gui.insert_a_match_in_txt_result_widget(client_match_result.matching_string, client_match_result.status, client_match_result.match_ratio)
                     self.app_gui.insert_a_separator_in_matching_text_widget()
             else :
                 self.app_gui.show_no_match_found_display()
@@ -77,10 +72,13 @@ class AppBack:
             
 
     def get_display_status(self):
+        
         if self.client_match_found():
+            
             all_the_results_are_subscribed = True
             all_the_results_are_unsubscribed = True
             index = 0
+            
             while (all_the_results_are_subscribed or all_the_results_are_unsubscribed) and index < len(self.matching_results):
                 if(self.matching_results[index].status == SUBSCRIBED):
                     all_the_results_are_unsubscribed = False
@@ -107,7 +105,6 @@ class AppBack:
         elif (display_status == DisplayStatus.WARNING):
             self.app_gui.show_warning_display()
             
-    # All the following methods are related to the ocr and the match analyser
 
     def client_match_found(self):
         if(self.matching_results != [] and len(self.matching_results) > 0):
@@ -130,18 +127,18 @@ class AppBack:
         return self.matching_results[0]
     
     
-    def add_matching_results_from_cleaned_lines(self, cleaned_ocr_text):
-        logging.info("Total cleaned ocr text : " + str(cleaned_ocr_text))
+    def add_matching_results_from_cleaned_lines(self, cleaned_lines_array):
+        logging.info("Total cleaned text : " + str(cleaned_lines_array))
 
-        threads = []
+        matching_result_threads = []
 
-        for line in cleaned_ocr_text:
+        for line in cleaned_lines_array:
             thread_line_matching = threading.Thread(target=self.add_matching_result_for_a_line, args=(line,))
             thread_line_matching.start()
-            threads.append(thread_line_matching)
+            matching_result_threads.append(thread_line_matching)
 
         # Wait for all threads to complete
-        for thread in threads:
+        for thread in matching_result_threads:
             thread.join()
         
         
@@ -235,7 +232,7 @@ class AppBack:
         self.app_gui.update_the_camera_preview_with_last_image(final_image)
 
         # Start a loop to continuously update the displayed image
-        while self.system_is_running:
+        while True:
             self.reset_ocr_results()
 
             if self.show_csv_popup != PopupStatus.NO_POPUP:
