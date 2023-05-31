@@ -124,7 +124,6 @@ class AppBack:
             
     def reset_ocr_results(self):
         self.matching_results = []
-        self.analysed_lines = []
 
 
     def get_first_result(self):
@@ -133,7 +132,6 @@ class AppBack:
     
     def add_matching_results_from_cleaned_lines(self, cleaned_ocr_text):
         logging.info("Total cleaned ocr text : " + str(cleaned_ocr_text))
-        self.analysed_lines = cleaned_ocr_text
 
         threads = []
 

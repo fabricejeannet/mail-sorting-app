@@ -120,8 +120,6 @@ class AppGui:
         self.create_the_camera_preview_zone()
         
         self.create_text_result(self.camera_frame)
-        readed_line_frame = self.create_the_readed_line_frame(self.camera_frame)
-        self.create_the_readed_line_widget(readed_line_frame)
         self.create_the_result_logo_frame(self.camera_frame)
         self.create_the_result_logo_widget()
         
@@ -213,20 +211,6 @@ class AppGui:
         self.camera_preview_zone.place(relx=.01, y=5)
 
 
-    def create_the_readed_line_frame(self, frame):
-        readed_line_frame = Frame(frame, width=550, height=50)
-        readed_line_frame.pack()
-        readed_line_frame.place(relx=.1, rely=.88)
-        return readed_line_frame
-
-
-    def create_the_readed_line_widget(self, frame):
-        self.read_line_widget = Text(frame, width = 60, height=3)
-        self.read_line_widget.pack(side=LEFT, fill=Y)
-        self.read_line_widget.tag_configure("normal", font=("TkDefaultFont", 14, "normal"))
-        self.read_line_widget.tag_configure("bold", font=("TkDefaultFont", 14, "bold"))
-
-
     def create_the_result_logo_frame(self, frame):
         self.result_logo_frame = Frame(frame, width=150, height=100)
         self.result_logo_frame.pack()
@@ -255,37 +239,21 @@ class AppGui:
 
     def show_loading_display(self):
         self.window['bg'] = 'gray'
-        self.remove_text_from_text_widgets()
+        self.clear_result_widget()
         self.matching_text_widget.insert(END, ANALYSING_TEXT,('bold','colored'))
         self.show_loading_image()
         
         
     def show_movement_detected_display(self):
         self.window['bg'] = 'gray'
-        self.remove_text_from_text_widgets()
+        self.clear_result_widget()
         self.matching_text_widget.insert(END, MOTION_DETECTED,('bold','colored'))
         self.show_shaking_image()
-
-
-    def show_analysed_lines(self, analysed_lines):
-        self.remove_text_from_analysed_lines_widget()
-        self.read_line_widget.insert(END, "Lignes analysées : ",('bold','blue'))
-        for analysed_line in analysed_lines:
-            self.read_line_widget.insert(END, analysed_line + "\n", "normal")
-            
-            
-    def remove_text_from_text_widgets(self):
-        self.matching_text_widget.replace('1.0', END, "")
-        self.read_line_widget.replace('1.0', END, "")
-        
+                   
         
     def clear_result_widget(self):
         self.matching_text_widget.replace('1.0', END, "")
         
-    
-    def remove_text_from_analysed_lines_widget(self):
-        self.read_line_widget.replace('1.0', END, "")
-            
 
     def show_warning_image(self):
         image = Image.open(WARNING_IMAGE_PATH)
