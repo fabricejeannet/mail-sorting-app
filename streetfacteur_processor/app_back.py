@@ -63,7 +63,6 @@ class AppBack:
         
             
     def show_correct_display_depending_on_results(self):
-        self.app_gui.show_analysed_lines(self.analysed_lines)
         self.app_gui.clear_result_widget()
         
         if self.valid_lines_found:
@@ -132,7 +131,7 @@ class AppBack:
         return self.matching_results[0]
     
     
-    def add_matching_results_from_cleaned_ocr_lines(self, cleaned_ocr_text):
+    def add_matching_results_from_cleaned_lines(self, cleaned_ocr_text):
         logging.info("Total cleaned ocr text : " + str(cleaned_ocr_text))
         self.analysed_lines = cleaned_ocr_text
 
@@ -197,7 +196,7 @@ class AppBack:
                 captured_image = self.image_formatter.add_rectangles_and_text_from_ocr(captured_image, x, y, w, h, cleaned_line)
                 
                 cleaned_ocr_text.append(cleaned_line)
-        self.add_matching_results_from_cleaned_ocr_lines(cleaned_ocr_text)
+        self.add_matching_results_from_cleaned_lines(cleaned_ocr_text)
 
         return captured_image
 
@@ -223,7 +222,7 @@ class AppBack:
         
     def is_a_weak_duplicate(self, index, sub_index):
         return self.matching_results[index].client_id == self.matching_results[sub_index].client_id \
-            and self.matching_results[index].match_ratio < self.matching_results[sub_index].match_ratio
+            and self.matching_results[index].match_ratio <= self.matching_results[sub_index].match_ratio
         
         
     def main(self):
@@ -248,7 +247,7 @@ class AppBack:
                 self.app_gui.csv_popup_message(self.show_csv_popup)                
                 self.show_csv_popup = PopupStatus.NO_POPUP
                     
-            else :    
+            elif not self.app_gui.is_keyboard_mode :    
                 if not image_has_been_analysed:
                     final_image = self.image_formatter.get_image_ready_for_preview_display(self.image_acquisition.last_captured_image)
                     self.app_gui.update_the_camera_preview_with_last_image(final_image)
@@ -276,6 +275,23 @@ class AppBack:
                         logging.info("Erreur lors de l'analyse !")
                         logging.error("Unexpected error:" + str(traceback.format_exc()))
                         logging.info("Image has been analysed = " + str(image_has_been_analysed))
+            elif self.app_gui.text_need_to_be_processed :
+                try:
+                    searched_text = self.app_gui.get_searched_text()
+                    self.app_gui.text_need_to_be_processed = False
+                    cleaned_searched_text = self.text_cleaner.clean_text(searched_text)
+                    if cleaned_searched_text != "":
+                        self.valid_lines_found = True
+                    self.add_matching_results_from_cleaned_lines([cleaned_searched_text])
+                    self.reorder_results_to_show_the_most_corresponding_result_first()
+                    self.show_status_icon(self.get_display_status())
+                    self.show_correct_display_depending_on_results()
+                    self.valid_lines_found = False
+                except:
+                    logging.info("Erreur lors de l'analyse !")
+                    logging.error("Unexpected error:" + str(traceback.format_exc()))
+                    logging.info("Image has been analysed = " + str(image_has_been_analysed))
+                
 
             # Update the window to show the new image
             self.app_gui.update_window()

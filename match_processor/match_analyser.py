@@ -33,10 +33,8 @@ class MatchAnalyser:
     
     def return_the_top_three_matches_for_a_line(self, line):
         result_list = self.get_matching_companies(line)
+        result_list += self.get_matching_directors_names(line)
         result_list.sort(key=lambda x: x.match_ratio, reverse=True)
-        if result_list == [] or result_list[0].match_ratio < 90:
-            result_list += self.get_matching_directors_names(line)
-            result_list.sort(key=lambda x: x.match_ratio, reverse=True)
         return result_list[:3]
     
     

@@ -1,6 +1,6 @@
 from image_processor.image_constants import *
 from config_processor.config_importer import ConfigImporter
-from tkinter import Tk , Button, Label, Frame, Entry, Text, END, INSERT, LEFT, RIGHT, TOP, BOTTOM, BOTH, X, Y, NONE, Canvas
+from tkinter import Tk , Button, Label, Frame, Entry, Text, END, LEFT, Y
 from PIL import ImageTk, Image
 import tkinter as tk
 import logging
@@ -15,6 +15,8 @@ class AppGui:
     def __init__(self):
         config_importer = ConfigImporter()
         self.popup = None
+        self.is_keyboard_mode = False
+        self.text_need_to_be_processed = False
         logging.info("App window created")
         
         self.camera_image_path = config_importer.get_camera_icon_path()
@@ -70,7 +72,7 @@ class AppGui:
         button_frame = Frame(self.keyboard_frame)
         button_frame.pack()
         # Création des widgets dans la sous-frame du clavier
-        search_button = Button(search_frame, text="Recherche")
+        search_button = Button(search_frame, text="Recherche", command=self.process_text_of_user_entry)
         search_button.pack()
         search_frame.place(relx=0.02, rely=0.1)
 
@@ -79,6 +81,7 @@ class AppGui:
         
         self.create_switch_button_frame(self.keyboard_frame)
         self.create_keyboard_switch_button()
+
 
     def create_the_camera_frame(self):
         self.camera_frame = Frame(self.window)
@@ -91,6 +94,14 @@ class AppGui:
         button_frame.pack()
         button_frame.place(relx=0.01, rely=0.87)
         self.switch_button_frame = button_frame
+        
+    
+    def process_text_of_user_entry(self):
+        self.text_need_to_be_processed = True
+        
+        
+    def get_searched_text(self):
+        return self.user_entry.get()
     
     
     def create_keyboard_switch_button(self):        
@@ -121,6 +132,7 @@ class AppGui:
     def show_keyboard_frame(self):
         self.camera_frame.pack_forget()
         self.create_text_result(self.keyboard_frame)
+        self.is_keyboard_mode = True
         
         self.create_the_result_logo_frame(self.keyboard_frame)
         self.create_the_result_logo_widget()
@@ -130,6 +142,7 @@ class AppGui:
     def show_camera_frame(self):
         self.keyboard_frame.pack_forget()
         self.create_text_result(self.camera_frame)
+        self.is_keyboard_mode = False
         
         self.create_the_result_logo_frame(self.camera_frame)
         self.create_the_result_logo_widget()
