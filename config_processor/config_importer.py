@@ -37,3 +37,19 @@ class ConfigImporter:
     
     def get_camera_icon_path(self):
         return self.config["icons"]["camera_icon_path"]
+    
+    
+    def get_shaking_camera_icon_path(self):
+        return self.config["icons"]["shaking_camera_icon_path"]
+    
+    
+    def get_valid_icon_path(self):
+        return self.config["icons"]["valid_icon_path"]
+    
+    
+    def get_invalid_icon_path(self):
+        return self.config["icons"]["invalid_icon_path"]
+    
+    
+    def get_warning_icon_path(self):
+        return self.config["icons"]["warning_icon_path"]

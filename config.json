@@ -5,10 +5,15 @@
     },
     "image": {
         "valid_ratio_threshold": 85,
-        "minimum_valid_ratio_threshold": 70
+        "minimum_valid_ratio_threshold": 67
     },
     "icons": {
-        "keyboard_icon_path" : "/home/loic/streetfacteur_data/images/keyboard_icon.png",
-        "camera_icon_path" : "/home/loic/streetfacteur_data/images/camera_icon.png"
+        "keyboard_icon_path" : "/home/loic/streetfacteur_data/images/icon-keyboard.png",
+        "camera_icon_path" : "/home/loic/streetfacteur_data/images/icon-camera.png",
+        "valid_icon_path" : "/home/loic/streetfacteur_data/images/icon-valid.png",
+        "invalid_icon_path" : "/home/loic/streetfacteur_data/images/icon-invalid.png",
+        "warning_icon_path" : "/home/loic/streetfacteur_data/images/icon-warning.png",
+        "shaking_camera_icon_path" : "/home/loic/streetfacteur_data/images/icon-unstable-camera.png"
     }
+
 }

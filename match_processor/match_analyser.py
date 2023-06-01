@@ -19,16 +19,10 @@ class MatchAnalyser:
     
     def get_match_ratio_for_names(self,line,searched_string):
         return max([fuzz.token_set_ratio(line, searched_string),fuzz.token_sort_ratio(line, searched_string)])
-    
-    
-    def get_match_ratio_for_company_names(self,line,company_name):
-        if len(line.split()) > 1 and len(company_name) > 2:
-            return max([fuzz.ratio(line, company_name),fuzz.partial_ratio(line, company_name)])
-        return self.get_match_ratio(line,company_name)
-    
+        
     
     def get_average_match_ratio(self,line,searched_string):
-        return int((self.get_match_ratio(line,searched_string) + fuzz.partial_ratio(line,searched_string) ) / 2)
+        return int((self.get_match_ratio(line,searched_string) + fuzz.partial_ratio(line,searched_string) + fuzz.token_set_ratio(line,searched_string)*2) / 4)
     
     
     def return_the_top_three_matches_for_a_line(self, line):

@@ -16,7 +16,7 @@ StreetFacteur est encore en développement et n'est pas encore fonctionnel. Actu
 
 ### Prérequis
 - Python 3.x
-- Bibliothèques Python : opencv-python, pytesseract, fuzzywuzzy, picamera2, tkinter, pandas
+- Bibliothèques Python : opencv-python, pytesseract, fuzzywuzzy, picamera2, tkinter, pandas, numpy, imutils, RPi.GPIO, time, csv, os, sys, re, logging
 
 ### Instructions
 1. Clonez le projet depuis le dépôt GitHub
