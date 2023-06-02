@@ -20,6 +20,7 @@ class AppGui:
         logging.info("App window created")        
         
         self.create_the_app_window()
+        self.user_entry.bind('<Return>', lambda event: self.process_text_of_user_entry())
 
         
     def create_the_app_window(self):
@@ -29,8 +30,8 @@ class AppGui:
         self.window.attributes('-fullscreen', True)
 
         self.window.resizable(width=False, height=False)
-        self.window.configure(background='gray')
-        
+        self.window.configure(background='gray')        
+
         image = Image.open(self.config_importer.get_camera_icon_path())
         image = image.resize((55, 55))  
         self.camera_icon = ImageTk.PhotoImage(image)
@@ -52,30 +53,32 @@ class AppGui:
         self.keyboard_frame = Frame(self.window)
         # Configurer la frame du clavier
         self.keyboard_frame.pack(fill='both', expand=True)
-        
+                
         
     def create_the_keyboard_widgets(self):
         # Création de sous-frames à l'intérieur de la frame clavier
         search_frame = Frame(self.keyboard_frame)
         search_frame.pack()
         
-        self.user_entry = Entry(search_frame,bg="white",width=35, borderwidth=5, font=('Helvetica', 20), justify='center', relief='sunken', highlightthickness=2, highlightcolor="black", highlightbackground="black")
+        self.user_entry = Entry(self.keyboard_frame,bg="white",width=35, borderwidth=5, font=('Helvetica', 20), justify='center', relief='sunken', highlightthickness=2, highlightcolor="black", highlightbackground="black")
         self.user_entry.pack()
         self.user_entry.focus_set()
+        self.user_entry.place(relx=0.05, rely=0.2, width=500, height=80)
 
         button_frame = Frame(self.keyboard_frame)
         button_frame.pack()
         # Création des widgets dans la sous-frame du clavier
-        search_button = Button(search_frame, text="Recherche", command=self.process_text_of_user_entry)
+        search_button = Button(self.keyboard_frame, text="Recherche", command=self.process_text_of_user_entry)
         search_button.pack()
-        search_frame.place(relx=0.02, rely=0.1)
+        search_button.place(relx=0.4, rely=0.4, width=150, height=80)
 
-        clear_button = Button(search_frame, text="Effacer", command=self.clean_text_of_user_entry)
-        clear_button.pack(side="left")
+        clear_button = Button(self.keyboard_frame, text="Effacer", command=self.clean_text_of_user_entry)
+        clear_button.pack()
+        clear_button.place(relx=0.1, rely=0.4, width=150, height=80)
         
         self.create_switch_button_frame(self.keyboard_frame)
         self.create_keyboard_switch_button()
-
+        
 
     def create_the_camera_frame(self):
         self.camera_frame = Frame(self.window)
@@ -91,6 +94,8 @@ class AppGui:
         
     
     def process_text_of_user_entry(self):
+        logging.info("Texte de l'utilisateur: " + self.get_searched_text())
+        self.show_loading_display()
         self.text_need_to_be_processed = True
         
         
@@ -124,6 +129,8 @@ class AppGui:
     def show_keyboard_frame(self):
         self.camera_frame.pack_forget()
         self.create_text_result(self.keyboard_frame)
+        self.create_the_result_analyser_frame(self.keyboard_frame)
+        self.create_the_result_analyser_widgets()
         self.is_keyboard_mode = True
         self.keyboard_frame.pack(fill='both', expand=True)
 
@@ -131,9 +138,10 @@ class AppGui:
     def show_camera_frame(self):
         self.keyboard_frame.pack_forget()
         self.create_text_result(self.camera_frame)
+        self.create_the_result_analyser_frame(self.camera_frame)
+        self.create_the_result_analyser_widgets()
         self.is_keyboard_mode = False
         self.camera_frame.pack(fill='both', expand=True)
-
 
 
     def create_text_result(self, frame):
@@ -142,9 +150,9 @@ class AppGui:
 
         
     def create_the_text_result_frame(self,frame):
-        self.text_frame = Frame(frame, width=160, height=460, bg="white")
+        self.text_frame = Frame(frame, bg="white", border=1, relief="solid")
         self.text_frame.pack()
-        self.text_frame.place(relx=.72, rely=.012)
+        self.text_frame.place(relx=.72, rely=.012, width=210, height=465)
         
         
     def create_the_result_analyser_widgets(self):
@@ -170,8 +178,7 @@ class AppGui:
     def create_the_text_result_widget(self):
         # Create a Text widget
         self.matching_text_widget = Text(self.text_frame, width=25, height=26)
-        self.matching_text_widget.pack(side=LEFT, fill=Y)
-        self.matching_text_widget.tag_configure("blue", foreground="blue")
+        self.matching_text_widget.pack(expand=True, fill='both')
         self.matching_text_widget.tag_configure("red", foreground="red")
         self.matching_text_widget.tag_configure("green", foreground="green")
         self.matching_text_widget.tag_configure("nom", font=("TkDefaultFont", 14, "bold"), foreground="blue", justify="center")
@@ -211,12 +218,11 @@ class AppGui:
 
 
     def create_the_camera_preview_zone(self):
-        self.camera_preview_zone = Label(self.camera_frame, width=550, height=405, bg="black")
+        self.camera_preview_zone = Label(self.camera_frame, width=550, height=400, bg="black")
         self.camera_preview_zone.pack()
         self.camera_preview_zone.place(relx=.01, y=5)
 
         
-  
     def insert_a_match_in_txt_result_widget(self, company_name, status, correspondance_rate):
         self.matching_text_widget.configure(state='normal')
         self.matching_text_widget.insert(END, company_name + "\n", "nom")
