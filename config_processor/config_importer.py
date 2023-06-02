@@ -53,3 +53,38 @@ class ConfigImporter:
     
     def get_warning_icon_path(self):
         return self.config["icons"]["warning_icon_path"]
+    
+    
+    def get_welcome_message(self):
+        return self.config["messages"]["welcome_message"]
+    
+    
+    def get_valid_message(self):
+        return self.config["messages"]["valid_message"]
+    
+    
+    def get_invalid_unsubscribed_message(self):
+        return self.config["messages"]["invalid_unsubscribed_message"]
+    
+    
+    def get_invalid_not_found_message(self):
+        return self.config["messages"]["invalid_not_found_message"]
+    
+    
+    def get_warning_status_message(self):
+        return self.config["messages"]["warning_status_message"]
+    
+    
+    def get_warning_ratio_message(self):
+        return self.config["messages"]["warning_ratio_message"]
+    
+    
+    def get_movement_detected_message(self):
+        return self.config["messages"]["movement_detected_message"]
+    
+    
+    def get_analysing_message(self):
+        return self.config["messages"]["analysing_message"]
+    
+    def get_no_text_found_message(self):
+        return self.config["messages"]["no_text_found_message"]

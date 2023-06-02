@@ -1,7 +1,6 @@
 import re
 from fuzzywuzzy import fuzz
 from text_processor.text_constants import *
-import logging
 
 class TextCleaner:
 

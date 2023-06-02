@@ -66,9 +66,9 @@ class AppBack:
                     self.app_gui.insert_a_match_in_txt_result_widget(client_match_result.matching_string, client_match_result.status, client_match_result.match_ratio)
                     self.app_gui.insert_a_separator_in_matching_text_widget()
             else :
-                self.app_gui.show_no_match_found_display()
+                self.show_status_display(DisplayStatus.INVALID_NO_MATCH)
         else :
-            self.app_gui.show_no_text_found_display()
+            self.show_status_display(DisplayStatus.NO_TEXT_FOUND)
             
 
     def get_display_status(self):
@@ -89,21 +89,40 @@ class AppBack:
             if(all_the_results_are_subscribed and self.first_result_have_valid_match_ratio()):
                 return DisplayStatus.VALID
             if all_the_results_are_unsubscribed:
-                return DisplayStatus.INVALID
+                return DisplayStatus.INVALID_UNSUBSCRIBED
+            elif not self.first_result_have_valid_match_ratio():
+                return DisplayStatus.WARNING_CORRESPONDANCE_RATE
             else:
-                return DisplayStatus.WARNING
+                return DisplayStatus.WARNING_STATUS
         else:
             logging.info("No matching results")
-            return DisplayStatus.INVALID
+            return DisplayStatus.INVALID_NO_MATCH
                 
                 
-    def show_status_icon(self, display_status):
+    def show_status_display(self, display_status):
         if (display_status == DisplayStatus.VALID):
-            self.app_gui.show_valid_display()
-        elif (display_status == DisplayStatus.INVALID):
-            self.app_gui.show_invalid_display()
-        elif (display_status == DisplayStatus.WARNING):
-            self.app_gui.show_warning_display()
+            message = self.config_importer.get_valid_message()
+            self.app_gui.show_valid_display(message)
+            
+        elif (display_status == DisplayStatus.INVALID_NO_MATCH):
+            message = self.config_importer.get_invalid_not_found_message()
+            self.app_gui.show_invalid_display(message)
+            
+        elif (display_status == DisplayStatus.INVALID_UNSUBSCRIBED):
+            message = self.config_importer.get_invalid_unsubscribed_message()
+            self.app_gui.show_invalid_display(message)
+            
+        elif (display_status == DisplayStatus.WARNING_STATUS):
+            message = self.config_importer.get_warning_status_message()
+            self.app_gui.show_warning_display(message)
+            
+        elif (display_status == DisplayStatus.WARNING_CORRESPONDANCE_RATE):
+            message = self.config_importer.get_warning_ratio_message()
+            self.app_gui.show_warning_display(message)
+            
+        elif (display_status == DisplayStatus.NO_TEXT_FOUND):
+            message = self.config_importer.get_no_text_found_message()
+            self.app_gui.show_invalid_display(message)
             
 
     def client_match_found(self):
@@ -261,7 +280,7 @@ class AppBack:
                         modified_image = self.apply_ocr_on_image(self.image_acquisition.last_prepared_image, self.image_acquisition.last_captured_image)
                         self.remove_duplicate_matching_results()
                         self.reorder_results_to_show_the_most_corresponding_result_first()
-                        self.show_status_icon(self.get_display_status())                    
+                        self.show_status_display(self.get_display_status())                    
                         self.show_correct_display_depending_on_results()
                         resized_modified_image = self.image_formatter.resize_image(modified_image)
                         self.app_gui.update_the_camera_preview_with_last_image(resized_modified_image)
@@ -279,7 +298,7 @@ class AppBack:
                         self.valid_lines_found = True
                     self.add_matching_results_from_cleaned_lines([cleaned_searched_text])
                     self.reorder_results_to_show_the_most_corresponding_result_first()
-                    self.show_status_icon(self.get_display_status())
+                    self.show_status_display(self.get_display_status())
                     self.show_correct_display_depending_on_results()
                     self.valid_lines_found = False
                 except:

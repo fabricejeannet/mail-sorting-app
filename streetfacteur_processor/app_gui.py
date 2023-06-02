@@ -148,17 +148,17 @@ class AppGui:
         
         
     def create_the_result_analyser_widgets(self):
-        self.result_analyser_icon = Label(self.result_analyser_frame, image=self.camera_icon, bg="lightgreen")
+        self.result_analyser_icon = Label(self.result_analyser_frame, image=self.camera_icon)
         self.result_analyser_icon.pack(side=LEFT)
 
         # Création du champ de texte en lecture seule à droite
-        text = "Contenu du champ de texte blablabla blaz blas aldaledl adzze fe efzef"
-        text_label = Label(self.result_analyser_frame, text=text, justify=LEFT, font=('Helvetica', 12), wraplength=420)
-        text_label.pack(side=RIGHT, fill=BOTH, expand=True)
+        text = self.config_importer.get_welcome_message()
+        self.result_analyser_text = Label(self.result_analyser_frame, text=text, justify=LEFT, font=('Helvetica', 16), wraplength=420)
+        self.result_analyser_text.pack(side=RIGHT, fill=BOTH, expand=True)
                 
                 
     def create_the_result_analyser_frame(self, frame):
-        self.result_analyser_frame = Frame(frame, bg="red", border=1, relief="solid")
+        self.result_analyser_frame = Frame(frame, border=1, relief="solid")
         self.result_analyser_frame.pack()
         self.result_analyser_frame.place(relx=.1, rely=.868, width=480, height=55)
         
@@ -233,21 +233,16 @@ class AppGui:
 
 
     def show_loading_display(self):
-        self.window['bg'] = 'gray'
         self.clear_result_widget()
-        self.matching_text_widget.configure(state='normal')
-        self.matching_text_widget.insert(END, ANALYSING_TEXT,('bold','colored'))
-        self.matching_text_widget.configure(state='disabled')
+        self.set_result_analyser_text(self.config_importer.get_analysing_message())
         self.show_loading_image()
         
         
     def show_movement_detected_display(self):
-        self.window['bg'] = 'gray'
         self.clear_result_widget()
-        self.matching_text_widget.configure(state='normal')
-        self.matching_text_widget.insert(END, MOTION_DETECTED,('bold','colored'))
-        self.matching_text_widget.configure(state='disabled')
+        self.set_result_analyser_text(self.config_importer.get_movement_detected_message())
         self.show_shaking_image()
+        self.reset_result_analyser_color()
                    
         
     def clear_result_widget(self):
@@ -256,36 +251,52 @@ class AppGui:
         self.matching_text_widget.configure(state='disabled')
 
 
-    def show_invalid_display(self):
-        self.window['bg'] = 'red'
+    def show_invalid_display(self, message):
         self.show_invalid_image()
+        self.set_result_analyser_text(message)
+        self.set_result_analyser_color_to_red()
+
+        
+    def show_warning_display(self, message):
+        self.show_warning_image()
+        self.set_result_analyser_text(message)
+        self.set_result_analyser_color_to_orange()
         
     
-    def show_valid_display(self):
-        self.window['bg'] = 'light green'
+    def show_valid_display(self, message):
         self.show_valid_image()
+        self.set_result_analyser_text(message)
+        self.set_result_analyser_color_to_green()
+        
+    
+    def set_result_analyser_text(self, message):
+        self.result_analyser_text.config(text=message)
+        
+        
+    def set_result_analyser_color_to_red(self):
+        self.result_analyser_text.config(bg="red")
+        self.result_analyser_icon.config(bg="red")
+        
+    
+    def set_result_analyser_color_to_green(self):
+        self.result_analyser_text.config(bg="lightgreen")
+        self.result_analyser_icon.config(bg="lightgreen")
+        
+    
+    def set_result_analyser_color_to_orange(self):
+        self.result_analyser_text.config(bg="orange")
+        self.result_analyser_icon.config(bg="orange")
+        
+        
+    def reset_result_analyser_color(self):
+        self.result_analyser_text.config(bg="lightgray")
+        self.result_analyser_icon.config(bg="lightgray")
         
     
     def show_no_text_found_display(self):
-        self.window['bg'] = 'red'
         self.clear_result_widget()
         self.show_invalid_image()
-        self.matching_text_widget.configure(state='normal')
-        self.matching_text_widget.insert(END, "Pas de texte valide détécté !\n",('bold','colored'))   
-        self.matching_text_widget.configure(state='disabled')
-    
-    
-    def show_no_match_found_display(self):
-        self.window['bg'] = 'red'
-        self.clear_result_widget()
-        self.show_invalid_image()
-        self.matching_text_widget.configure(state='normal')
-        self.matching_text_widget.insert(END, "Aucune correspondance trouvée !\n",('bold','colored'))  
-        self.matching_text_widget.configure(state='disabled')  
-    
-    def show_warning_display(self):
-        self.window['bg'] = 'orange'
-        self.show_warning_image()
+        self.set_result_analyser_text(NO_TEXT_FOUND)
 
 
     def show_loading_image(self):

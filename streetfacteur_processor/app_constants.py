@@ -2,8 +2,12 @@ from enum import Enum
 
 class DisplayStatus(Enum):
     VALID = 0
-    INVALID = 1
-    WARNING = 2
+    INVALID_UNSUBSCRIBED = 1
+    INVALID_NO_MATCH = 2
+    WARNING_STATUS = 3
+    WARNING_CORRESPONDANCE_RATE = 4
+    NO_TEXT_FOUND = 5
+    WELCOME = 6
     
 class PopupStatus(Enum):
     NO_POPUP = 0

@@ -14,6 +14,17 @@
         "invalid_icon_path" : "/home/loic/streetfacteur_data/images/icon-invalid.png",
         "warning_icon_path" : "/home/loic/streetfacteur_data/images/icon-warning.png",
         "shaking_camera_icon_path" : "/home/loic/streetfacteur_data/images/icon-unstable-camera.png"
+    },
+    "messages": {
+        "welcome_message": "Bienvenue sur StreetFacteur !",
+        "valid_message": "Toutes les correspondances sont abonnées !",
+        "invalid_unsubscribed_message": "Toutes les correspondances sont désabonnées.",
+        "invalid_not_found_message": "Aucune correspondance n'a été trouvée.",
+        "warning_status_message": "Attention, certaines correspondances ne sont pas abonnées.",
+        "warning_ratio_message": "Attention, le taux de correspondance n'est pas très élevé, vérifiez les résultats.",
+        "movement_detected_message": "Mouvement détecté !",
+        "analysing_message": "Analyse en cours...",
+        "no_text_found_message": "Aucun texte n'a été trouvé."
     }
 
 }
