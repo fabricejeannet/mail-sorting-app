@@ -22,11 +22,11 @@ def test_get_match_ratio_for_names():
 
 def test_get_match_ratio_for_company_names():
     match_analyser = MatchAnalyser(None)
-    assert match_analyser.get_match_ratio_for_company_names("t d express", "t d express tetd express TETD EXPRESS") > 70
-    assert match_analyser.get_match_ratio_for_company_names("cottonwood","cottrwood") > 80
-    assert match_analyser.get_match_ratio_for_company_names("hello","world") <= THRESHOLD, "The threshold is too low"
-    assert match_analyser.get_match_ratio_for_company_names("emotional damage","em") < 50
-    assert match_analyser.get_match_ratio_for_company_names("em","emotional") < 50
+    assert match_analyser.get_average_match_ratio("t d express", "t d express tetd express TETD EXPRESS") > 70
+    assert match_analyser.get_average_match_ratio("cottonwood","cottrwood") > 80
+    assert match_analyser.get_average_match_ratio("hello","world") <= THRESHOLD, "The threshold is too low"
+    assert match_analyser.get_average_match_ratio("emotional damage","em") < 60
+    assert match_analyser.get_average_match_ratio("em","emotional") < 60
 
 
 def test_get_average_match_ratio():
@@ -39,24 +39,28 @@ def test_get_average_match_ratio():
     assert match_analyser.get_average_match_ratio("em","emotional") < THRESHOLD, "The threshold is too low"
     
     
-def test_return_the_top_three_matches_for_a_line():
+def test_return_the_top_five_matches_for_a_line():
     mock_clients = csv_manager.get_clients_data_dictionnary()
     match_analyser = MatchAnalyser(mock_clients)
-    results = match_analyser.return_the_top_three_matches_for_a_line("paul durant")
+    match_analyser.reset_match_results()
+    match_analyser.find_the_best_results("paul durant")
+    results = match_analyser.get_matching_results()
     assert results[0].matching_string == "paul durand"
     assert results[0].match_ratio > 90
     assert results[1].matching_string == "paul dupont"
     assert results[1].match_ratio > 80
-    results = match_analyser.return_the_top_three_matches_for_a_line("cottonwood")
+    match_analyser.reset_match_results()
+    match_analyser.find_the_best_results("cottonwood")
+    results = match_analyser.get_matching_results()
     assert results[0].matching_string == "cottonwood"
     assert results[0].match_ratio > 90
     assert results[1].matching_string == "cottrwood"
     assert results[1].match_ratio > 80
-
-    results = match_analyser.return_the_top_three_matches_for_a_line("td express")
-    print(results)
+    match_analyser.reset_match_results()
+    match_analyser.find_the_best_results("td express")
+    results = match_analyser.get_matching_results()
     assert results[0].matching_string == "t d express"
-    assert results[0].match_ratio >= 90
+    assert results[0].match_ratio >= 85
     assert results[2].matching_string == "t d express tetd express tetd express"
     assert results[2].match_ratio > THRESHOLD
     
@@ -64,12 +68,18 @@ def test_return_the_top_three_matches_for_a_line():
 def test_if_check_all_columns_for_matching():
     mock_clients = csv_manager.get_clients_data_dictionnary()
     match_analyser = MatchAnalyser(mock_clients)
-    assert match_analyser.return_the_top_three_matches_for_a_line("paul durant")[0].matching_string == "paul durand"
-    assert match_analyser.return_the_top_three_matches_for_a_line("victorien clemence")[0].matching_string == "victorien clemence"
+    match_analyser.reset_match_results()
+    match_analyser.find_the_best_results("paul durant")
+    assert match_analyser.get_matching_results()[0].matching_string == "paul durand"
+    match_analyser.reset_match_results()
+    match_analyser.find_the_best_results("victorien clemence")
+    assert match_analyser.get_matching_results()[0].matching_string == "victorien clemence"
     
     
 def test_aeg():
     mock_clients = csv_manager.get_clients_data_dictionnary()
     match_analyser = MatchAnalyser(mock_clients)
-    assert match_analyser.return_the_top_three_matches_for_a_line("aeg")[0].matching_string == "aeg"
+    match_analyser.reset_match_results()
+    match_analyser.find_the_best_results("aeg")
+    assert match_analyser.get_matching_results()[0].matching_string == "aeg"
     

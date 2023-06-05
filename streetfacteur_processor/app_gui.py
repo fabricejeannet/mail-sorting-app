@@ -1,6 +1,7 @@
 from image_processor.image_constants import *
 from config_processor.config_importer import ConfigImporter
-from tkinter import Tk , Button, Label, Frame, Entry, Text, END, LEFT, Y, RIGHT, BOTH, TOP, CENTER, RAISED, SUNKEN, W, E, N, S, PhotoImage
+from gui_processor.result_frame import ResultFrame
+from tkinter import Tk , Button, Label, Frame, Entry, PanedWindow, END, LEFT, VERTICAL, RIGHT, BOTH, Text, Scrollbar, Y, X, BOTTOM, TOP, Canvas
 from PIL import ImageTk, Image
 import tkinter as tk
 import logging
@@ -177,16 +178,16 @@ class AppGui:
 
     def create_the_text_result_widget(self):
         # Create a Text widget
-        self.matching_text_widget = Text(self.text_frame, width=25, height=26)
-        self.matching_text_widget.pack(expand=True, fill='both')
-        self.matching_text_widget.tag_configure("red", foreground="red")
-        self.matching_text_widget.tag_configure("green", foreground="green")
-        self.matching_text_widget.tag_configure("nom", font=("TkDefaultFont", 14, "bold"), foreground="blue", justify="center")
-        self.matching_text_widget.tag_configure("statut_valide", font=("TkDefaultFont", 14, "bold"), foreground="green", justify="center")
-        self.matching_text_widget.tag_configure("statut_invalide", font=("TkDefaultFont", 14, "bold"), foreground="red", justify="center")
-        self.matching_text_widget.tag_configure("correspondance_rate", font=("Times", 14, "italic"), justify="right")
-        self.matching_text_widget.tag_configure("separator", foreground='gray' , justify="center")
-        self.matching_text_widget.tag_configure("bold", font=("TkDefaultFont", 14, "bold"))
+        self.matching_result_widget = PanedWindow(self.text_frame, orient=VERTICAL)
+        self.matching_result_widget.pack(expand=True, fill='both')
+        # self.matching_result_widget.tag_configure("red", foreground="red")
+        # self.matching_result_widget.tag_configure("green", foreground="green")
+        # self.matching_result_widget.tag_configure("nom", font=("TkDefaultFont", 14, "bold"), foreground="blue", justify="center")
+        # self.matching_result_widget.tag_configure("statut_valide", font=("TkDefaultFont", 14, "bold"), foreground="green", justify="center")
+        # self.matching_result_widget.tag_configure("statut_invalide", font=("TkDefaultFont", 14, "bold"), foreground="red", justify="center")
+        # self.matching_result_widget.tag_configure("correspondance_rate", font=("Times", 14, "italic"), justify="right")
+        # self.matching_result_widget.tag_configure("separator", foreground='gray' , justify="center")
+        # self.matching_result_widget.tag_configure("bold", font=("TkDefaultFont", 14, "bold"))
 
 
     def csv_popup_message(self, popup_status):
@@ -223,19 +224,14 @@ class AppGui:
         self.camera_preview_zone.place(relx=.01, y=5)
 
         
-    def insert_a_match_in_txt_result_widget(self, company_name, status, correspondance_rate):
-        self.matching_text_widget.configure(state='normal')
-        self.matching_text_widget.insert(END, company_name + "\n", "nom")
-        self.matching_text_widget.insert(END, status + "\n", "statut_valide" if status == "ABONNE" else "statut_invalide")
-        self.matching_text_widget.insert(END, "Correspondance : ")
-        self.matching_text_widget.insert(END, str(correspondance_rate) + "%\n", "correspondance_rate")
-        self.matching_text_widget.configure(state='disabled')
-
-
-    def insert_a_separator_in_matching_text_widget(self):
-        self.matching_text_widget.configure(state='normal')
-        self.matching_text_widget.insert(END, "---------------------\n", "separator")
-        self.matching_text_widget.configure(state='disabled')
+    def insert_a_match_in_txt_result_widget(self, client_match_result):
+        image = Image.open(self.config_importer.get_human_icon_path())
+        image = image.resize((45, 45))  
+        human_icon = ImageTk.PhotoImage(image)
+        
+        result_frame = ResultFrame(self.matching_result_widget, client_match_result, human_icon).get_result_frame()
+        
+        self.matching_result_widget.add(result_frame)
 
 
     def show_loading_display(self):
@@ -252,9 +248,8 @@ class AppGui:
                    
         
     def clear_result_widget(self):
-        self.matching_text_widget.configure(state='normal')
-        self.matching_text_widget.replace('1.0', END, "")
-        self.matching_text_widget.configure(state='disabled')
+        for child in self.matching_result_widget.winfo_children():
+            self.matching_result_widget.forget(child)
 
 
     def show_invalid_display(self, message):

@@ -63,8 +63,7 @@ class AppBack:
         if self.valid_lines_found:
             if self.client_match_found():
                 for client_match_result in self.matching_results:
-                    self.app_gui.insert_a_match_in_txt_result_widget(client_match_result.matching_string, client_match_result.status, client_match_result.match_ratio)
-                    self.app_gui.insert_a_separator_in_matching_text_widget()
+                    self.app_gui.insert_a_match_in_txt_result_widget(client_match_result)
             else :
                 self.show_status_display(DisplayStatus.INVALID_NO_MATCH)
         else :
@@ -150,23 +149,21 @@ class AppBack:
         logging.info("Total cleaned text : " + str(cleaned_lines_array))
 
         matching_result_threads = []
+        
+        self.match_analyser.reset_match_results()
 
         for line in cleaned_lines_array:
-            thread_line_matching = threading.Thread(target=self.add_matching_result_for_a_line, args=(line,))
+            thread_line_matching = threading.Thread(target=self.match_analyser.find_the_best_results, args=(line,))
             thread_line_matching.start()
             matching_result_threads.append(thread_line_matching)
 
         # Wait for all threads to complete
         for thread in matching_result_threads:
             thread.join()
-        
-        
-    def add_matching_result_for_a_line(self, line):
-        matching_line_results = self.match_analyser.return_the_top_three_matches_for_a_line(line)
-        for match in matching_line_results:
-            logging.info("Matching result : " + str(match))
-            self.matching_results.append(match)    
-    
+            
+        self.matching_results = self.match_analyser.get_matching_results()
+        logging.info("Total matching results : " + str(self.matching_results))
+            
     
     def reorder_results_to_show_the_most_corresponding_result_first(self):
         if(self.matching_results != []):
@@ -179,6 +176,12 @@ class AppBack:
                 return True
         return False
             
+            
+    def show_the_results(self):
+        self.reorder_results_to_show_the_most_corresponding_result_first()
+        self.show_status_display(self.get_display_status())
+        self.show_correct_display_depending_on_results()
+        
             
     def apply_ocr_on_image(self, prepared_image, captured_image):
         df = pytesseract.image_to_data(prepared_image, lang="fra", output_type=pytesseract.Output.DATAFRAME)
@@ -213,30 +216,6 @@ class AppBack:
         self.add_matching_results_from_cleaned_lines(cleaned_ocr_text)
 
         return captured_image
-
-    def remove_duplicate_matching_results(self):
-        logging.info("Removing duplicate matching results")
-        
-        self.matching_results.sort(key=lambda x: x.match_ratio, reverse=False)
-        currated_matching_results = self.matching_results.copy()
-        
-        for index in range(len(self.matching_results)-1):
-            
-            weak_duplicate_removed = False
-            sub_index = index + 1
-            while not weak_duplicate_removed and sub_index < len(self.matching_results):
-                if self.is_a_weak_duplicate(index, sub_index):
-                    currated_matching_results.remove(self.matching_results[index])
-                    weak_duplicate_removed = True
-                        
-                sub_index += 1
-                       
-        self.matching_results = currated_matching_results.copy()
-        
-        
-    def is_a_weak_duplicate(self, index, sub_index):
-        return self.matching_results[index].client_id == self.matching_results[sub_index].client_id \
-            and self.matching_results[index].match_ratio <= self.matching_results[sub_index].match_ratio
         
         
     def main(self):
@@ -278,10 +257,7 @@ class AppBack:
                     logging.info("Analyse !")
                     try:
                         modified_image = self.apply_ocr_on_image(self.image_acquisition.last_prepared_image, self.image_acquisition.last_captured_image)
-                        self.remove_duplicate_matching_results()
-                        self.reorder_results_to_show_the_most_corresponding_result_first()
-                        self.show_status_display(self.get_display_status())                    
-                        self.show_correct_display_depending_on_results()
+                        self.show_the_results()
                         resized_modified_image = self.image_formatter.resize_image(modified_image)
                         self.app_gui.update_the_camera_preview_with_last_image(resized_modified_image)
                         image_has_been_analysed = True
@@ -289,18 +265,18 @@ class AppBack:
                         logging.info("Erreur lors de l'analyse !")
                         logging.error("Unexpected error:" + str(traceback.format_exc()))
                         logging.info("Image has been analysed = " + str(image_has_been_analysed))
+                        
             elif self.app_gui.text_need_to_be_processed :
                 try:
                     searched_text = self.app_gui.get_searched_text()
-                    self.app_gui.text_need_to_be_processed = False
                     cleaned_searched_text = self.text_cleaner.clean_text(searched_text)
                     if cleaned_searched_text != "":
                         self.valid_lines_found = True
                     self.add_matching_results_from_cleaned_lines([cleaned_searched_text])
-                    self.reorder_results_to_show_the_most_corresponding_result_first()
-                    self.show_status_display(self.get_display_status())
-                    self.show_correct_display_depending_on_results()
+                    self.show_the_results()
                     self.valid_lines_found = False
+                    self.app_gui.text_need_to_be_processed = False
+
                 except:
                     logging.info("Erreur lors de l'analyse !")
                     logging.error("Unexpected error:" + str(traceback.format_exc()))

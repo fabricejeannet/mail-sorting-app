@@ -13,7 +13,9 @@
         "valid_icon_path" : "/home/loic/streetfacteur_data/images/icon-valid.png",
         "invalid_icon_path" : "/home/loic/streetfacteur_data/images/icon-invalid.png",
         "warning_icon_path" : "/home/loic/streetfacteur_data/images/icon-warning.png",
-        "shaking_camera_icon_path" : "/home/loic/streetfacteur_data/images/icon-unstable-camera.png"
+        "shaking_camera_icon_path" : "/home/loic/streetfacteur_data/images/icon-unstable-camera.png",
+        "human_icon_path" : "/home/loic/streetfacteur_data/images/icon-human.png",
+        "company_icon_path" : "/home/loic/streetfacteur_data/images/icon-company.png"
     },
     "messages": {
         "welcome_message": "Bienvenue sur StreetFacteur !",
