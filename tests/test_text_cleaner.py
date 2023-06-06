@@ -13,7 +13,6 @@ def test_can_find_a_date_in_a_string():
     assert text_cleaner.contains_a_date("26/1/1880") == True
 
     
-    
 def test_can_find_a_bracket_in_a_string():
     assert text_cleaner.contains_a_bracket("This line doesn't contain a bracket") == False
     assert text_cleaner.contains_a_bracket("This line contains a bracket [") == True    
@@ -107,8 +106,22 @@ def test_remove_caps_lock_adress():
     cleaned_text = text_cleaner.clean_text("33000 BORDEAUX")
     assert len(cleaned_text) == 0    
     
+    
 def test_remove_france_but_not_company_name_with_france():
     cleaned_text = text_cleaner.clean_text("My company France")
     assert len(cleaned_text) != 0
     cleaned_text = text_cleaner.clean_text("France")
     assert len(cleaned_text) == 0
+
+
+def test_remove_duplicated_lines():
+    unique_lines = text_cleaner.remove_duplicated_lines(["My company", "My company", "My company"])
+    assert len(unique_lines) == 1
+    assert unique_lines[0] == "My company"
+    unique_lines = text_cleaner.remove_duplicated_lines(["My company", "My company", "My company", "My company"])
+    assert len(unique_lines) == 1
+    assert unique_lines[0] == "My company"
+    unique_lines = text_cleaner.remove_duplicated_lines(["My company"])
+    assert len(unique_lines) == 1
+    assert unique_lines[0] == "My company"
+    
