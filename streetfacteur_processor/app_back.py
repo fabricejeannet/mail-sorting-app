@@ -177,8 +177,9 @@ class AppBack:
         return False
             
             
-    def show_the_results_from_cleaned_text(self, cleaned_searched_text):
-        self.add_matching_results_from_cleaned_lines([cleaned_searched_text])
+    def show_the_results_from_cleaned_lines(self, cleaned_searched_lines):
+        unique_cleaned_lines = self.text_cleaner.remove_duplicated_lines_from_list(cleaned_searched_lines)
+        self.add_matching_results_from_cleaned_lines(unique_cleaned_lines)
         self.reorder_results_to_show_the_most_corresponding_result_first()
         self.show_status_display(self.get_display_status())
         self.show_correct_display_depending_on_results()
@@ -257,7 +258,7 @@ class AppBack:
                     logging.info("Analyse !")
                     try:
                         modified_image, cleaned_ocr_text = self.apply_ocr_on_image(self.image_acquisition.last_prepared_image, self.image_acquisition.last_captured_image)
-                        self.show_the_results_from_cleaned_text(cleaned_ocr_text)
+                        self.show_the_results_from_cleaned_lines(cleaned_ocr_text)
                         resized_modified_image = self.image_formatter.resize_image(modified_image)
                         self.app_gui.update_the_camera_preview_with_last_image(resized_modified_image)
                         image_has_been_analysed = True
@@ -272,7 +273,7 @@ class AppBack:
                     cleaned_searched_text = self.text_cleaner.clean_text(searched_text)
                     if cleaned_searched_text != "":
                         self.valid_lines_found = True
-                    self.show_the_results_from_cleaned_text([cleaned_searched_text])
+                    self.show_the_results_from_cleaned_lines([cleaned_searched_text])
                     self.valid_lines_found = False
                     self.app_gui.text_need_to_be_processed = False
 

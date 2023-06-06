@@ -48,6 +48,10 @@ class TextCleaner:
         return ""
     
     
+    def remove_duplicated_lines_from_list(self, list_of_lines):
+        return list(set(list_of_lines))
+    
+    
     def clean_text_without_checking_validity(self, line):
         line = line.strip().lower()
         line = self.remove_legal_status(line)
