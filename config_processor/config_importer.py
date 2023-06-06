@@ -55,6 +55,10 @@ class ConfigImporter:
         return self.config["icons"]["warning_icon_path"]
     
     
+    def get_human_icon_path(self):
+        return self.config["icons"]["human_icon_path"]
+    
+    
     def get_welcome_message(self):
         return self.config["messages"]["welcome_message"]
     
@@ -88,3 +92,5 @@ class ConfigImporter:
     
     def get_no_text_found_message(self):
         return self.config["messages"]["no_text_found_message"]
+    
+    

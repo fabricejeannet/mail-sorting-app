@@ -5,7 +5,7 @@
     },
     "image": {
         "valid_ratio_threshold": 85,
-        "minimum_valid_ratio_threshold": 67
+        "minimum_valid_ratio_threshold": 70
     },
     "icons": {
         "keyboard_icon_path" : "/home/loic/streetfacteur_data/images/icon-keyboard.png",
