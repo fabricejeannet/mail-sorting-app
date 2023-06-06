@@ -115,13 +115,13 @@ def test_remove_france_but_not_company_name_with_france():
 
 
 def test_remove_duplicated_lines():
-    unique_lines = text_cleaner.remove_duplicated_lines(["My company", "My company", "My company"])
+    unique_lines = text_cleaner.remove_duplicated_lines_from_list(["My company", "My company", "My company"])
     assert len(unique_lines) == 1
     assert unique_lines[0] == "My company"
-    unique_lines = text_cleaner.remove_duplicated_lines(["My company", "My company", "My company", "My company"])
+    unique_lines = text_cleaner.remove_duplicated_lines_from_list(["My company", "My company", "My company", "My company"])
     assert len(unique_lines) == 1
     assert unique_lines[0] == "My company"
-    unique_lines = text_cleaner.remove_duplicated_lines(["My company"])
+    unique_lines = text_cleaner.remove_duplicated_lines_from_list(["My company"])
     assert len(unique_lines) == 1
     assert unique_lines[0] == "My company"
     
