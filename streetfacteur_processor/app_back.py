@@ -132,7 +132,7 @@ class AppBack:
                 
     def first_result_have_valid_match_ratio(self):
         if(self.matching_results):
-            if(self.get_first_result().match_ratio >= self.config_importer.get_image_valid_threshold()):
+            if(self.get_first_result().get_max_match_ratio() >= self.config_importer.get_image_valid_threshold()):
                 return True
         return False
 
@@ -167,12 +167,12 @@ class AppBack:
     
     def reorder_results_to_show_the_most_corresponding_result_first(self):
         if(self.matching_results != []):
-            self.matching_results.sort(key=lambda x: x.match_ratio, reverse=True)
+            self.matching_results.sort(key=lambda x: x.get_max_match_ratio(), reverse=True)
 
 
     def check_if_the_first_result_is_a_perfect_match(self):
         if(self.matching_results):
-            if(self.get_first_result().match_ratio == 100):
+            if(self.get_first_result().get_max_match_ratio() == 100):
                 return True
         return False
             

@@ -34,7 +34,7 @@ class MatchAnalyser:
     def find_the_best_results(self, line):
         self.get_matching_companies(line)
         self.get_matching_directors_names(line)
-        self.result_dictionnary = dict(sorted(self.result_dictionnary.items(), key=lambda item: item[1].match_ratio, reverse=True))
+        self.result_dictionnary = dict(sorted(self.result_dictionnary.items(), key=lambda item: item[1].get_max_match_ratio(), reverse=True))
     
     
     def get_matching_results(self):
@@ -64,25 +64,23 @@ class MatchAnalyser:
         
                     if company_name_match_ratio > trade_mark_match_ratio: 
                         logging.info("Added company name to result dictionnary")
-                        self.result_dictionnary[client_id] = (MatchingResult(company_name, company_name_match_ratio, self.clients_data_dictionary[STATUS][index], self.clients_data_dictionary[ID][index]))
+                        self.result_dictionnary[client_id] = (MatchingResult(matching_company=company_name, company_match_ratio=company_name_match_ratio, status=self.clients_data_dictionary[STATUS][index], client_id=self.clients_data_dictionary[ID][index]))
                     
                     else:
                         logging.info("Added trade mark to result dictionnary")          
-                        self.result_dictionnary[client_id] = (MatchingResult(trade_mark, trade_mark_match_ratio, self.clients_data_dictionary[STATUS][index], self.clients_data_dictionary[ID][index]))
+                        self.result_dictionnary[client_id] = (MatchingResult(matching_company=trade_mark, company_match_ratio=trade_mark_match_ratio, status=self.clients_data_dictionary[STATUS][index], client_id=self.clients_data_dictionary[ID][index]))
                     
                 else:
                     
-                    result = self.result_dictionnary[client_id]
-                    if result.match_ratio < max_match_ratio:
+                    result = MatchingResult(self.result_dictionnary[client_id])
+                    if result.company_match_ratio < max_match_ratio:
                         if company_name_match_ratio > trade_mark_match_ratio: 
-                            result.match_ratio = company_name_match_ratio
-                            result.status = self.clients_data_dictionary[STATUS][index]
-                            result.matching_string = company_name
+                            result.company_match_ratio = company_name_match_ratio
+                            result.matching_company = company_name
 
                         else:
-                            result.match_ratio = trade_mark_match_ratio
-                            result.status = self.clients_data_dictionary[STATUS][index]
-                            result.matching_string = trade_mark
+                            result.company_match_ratio = trade_mark_match_ratio
+                            result.matching_company = trade_mark
                         
             index += 1
         logging.info("Dictionary of results after matching companies: " + str(self.result_dictionnary))
@@ -111,26 +109,24 @@ class MatchAnalyser:
                     
                     if director_name_match_ratio > legal_representative_match_ratio: 
                         logging.info("Added director name with match ratio: " + str(director_name_match_ratio) + "and client id: " + str(client_id))
-                        self.result_dictionnary[client_id] = (MatchingResult(director_name, director_name_match_ratio, self.clients_data_dictionary[STATUS][index], self.clients_data_dictionary[ID][index]))
+                        self.result_dictionnary[client_id] = (MatchingResult(matching_person=director_name, person_match_ratio=director_name_match_ratio, status=self.clients_data_dictionary[STATUS][index], client_id=self.clients_data_dictionary[ID][index]))
                     
                     else:
                         logging.info("Added legal representative with match ratio: " + str(legal_representative_match_ratio) + "and client id: " + str(client_id))
-                        self.result_dictionnary[client_id] = (MatchingResult(legal_representative, legal_representative_match_ratio, self.clients_data_dictionary[STATUS][index], self.clients_data_dictionary[ID][index]))
+                        self.result_dictionnary[client_id] = (MatchingResult(matching_person=legal_representative, person_match_ratio=legal_representative_match_ratio, status=self.clients_data_dictionary[STATUS][index], client_id=self.clients_data_dictionary[ID][index]))
                     
                 else:
                     
-                    result = self.result_dictionnary[client_id]
-                    if result.match_ratio < max_match_ratio:
+                    result = MatchingResult(self.result_dictionnary[client_id])
+                    if result.person_match_ratio < max_match_ratio:
             
                         if director_name_match_ratio > legal_representative_match_ratio: 
-                            result.match_ratio = director_name_match_ratio
-                            result.status = self.clients_data_dictionary[STATUS][index]
-                            result.matching_string = director_name
+                            result.person_match_ratio = director_name_match_ratio
+                            result.matching_person = director_name
 
                         else:
-                            result.match_ratio = legal_representative_match_ratio
-                            result.status = self.clients_data_dictionary[STATUS][index]
-                            result.matching_string = legal_representative
+                            result.person_match_ratio = legal_representative_match_ratio
+                            result.matching_person = legal_representative
             
             index += 1
         logging.info("Dictionary of results after matching directors: " + str(self.result_dictionnary))

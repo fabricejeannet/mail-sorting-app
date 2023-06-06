@@ -2,14 +2,26 @@
 
 class MatchingResult:
 
-    def __init__(self, matching_string, correspondance_ratio, status, client_id = None):
-        self.matching_string = matching_string
-        self.match_ratio = correspondance_ratio
+    def __init__(self, status, company_match_ratio = None, person_match_ratio = None, client_id = None, matching_company = None, matching_person = None):
+        self.matching_company = matching_company
+        self.matching_person = matching_person
+        self.company_match_ratio = company_match_ratio
+        self.person_match_ratio = person_match_ratio
         self.status = status
         self.client_id = client_id
     
     def __str__(self) -> str:
-        return "Matching string: " + self.matching_string + " - Match ratio: " + str(self.match_ratio) + " - Status: " + self.status + " - Client ID: " + str(self.client_id)
+        return "MatchingResult: " + str(self.__dict__)
     
     def __repr__(self):
         return str(self)
+    
+    
+    def get_max_match_ratio(self):
+        if self.company_match_ratio is None:
+            return self.person_match_ratio
+        
+        elif self.person_match_ratio is None:
+            return self.company_match_ratio
+        
+        return max(self.company_match_ratio, self.person_match_ratio)

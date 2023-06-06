@@ -17,41 +17,129 @@ def test_string_match_found():
     assert street_facteur.client_match_found() == True
     
     
-def test_show_valid_image_on_full_match():
-    client1 = MatchingResult(matching_string="client1", correspondance_ratio=100, status="ABONNE")
-    client2 = MatchingResult(matching_string="client2", correspondance_ratio=90, status="ABONNE")
-    client3 = MatchingResult(matching_string="client3", correspondance_ratio=80, status="ABONNE")
+def test_show_valid_image_on_full_match_with_matching_company():
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=100, status="ABONNE")
+    client2 = MatchingResult(matching_company="client2", company_match_ratio=90, status="ABONNE")
+    client3 = MatchingResult(matching_company="client3", company_match_ratio=80, status="ABONNE")
+    street_facteur.matching_results = [client1, client2, client3]
+    assert street_facteur.get_display_status() == DisplayStatus.VALID
+    
+
+def test_show_valid_image_on_full_match_with_matching_director():
+    client1 = MatchingResult(matching_person="client1", person_match_ratio=100, status="ABONNE")
+    client2 = MatchingResult(matching_person="client2", person_match_ratio=90, status="ABONNE")
+    client3 = MatchingResult(matching_person="client3", person_match_ratio=80, status="ABONNE")
     street_facteur.matching_results = [client1, client2, client3]
     assert street_facteur.get_display_status() == DisplayStatus.VALID
     
     
-def test_show_warning_image_if_a_result_is_not_subscribed():
-    client1 = MatchingResult(matching_string="client1", correspondance_ratio=100, status="ABONNE")
-    client2 = MatchingResult(matching_string="client2", correspondance_ratio=90, status="ABONNE")
-    client3 = MatchingResult(matching_string="client3", correspondance_ratio=80, status="DESABONNE")
+def test_show_valid_image_on_full_match_with_matching_director_and_company():
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=100, matching_person="client1", person_match_ratio=100, status="ABONNE")
+    client2 = MatchingResult(matching_company="client2", company_match_ratio=90, matching_person="client2", person_match_ratio=90, status="ABONNE")
+    client3 = MatchingResult(matching_company="client3", company_match_ratio=80, matching_person="client3", person_match_ratio=80, status="ABONNE")
+    street_facteur.matching_results = [client1, client2, client3]
+    assert street_facteur.get_display_status() == DisplayStatus.VALID
+
+
+def test_show_valid_on_full_match_with_mix_matching_director_and_company():
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=100, status="ABONNE")
+    client2 = MatchingResult(matching_person="client2", person_match_ratio=90, status="ABONNE")
+    client3 = MatchingResult(matching_company="client3", company_match_ratio=80, matching_person="client3", person_match_ratio=80, status="ABONNE")
+    street_facteur.matching_results = [client1, client2, client3]
+    assert street_facteur.get_display_status() == DisplayStatus.VALID
+    
+def test_show_warning_image_if_a_result_is_not_subscribed_with_matching_company():
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=100, status="ABONNE")
+    client2 = MatchingResult(matching_company="client2", company_match_ratio=90, status="ABONNE")
+    client3 = MatchingResult(matching_company="client3", company_match_ratio=80, status="DESABONNE")
     street_facteur.matching_results = [client1, client2, client3]
     assert street_facteur.get_display_status() == DisplayStatus.WARNING_STATUS
+    
 
-def test_show_warning_if_all_valid_but_no_match_with_a_good_matching_rate():
-    client1 = MatchingResult(matching_string="client1", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
-    client2 = MatchingResult(matching_string="client2", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 10, status="ABONNE")
-    client3 = MatchingResult(matching_string="client3", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD- 20, status="ABONNE")
+def test_show_warning_image_if_a_result_is_not_subscribed_with_matching_director():
+    client1 = MatchingResult(matching_person="client1", person_match_ratio=100, status="ABONNE")
+    client2 = MatchingResult(matching_person="client2", person_match_ratio=90, status="ABONNE")
+    client3 = MatchingResult(matching_person="client3", person_match_ratio=80, status="DESABONNE")
+    street_facteur.matching_results = [client1, client2, client3]
+    assert street_facteur.get_display_status() == DisplayStatus.WARNING_STATUS
+    
+
+def test_show_warning_image_if_a_result_is_not_subscribed_with_mix_matching_director_and_company():
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=100, status="ABONNE")
+    client2 = MatchingResult(matching_person="client2", person_match_ratio=90, status="ABONNE")
+    client3 = MatchingResult(matching_company="client3", company_match_ratio=80, matching_person="client3", person_match_ratio=80, status="DESABONNE")
+    street_facteur.matching_results = [client1, client2, client3]
+    assert street_facteur.get_display_status() == DisplayStatus.WARNING_STATUS
+    
+
+def test_show_warning_if_all_valid_but_no_match_with_a_good_matching_rate_with_matching_company():
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
+    client2 = MatchingResult(matching_company="client2", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 10, status="ABONNE")
+    client3 = MatchingResult(matching_company="client3", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD- 20, status="ABONNE")
     street_facteur.matching_results = [client1, client2, client3]
     assert street_facteur.get_display_status() == DisplayStatus.WARNING_CORRESPONDANCE_RATE
     
 
-def test_multiple_valid_results_but_differents_status_return_warning():
-    client1 = MatchingResult(matching_string="client1", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 11, status="ABONNE")
-    client2 = MatchingResult(matching_string="client2", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 10, status="DESABONNE")
-    client3 = MatchingResult(matching_string="client3", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 5, status="RADIE")
+def test_show_warning_if_all_valid_but_no_match_with_a_good_matching_rate_with_matching_director():
+    client1 = MatchingResult(matching_person="client1", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
+    client2 = MatchingResult(matching_person="client2", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 10, status="ABONNE")
+    client3 = MatchingResult(matching_person="client3", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD- 20, status="ABONNE")
+    street_facteur.matching_results = [client1, client2, client3]
+    assert street_facteur.get_display_status() == DisplayStatus.WARNING_CORRESPONDANCE_RATE
+    
+
+def test_show_warning_if_all_valid_but_no_match_with_a_good_matching_rate_with_mix_matching_director_and_company():
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
+    client2 = MatchingResult(matching_person="client2", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 10, status="ABONNE")
+    client3 = MatchingResult(matching_company="client3", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD- 20, matching_person="client3", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD- 20, status="ABONNE")
+    street_facteur.matching_results = [client1, client2, client3]
+    assert street_facteur.get_display_status() == DisplayStatus.WARNING_CORRESPONDANCE_RATE
+    
+
+def test_multiple_valid_results_but_differents_status_return_warning_with_company():
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 11, status="ABONNE")
+    client2 = MatchingResult(matching_company="client2", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 10, status="DESABONNE")
+    client3 = MatchingResult(matching_company="client3", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 5, status="RADIE")
     street_facteur.matching_results = [client1, client2, client3]
     assert street_facteur.get_display_status() == DisplayStatus.WARNING_STATUS
 
 
-def test_perfect_matchs_but_at_least_one_is_valid():
-    client1 = MatchingResult(matching_string="client1", correspondance_ratio=100, status="ABONNE")
-    client2 = MatchingResult(matching_string="client2", correspondance_ratio=100, status="DESABONNE")
-    client3 = MatchingResult(matching_string="client3", correspondance_ratio=100, status="RADIE")
+def test_multiple_valid_results_but_differents_status_return_warning_with_director():
+    client1 = MatchingResult(matching_person="client1", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 11, status="ABONNE")
+    client2 = MatchingResult(matching_person="client2", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 10, status="DESABONNE")
+    client3 = MatchingResult(matching_person="client3", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 5, status="RADIE")
+    street_facteur.matching_results = [client1, client2, client3]
+    assert street_facteur.get_display_status() == DisplayStatus.WARNING_STATUS
+    
+
+def test_multiple_valid_results_but_differents_status_return_warning_with_mix_matching_director_and_company():
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 11, status="ABONNE")
+    client2 = MatchingResult(matching_person="client2", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 10, status="DESABONNE")
+    client3 = MatchingResult(matching_company="client3", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 5, matching_person="client3", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 5, status="RADIE")
+    street_facteur.matching_results = [client1, client2, client3]
+    assert street_facteur.get_display_status() == DisplayStatus.WARNING_STATUS
+    
+
+def test_perfect_matchs_but_at_least_one_is_valid_with_company():
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=100, status="ABONNE")
+    client2 = MatchingResult(matching_company="client2", company_match_ratio=100, status="DESABONNE")
+    client3 = MatchingResult(matching_company="client3", company_match_ratio=100, status="RADIE")
+    street_facteur.matching_results = [client1, client2, client3]
+    assert street_facteur.get_display_status() == DisplayStatus.WARNING_STATUS
+
+
+def test_perfect_matchs_but_at_least_one_is_valid_with_director():
+    client1 = MatchingResult(matching_person="client1", person_match_ratio=100, status="ABONNE")
+    client2 = MatchingResult(matching_person="client2", person_match_ratio=100, status="DESABONNE")
+    client3 = MatchingResult(matching_person="client3", person_match_ratio=100, status="RADIE")
+    street_facteur.matching_results = [client1, client2, client3]
+    assert street_facteur.get_display_status() == DisplayStatus.WARNING_STATUS
+    
+
+def test_perfect_matchs_but_at_least_one_is_valid_with_mix_matching_director_and_company():
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=100, status="ABONNE")
+    client2 = MatchingResult(matching_person="client2", person_match_ratio=100, status="DESABONNE")
+    client3 = MatchingResult(matching_company="client3", company_match_ratio=100, matching_person="client3", person_match_ratio=100, status="RADIE")
     street_facteur.matching_results = [client1, client2, client3]
     assert street_facteur.get_display_status() == DisplayStatus.WARNING_STATUS
     
@@ -61,51 +149,111 @@ def test_no_match_found_at_all():
     assert street_facteur.get_display_status() == DisplayStatus.INVALID_NO_MATCH
 
 
-def test_check_if_the_first_result_have_a_good_correspondance_rate():
-    client1 = MatchingResult(matching_string="client1", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 1, status="ABONNE")
-    client2 = MatchingResult(matching_string="client2", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
-    client3 = MatchingResult(matching_string="client3", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
+def test_check_if_the_first_result_have_a_good_correspondance_rate_with_matching_company():
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 1, status="ABONNE")
+    client2 = MatchingResult(matching_company="client2", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
+    client3 = MatchingResult(matching_company="client3", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
     street_facteur.matching_results = [client1, client2, client3]
     assert street_facteur.first_result_have_valid_match_ratio() == True
-    client1 = MatchingResult(matching_string="client1", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
-    client2 = MatchingResult(matching_string="client2", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
-    client3 = MatchingResult(matching_string="client3", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
+    client2 = MatchingResult(matching_company="client2", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
+    client3 = MatchingResult(matching_company="client3", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
+    street_facteur.matching_results = [client1, client2, client3]
+    assert street_facteur.first_result_have_valid_match_ratio() == False
+    
+
+def test_check_if_the_first_result_have_a_good_correspondance_rate_with_matching_director():
+    client1 = MatchingResult(matching_person="client1", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 1, status="ABONNE")
+    client2 = MatchingResult(matching_person="client2", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
+    client3 = MatchingResult(matching_person="client3", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
+    street_facteur.matching_results = [client1, client2, client3]
+    assert street_facteur.first_result_have_valid_match_ratio() == True
+    client1 = MatchingResult(matching_person="client1", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
+    client2 = MatchingResult(matching_person="client2", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
+    client3 = MatchingResult(matching_person="client3", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
     street_facteur.matching_results = [client1, client2, client3]
     assert street_facteur.first_result_have_valid_match_ratio() == False
     
     
-def test_reorder_results_to_show_the_most_corresponding_result_first():
-    mock_clients1 = MatchingResult(matching_string="client1", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 1, status="ABONNE")
-    mock_clients2 = MatchingResult(matching_string="client2", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 4, status="ABONNE")
+def test_check_if_the_first_result_have_a_good_correspondance_rate_with_mix_matching_director_and_company():
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 1, status="ABONNE")
+    client2 = MatchingResult(matching_person="client2", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
+    client3 = MatchingResult(matching_company="client3", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
+    client4 = MatchingResult(matching_person="client4", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
+    street_facteur.matching_results = [client1, client2, client3, client4]
+    assert street_facteur.first_result_have_valid_match_ratio() == True
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
+    client2 = MatchingResult(matching_person="client2", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 1, status="ABONNE")
+    client3 = MatchingResult(matching_company="client3", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
+    client4 = MatchingResult(matching_person="client4", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD - 5, status="ABONNE")
+    street_facteur.matching_results = [client1, client2, client3, client4]
+    assert street_facteur.first_result_have_valid_match_ratio() == False
+    
+    
+def test_reorder_results_to_show_the_most_corresponding_result_first_with_company_name():
+    mock_clients1 = MatchingResult(matching_company="client1", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 1, status="ABONNE")
+    mock_clients2 = MatchingResult(matching_company="client2", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 4, status="ABONNE")
     street_facteur.matching_results = [mock_clients1, mock_clients2]
     street_facteur.reorder_results_to_show_the_most_corresponding_result_first()
-    assert street_facteur.matching_results[0].match_ratio == VALID_CORRESPONDANCE_RATE_THRESHOLD + 4
-    mock_clients1 = MatchingResult(matching_string="client1", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 10, status="ABONNE")
-    mock_clients2 = MatchingResult(matching_string="client2", correspondance_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 4, status="ABONNE")
+    assert street_facteur.matching_results[0].company_match_ratio == VALID_CORRESPONDANCE_RATE_THRESHOLD + 4
+    mock_clients1 = MatchingResult(matching_company="client1", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 10, status="ABONNE")
+    mock_clients2 = MatchingResult(matching_company="client2", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 4, status="ABONNE")
     street_facteur.matching_results = [mock_clients1, mock_clients2]
     street_facteur.reorder_results_to_show_the_most_corresponding_result_first()
-    assert street_facteur.matching_results[0].match_ratio == VALID_CORRESPONDANCE_RATE_THRESHOLD + 10
+    assert street_facteur.matching_results[0].company_match_ratio == VALID_CORRESPONDANCE_RATE_THRESHOLD + 10
+
+
+def test_reorder_results_to_show_the_most_corresponding_result_first_with_person_name():
+    mock_clients1 = MatchingResult(matching_person="client1", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 1, status="ABONNE")
+    mock_clients2 = MatchingResult(matching_person="client2", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 4, status="ABONNE")
+    street_facteur.matching_results = [mock_clients1, mock_clients2]
+    street_facteur.reorder_results_to_show_the_most_corresponding_result_first()
+    assert street_facteur.matching_results[0].person_match_ratio == VALID_CORRESPONDANCE_RATE_THRESHOLD + 4
+    mock_clients1 = MatchingResult(matching_person="client1", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 10, status="ABONNE")
+    mock_clients2 = MatchingResult(matching_person="client2", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 4, status="ABONNE")
+    street_facteur.matching_results = [mock_clients1, mock_clients2]
+    street_facteur.reorder_results_to_show_the_most_corresponding_result_first()
+    assert street_facteur.matching_results[0].person_match_ratio == VALID_CORRESPONDANCE_RATE_THRESHOLD + 10
+    
+
+def test_reorder_results_to_show_the_most_corresponding_result_first_with_mix_matching_director_and_company():
+    mock_clients1 = MatchingResult(matching_company="client1", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 1, status="ABONNE")
+    mock_clients2 = MatchingResult(matching_person="client2", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 4, status="ABONNE")
+    street_facteur.matching_results = [mock_clients1, mock_clients2]
+    street_facteur.reorder_results_to_show_the_most_corresponding_result_first()
+    assert street_facteur.matching_results[0].get_max_match_ratio() == VALID_CORRESPONDANCE_RATE_THRESHOLD + 4
+    mock_clients1 = MatchingResult(matching_company="client1", company_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 10, status="ABONNE")
+    mock_clients2 = MatchingResult(matching_person="client2", person_match_ratio=VALID_CORRESPONDANCE_RATE_THRESHOLD + 4, status="ABONNE")
+    street_facteur.matching_results = [mock_clients1, mock_clients2]
+    street_facteur.reorder_results_to_show_the_most_corresponding_result_first()
+    assert street_facteur.matching_results[0].get_max_match_ratio() == VALID_CORRESPONDANCE_RATE_THRESHOLD + 10
     
 
 def test_check_if_the_first_result_is_a_perfect_match():
-    client1 = MatchingResult(matching_string="client1", correspondance_ratio=100, status="ABONNE")
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=100, status="ABONNE")
     street_facteur.matching_results = [client1]
     assert street_facteur.check_if_the_first_result_is_a_perfect_match() == True
-    client1 = MatchingResult(matching_string="client1", correspondance_ratio=99, status="ABONNE")
+    client1 = MatchingResult(matching_company="client1", company_match_ratio=99, status="ABONNE")
     street_facteur.matching_results = [client1]
     assert street_facteur.check_if_the_first_result_is_a_perfect_match() == False
-    
-    
-# def test_the_perigord():
-#     matching_results = [\
-#         MatchingResult(matching_string="client1", correspondance_ratio=95, status="ABONNE", client_id=7058),
-#         MatchingResult(matching_string="client1", correspondance_ratio=75, status="ABONNE", client_id=7058),
-#     ]
-#     street_facteur.matching_results = matching_results
-#     assert len(street_facteur.matching_results) == 1
-#     assert street_facteur.matching_results[0].client_id == 7058
-#     assert street_facteur.matching_results[0].match_ratio == 95
-    
+    client = MatchingResult(matching_person="client1", person_match_ratio=100, status="ABONNE")
+    street_facteur.matching_results = [client]
+    assert street_facteur.check_if_the_first_result_is_a_perfect_match() == True
+    client = MatchingResult(matching_person="client1", person_match_ratio=99, status="ABONNE")
+    street_facteur.matching_results = [client]
+    assert street_facteur.check_if_the_first_result_is_a_perfect_match() == False
+    client1 = MatchingResult(matching_company="client1", matching_person="client un", company_match_ratio=100, person_match_ratio=100, status="ABONNE")
+    street_facteur.matching_results = [client1]
+    assert street_facteur.check_if_the_first_result_is_a_perfect_match() == True
+    client1 = MatchingResult(matching_company="client1", matching_person="client un", company_match_ratio=99, person_match_ratio=100, status="ABONNE")
+    street_facteur.matching_results = [client1]
+    assert street_facteur.check_if_the_first_result_is_a_perfect_match() == True
+    client1 = MatchingResult(matching_company="client1", matching_person="client un", company_match_ratio=100, person_match_ratio=99, status="ABONNE")
+    street_facteur.matching_results = [client1]
+    assert street_facteur.check_if_the_first_result_is_a_perfect_match() == True
+    client1 = MatchingResult(matching_company="client1", matching_person="client un", company_match_ratio=99, person_match_ratio=99, status="ABONNE")
+    street_facteur.matching_results = [client1]
+    assert street_facteur.check_if_the_first_result_is_a_perfect_match() == False
     
     
     
