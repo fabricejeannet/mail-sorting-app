@@ -2,13 +2,12 @@
 
 class MatchingResult:
 
-    def __init__(self, status, company_match_ratio = None, person_match_ratio = None, client_id = None, matching_company = None, matching_person = None):
+    def __init__(self, status, company_match_ratio = None, person_match_ratio = None, matching_company = None, matching_person = None):
         self.matching_company = matching_company
         self.matching_person = matching_person
         self.company_match_ratio = company_match_ratio
         self.person_match_ratio = person_match_ratio
         self.status = status
-        self.client_id = client_id
     
     def __str__(self) -> str:
         return "MatchingResult: " + str(self.__dict__)

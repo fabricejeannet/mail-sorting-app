@@ -59,6 +59,10 @@ class ConfigImporter:
         return self.config["icons"]["human_icon_path"]
     
     
+    def get_company_icon_path(self):
+        return self.config["icons"]["company_icon_path"]
+    
+    
     def get_welcome_message(self):
         return self.config["messages"]["welcome_message"]
     

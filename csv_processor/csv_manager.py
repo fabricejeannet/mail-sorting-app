@@ -98,6 +98,29 @@ class CsvManager:
         return dataframe_trademark_names
     
     
+    def get_id_from_index(self,index):
+        return self.dataframe.loc[index,ID]
+    
+    def get_company_name_from_index(self,index):
+        return self.dataframe.loc[index,COMPANY_NAME]
+    
+    
+    def get_legal_representative_from_index(self,index):
+        return self.dataframe.loc[index,LEGAL_REPRESENTATIVE]
+    
+    
+    def get_subscription_status_from_index(self,index):
+        return self.dataframe.loc[index,STATUS]
+    
+    
+    def get_director_name_from_index(self,index):
+        return self.dataframe.loc[index,DIRECTOR_NAME]
+    
+    
+    def get_trademark_name_from_index(self,index):
+        return self.dataframe.loc[index,TRADEMARK_NAME]
+    
+    
     def get_clients_data_dictionnary(self):
         clients_data_dictionnary = {}
         clients_data_dictionnary[ID] = self.get_ids()

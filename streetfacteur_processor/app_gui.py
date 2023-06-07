@@ -225,11 +225,8 @@ class AppGui:
 
         
     def insert_a_match_in_txt_result_widget(self, client_match_result):
-        image = Image.open(self.config_importer.get_human_icon_path())
-        image = image.resize((45, 45))  
-        human_icon = ImageTk.PhotoImage(image)
         
-        result_frame = ResultFrame(self.matching_result_widget, client_match_result, human_icon).get_result_frame()
+        result_frame = ResultFrame(self.matching_result_widget, client_match_result).get_result_frame()
         
         self.matching_result_widget.add(result_frame)
 

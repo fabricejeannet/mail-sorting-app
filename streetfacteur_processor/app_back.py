@@ -178,11 +178,14 @@ class AppBack:
             
             
     def show_the_results_from_cleaned_lines(self, cleaned_searched_lines):
+        start_time = time.time()
         unique_cleaned_lines = self.text_cleaner.remove_duplicated_lines_from_list(cleaned_searched_lines)
         self.add_matching_results_from_cleaned_lines(unique_cleaned_lines)
         self.reorder_results_to_show_the_most_corresponding_result_first()
         self.show_status_display(self.get_display_status())
         self.show_correct_display_depending_on_results()
+        end_time = time.time()
+        logging.info("Time taken : " + str(end_time - start_time))
         
             
     def apply_ocr_on_image(self, prepared_image, captured_image):
