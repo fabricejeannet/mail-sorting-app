@@ -21,7 +21,7 @@ class TextCleaner:
     
     def is_valid_line(self, line):
         return not line.isspace() \
-        and not len(line) <= 2 \
+        and not len(line) < 2 \
         and not self.contains_a_bracket(line) \
         and not self.contains_a_date(line) \
         and not self.contains_a_sequence_of_digits(line) \

@@ -25,8 +25,8 @@ def test_get_match_ratio_for_company_names():
     assert match_analyser.get_average_match_ratio("t d express", "t d express tetd express TETD EXPRESS") > 70
     assert match_analyser.get_average_match_ratio("cottonwood","cottrwood") > 80
     assert match_analyser.get_average_match_ratio("hello","world") <= THRESHOLD, "The threshold is too low"
-    assert match_analyser.get_average_match_ratio("emotional damage","em") < 60
-    assert match_analyser.get_average_match_ratio("em","emotional") < 60
+    assert match_analyser.get_average_match_ratio("emotional damage","em") < THRESHOLD, "The threshold is too low"
+    assert match_analyser.get_average_match_ratio("em","emotional") < THRESHOLD, "The threshold is too low"
 
 
 def test_get_average_match_ratio():
@@ -90,3 +90,12 @@ def test_di():
     match_analyser.reset_match_results()
     match_analyser.find_the_best_results("di.")
     assert len(match_analyser.get_matching_results()) == 0
+    
+
+def test_mp():
+    mock_clients = csv_manager.get_clients_data_dictionnary()
+    match_analyser = MatchAnalyser(mock_clients)
+    match_analyser.reset_match_results()
+    match_analyser.find_the_best_results("mp")
+    assert len(match_analyser.get_matching_results()) == 1
+    assert match_analyser.get_matching_results()[0].matching_company == "mp emergence"

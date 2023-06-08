@@ -160,6 +160,7 @@ class AppBack:
         # Wait for all threads to complete
         for thread in matching_result_threads:
             thread.join()
+
             
         self.matching_results = self.match_analyser.get_matching_results()
         logging.info("Total matching results : " + str(self.matching_results))
@@ -180,9 +181,13 @@ class AppBack:
     def show_the_results_from_cleaned_lines(self, cleaned_searched_lines):
         start_time = time.time()
         unique_cleaned_lines = self.text_cleaner.remove_duplicated_lines_from_list(cleaned_searched_lines)
+        logging.info("Time after removing duplicates : " + str(time.time() - start_time))
         self.add_matching_results_from_cleaned_lines(unique_cleaned_lines)
+        logging.info("Time after adding matching results : " + str(time.time() - start_time))
         self.reorder_results_to_show_the_most_corresponding_result_first()
+        logging.info("Time after reordering results : " + str(time.time() - start_time))
         self.show_status_display(self.get_display_status())
+        logging.info("Time after showing status : " + str(time.time() - start_time))
         self.show_correct_display_depending_on_results()
         end_time = time.time()
         logging.info("Time taken : " + str(end_time - start_time))
