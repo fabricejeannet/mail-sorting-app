@@ -17,15 +17,16 @@ class CsvManager:
         self.csv_file_regex = self.config_importer.get_csv_file_regex()
         
         
-        
     def is_a_csv_file(self,file_name):
         return file_name.lower().endswith(".csv")
     
     
     def get_latest_csv_file(self):
+        
         list_of_files = glob.glob(self.csv_file_path + "*.csv")
         found_csv_file = False
-        logging.info("list_of_files: " + str(list_of_files))
+        logging.info("List of found csv files : " + str(list_of_files))
+        
         while not found_csv_file and list_of_files:
             #Get latest file depending on last modification date of the file
             latest_file = max(list_of_files, key=lambda file: pathlib.Path(file).stat().st_mtime)
@@ -51,8 +52,8 @@ class CsvManager:
         if self.dataframe.empty:
             raise TryToOpenEmptyCsvFile()
         
+        #Replace NaN values by empty string
         self.dataframe = self.dataframe.fillna("")
-        print(self.dataframe)
     
     
     def get_ids(self):

@@ -9,7 +9,7 @@ class TextCleaner:
         
     def contains_a_date(self, line):
         return re.search(REGEX_DATE, line) != None
-    
+
     
     def contains_a_bracket(self, line):
         return re.search(REGEX_BRACKET,line) != None
@@ -39,10 +39,8 @@ class TextCleaner:
     
     
     def clean_text(self, line):
-        
         line = line.strip().lower()
         line = self.replace_ampersand_by_et(line)
-        
         if self.is_valid_line(line):
             line = self.remove_legal_status(line)
             line = self.remove_gender_markers(line)

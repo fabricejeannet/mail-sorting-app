@@ -181,16 +181,11 @@ class AppBack:
     def show_the_results_from_cleaned_lines(self, cleaned_searched_lines):
         start_time = time.time()
         unique_cleaned_lines = self.text_cleaner.remove_duplicated_lines_from_list(cleaned_searched_lines)
-        logging.info("Time after removing duplicates : " + str(time.time() - start_time))
         self.add_matching_results_from_cleaned_lines(unique_cleaned_lines)
-        logging.info("Time after adding matching results : " + str(time.time() - start_time))
         self.reorder_results_to_show_the_most_corresponding_result_first()
-        logging.info("Time after reordering results : " + str(time.time() - start_time))
         self.show_status_display(self.get_display_status())
-        logging.info("Time after showing status : " + str(time.time() - start_time))
         self.show_correct_display_depending_on_results()
-        end_time = time.time()
-        logging.info("Time taken : " + str(end_time - start_time))
+        logging.info("Time taken : " + str(time.time() - start_time))
         
             
     def apply_ocr_on_image(self, prepared_image, captured_image):
@@ -245,7 +240,6 @@ class AppBack:
             if self.show_csv_popup != PopupStatus.NO_POPUP:
                 logging.info("show_csv_popup : " + str(self.show_csv_popup))
 
-                logging.info("Showing popup message...")
                 self.app_gui.csv_popup_message(self.show_csv_popup)                
                 self.show_csv_popup = PopupStatus.NO_POPUP
                     

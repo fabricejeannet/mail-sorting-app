@@ -3,7 +3,6 @@ from match_processor.matching_result import MatchingResult
 from text_processor.text_cleaner import TextCleaner
 from csv_processor.csv_constants import COMPANY_NAME, ID, STATUS, TRADEMARK_NAME, DIRECTOR_NAME, LEGAL_REPRESENTATIVE
 from config_processor.config_importer import ConfigImporter
-import logging
 
 class MatchAnalyser:
     

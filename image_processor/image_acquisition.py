@@ -42,8 +42,8 @@ class ImageAcquisition:
         
         
     def start_movement_detection(self):
-            thread_movement_detection = threading.Thread(target=self.motion_detection)
-            thread_movement_detection.start()
+        thread_movement_detection = threading.Thread(target=self.motion_detection)
+        thread_movement_detection.start()
 
 
     def video_capture(self):

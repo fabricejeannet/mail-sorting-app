@@ -1,14 +1,13 @@
 from image_processor.image_constants import *
 from config_processor.config_importer import ConfigImporter
 from gui.result_frame import ResultFrame
-from tkinter import Tk , Button, Label, Frame, Entry, PanedWindow, END, LEFT, VERTICAL, RIGHT, BOTH, Text, Scrollbar, Y, X, BOTTOM, TOP, Canvas
+from tkinter import Tk , Button, Label, Frame, Entry, END, LEFT, VERTICAL, RIGHT, BOTH, Text, Scrollbar, Y, X, TOP
 from PIL import ImageTk, Image
 import tkinter as tk
 import logging
 from streetfacteur_processor.app_constants import *
 
-
-logging.basicConfig(level=logging.INFO, filename="app.log", filemode="w")
+logging.basicConfig(level=logging.INFO, filename="logs.log", filemode="w")
 logging.debug('Log Start')
 
 class AppGui:
@@ -27,7 +26,7 @@ class AppGui:
 
     def create_the_app_window(self):
         self.window = Tk()
-        self.window.title("Street Facteur")
+        self.window.title("Street'Facteur")
         self.window.geometry("800x480")
         self.window.attributes('-fullscreen', True)
 
@@ -57,12 +56,10 @@ class AppGui:
     
     def create_the_keyboard_frame(self):
         self.keyboard_frame = Frame(self.window)
-        # Configurer la frame du clavier
         self.keyboard_frame.pack(fill='both', expand=True)
                 
         
     def create_the_keyboard_widgets(self):
-        # Création de sous-frames à l'intérieur de la frame clavier
         search_frame = Frame(self.keyboard_frame)
         search_frame.pack()
         
@@ -73,14 +70,14 @@ class AppGui:
 
         button_frame = Frame(self.keyboard_frame)
         button_frame.pack()
-        # Création des widgets dans la sous-frame du clavier
+
         search_button = Button(self.keyboard_frame, text="Recherche", command=self.process_text_of_user_entry)
         search_button.pack()
         search_button.place(relx=0.4, rely=0.4, width=150, height=80)
 
-        clear_button = Button(self.keyboard_frame, text="Effacer", command=self.clean_text_of_user_entry)
-        clear_button.pack()
-        clear_button.place(relx=0.1, rely=0.4, width=150, height=80)
+        clear_user_entry_button = Button(self.keyboard_frame, text="Effacer", command=self.clean_text_of_user_entry)
+        clear_user_entry_button.pack()
+        clear_user_entry_button.place(relx=0.1, rely=0.4, width=150, height=80)
         
         self.create_switch_button_frame(self.keyboard_frame)
         self.create_keyboard_switch_button()
@@ -88,20 +85,18 @@ class AppGui:
 
     def create_the_camera_frame(self):
         self.camera_frame = Frame(self.window)
-        # Configurer la frame de la caméra
         self.camera_frame.pack(fill='both', expand=True)
 
 
     def create_switch_button_frame(self, frame):
-        button_frame = Frame(frame)
-        button_frame.pack()
-        button_frame.place(relx=0.01, rely=0.867)
-        self.switch_button_frame = button_frame
+        switch_button_frame = Frame(frame)
+        switch_button_frame.pack()
+        switch_button_frame.place(relx=0.01, rely=0.867)
+        self.switch_button_frame = switch_button_frame
         
     
     def process_text_of_user_entry(self):
         if self.is_keyboard_mode:
-            logging.info("Texte de l'utilisateur: " + self.get_searched_text())
             self.show_loading_display()
             self.text_need_to_be_processed = True
         
@@ -111,14 +106,13 @@ class AppGui:
     
     
     def create_keyboard_switch_button(self):        
-        button = Button(self.switch_button_frame, command=self.show_camera_frame, image=self.camera_icon)
-        button.pack()
+        switch_button = Button(self.switch_button_frame, command=self.show_camera_frame, image=self.camera_icon)
+        switch_button.pack()
         
     
     def create_camera_switch_button(self):
-        # Resizing image to fit on button
-        button = Button(self.switch_button_frame, command=self.show_keyboard_frame, image=self.keyboard_icon)
-        button.pack()
+        switch_button = Button(self.switch_button_frame, command=self.show_keyboard_frame, image=self.keyboard_icon)
+        switch_button.pack()
 
 
     def create_the_camera_frame_widgets(self):
@@ -197,7 +191,6 @@ class AppGui:
         
 
     def create_the_text_result_widget(self):
-        # Create a Text widget
         self.matching_result_widget = Frame(self.text_frame)
         self.matching_result_widget.pack(expand=True, fill=BOTH)
         vertical_scrollbar = Scrollbar(self.matching_result_widget)
@@ -239,9 +232,7 @@ class AppGui:
 
         
     def insert_a_match_in_txt_result_widget(self, client_match_result):
-        
         result_frame = ResultFrame(self.matching_result_widget, client_match_result).get_result_frame()
-        
         result_frame.pack(fill=X, expand=False)
 
 
