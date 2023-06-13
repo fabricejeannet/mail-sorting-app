@@ -39,11 +39,13 @@ class TextCleaner:
     
     
     def clean_text(self, line):
+        
         line = line.strip().lower()
-        line = self.remove_legal_status(line)
-        line = self.remove_gender_markers(line)
         line = self.replace_ampersand_by_et(line)
+        
         if self.is_valid_line(line):
+            line = self.remove_legal_status(line)
+            line = self.remove_gender_markers(line)
             return line
         return ""
     

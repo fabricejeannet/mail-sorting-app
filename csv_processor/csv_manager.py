@@ -17,6 +17,7 @@ class CsvManager:
         self.csv_file_regex = self.config_importer.get_csv_file_regex()
         
         
+        
     def is_a_csv_file(self,file_name):
         return file_name.lower().endswith(".csv")
     
@@ -49,6 +50,9 @@ class CsvManager:
             
         if self.dataframe.empty:
             raise TryToOpenEmptyCsvFile()
+        
+        self.dataframe = self.dataframe.fillna("")
+        print(self.dataframe)
     
     
     def get_ids(self):

@@ -124,14 +124,3 @@ def test_remove_duplicated_lines():
     unique_lines = text_cleaner.remove_duplicated_lines_from_list(["My company"])
     assert len(unique_lines) == 1
     assert unique_lines[0] == "My company"
-    
-
-def test_remove_empty_csv_values():
-    cleaned_text = text_cleaner.clean_text("nan")
-    assert len(cleaned_text) == 0
-    cleaned_text = text_cleaner.clean_text("NaN")
-    assert len(cleaned_text) == 0
-    cleaned_text = text_cleaner.clean_text("NAN")
-    assert len(cleaned_text) == 0
-    cleaned_text = text_cleaner.clean_text("Nan")
-    assert len(cleaned_text) == 0
