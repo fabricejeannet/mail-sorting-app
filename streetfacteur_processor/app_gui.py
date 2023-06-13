@@ -22,8 +22,9 @@ class AppGui:
         
         self.create_the_app_window()
         self.user_entry.bind('<Return>', lambda event: self.process_text_of_user_entry())
+        self.window.bind("<F1>", lambda event: self.switch_frame())
 
-        
+
     def create_the_app_window(self):
         self.window = Tk()
         self.window.title("Street Facteur")
@@ -95,9 +96,10 @@ class AppGui:
         
     
     def process_text_of_user_entry(self):
-        logging.info("Texte de l'utilisateur: " + self.get_searched_text())
-        self.show_loading_display()
-        self.text_need_to_be_processed = True
+        if self.is_keyboard_mode:
+            logging.info("Texte de l'utilisateur: " + self.get_searched_text())
+            self.show_loading_display()
+            self.text_need_to_be_processed = True
         
         
     def get_searched_text(self):
@@ -125,6 +127,13 @@ class AppGui:
         
         self.create_the_result_analyser_frame(self.camera_frame)
         self.create_the_result_analyser_widgets()
+        
+    
+    def switch_frame(self):
+        if self.is_keyboard_mode:
+            self.show_camera_frame()
+        else :
+            self.show_keyboard_frame()
 
 
     def show_keyboard_frame(self):
@@ -132,6 +141,7 @@ class AppGui:
         self.create_text_result(self.keyboard_frame)
         self.create_the_result_analyser_frame(self.keyboard_frame)
         self.create_the_result_analyser_widgets()
+        self.user_entry.configure(state='normal')
         self.is_keyboard_mode = True
         self.keyboard_frame.pack(fill='both', expand=True)
 
@@ -142,6 +152,7 @@ class AppGui:
         self.create_the_result_analyser_frame(self.camera_frame)
         self.create_the_result_analyser_widgets()
         self.is_keyboard_mode = False
+        self.user_entry.configure(state='disabled')
         self.camera_frame.pack(fill='both', expand=True)
 
 
@@ -151,9 +162,9 @@ class AppGui:
 
         
     def create_the_text_result_frame(self,frame):
-        self.text_frame = Frame(frame, bg="white", border=1, relief="solid")
+        self.text_frame = Frame(frame, border=1, relief="solid")
         self.text_frame.pack()
-        self.text_frame.place(relx=.72, rely=.012, width=210, height=465)
+        self.text_frame.place(relx=.71, rely=.012, width=228, height=465)
         
         
     def create_the_result_analyser_widgets(self):
@@ -178,16 +189,10 @@ class AppGui:
 
     def create_the_text_result_widget(self):
         # Create a Text widget
-        self.matching_result_widget = PanedWindow(self.text_frame, orient=VERTICAL)
-        self.matching_result_widget.pack(expand=True, fill='both')
-        # self.matching_result_widget.tag_configure("red", foreground="red")
-        # self.matching_result_widget.tag_configure("green", foreground="green")
-        # self.matching_result_widget.tag_configure("nom", font=("TkDefaultFont", 14, "bold"), foreground="blue", justify="center")
-        # self.matching_result_widget.tag_configure("statut_valide", font=("TkDefaultFont", 14, "bold"), foreground="green", justify="center")
-        # self.matching_result_widget.tag_configure("statut_invalide", font=("TkDefaultFont", 14, "bold"), foreground="red", justify="center")
-        # self.matching_result_widget.tag_configure("correspondance_rate", font=("Times", 14, "italic"), justify="right")
-        # self.matching_result_widget.tag_configure("separator", foreground='gray' , justify="center")
-        # self.matching_result_widget.tag_configure("bold", font=("TkDefaultFont", 14, "bold"))
+        self.matching_result_widget = Frame(self.text_frame)
+        self.matching_result_widget.pack(expand=True, fill=BOTH)
+        vertical_scrollbar = Scrollbar(self.matching_result_widget)
+        vertical_scrollbar.pack(side=RIGHT, fill=Y)
 
 
     def csv_popup_message(self, popup_status):
@@ -228,7 +233,7 @@ class AppGui:
         
         result_frame = ResultFrame(self.matching_result_widget, client_match_result).get_result_frame()
         
-        self.matching_result_widget.add(result_frame)
+        result_frame.pack(fill=X, expand=False)
 
 
     def show_loading_display(self):
@@ -245,8 +250,8 @@ class AppGui:
                    
         
     def clear_result_widget(self):
-        for child in self.matching_result_widget.winfo_children():
-            self.matching_result_widget.forget(child)
+        self.matching_result_widget.destroy()
+        self.create_the_text_result_widget()
 
 
     def show_invalid_display(self, message):
