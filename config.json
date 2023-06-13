@@ -8,7 +8,7 @@
         "minimum_valid_ratio_threshold": 70
     },
     "icons": {
-        "filepath": "/home/loic/streetfacteur_data/images/",
+        "filepath": "./assets/img/",
         "keyboard_icon_path" : "icon-keyboard.png",
         "camera_icon_path" : "icon-camera.png",
         "valid_icon_path" : "icon-valid.png",
