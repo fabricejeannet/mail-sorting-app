@@ -42,6 +42,10 @@ class AppGui:
         image = image.resize((55, 55))  
         self.keyboard_icon = ImageTk.PhotoImage(image)
         
+        image = Image.open(self.config_importer.get_coolworking_icon_path())
+        image = image.resize((55, 55))  
+        self.coolworking_icon = ImageTk.PhotoImage(image)
+        
         self.create_the_camera_frame()
         self.create_the_camera_frame_widgets()
         
@@ -168,7 +172,9 @@ class AppGui:
         
         
     def create_the_result_analyser_widgets(self):
-        self.result_analyser_icon = Label(self.result_analyser_frame, image=self.camera_icon)
+        
+        
+        self.result_analyser_icon = Label(self.result_analyser_frame, image=self.coolworking_icon)
         self.result_analyser_icon.pack(side=LEFT)
 
         if self.is_keyboard_mode:

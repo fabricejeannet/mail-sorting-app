@@ -1,7 +1,7 @@
 {
     "base_path": "/home/loic/streetfacteur_data/",
     "csv": {
-        "filepath": "csv/",
+        "filepath": "/home/loic/streetfacteur_data/csv/",
         "regex": "Clients(\\s\\(\\d*\\))?\\.csv"
     },
     "image": {
@@ -9,15 +9,17 @@
         "minimum_valid_ratio_threshold": 70
     },
     "icons": {
-        "keyboard_icon_path" : "images/icon-keyboard.png",
-        "camera_icon_path" : "images/icon-camera.png",
-        "valid_icon_path" : "images/icon-valid.png",
-        "invalid_icon_path" : "images/icon-invalid.png",
-        "warning_icon_path" : "images/icon-warning.png",
-        "shaking_camera_icon_path" : "images/icon-unstable-camera.png",
-        "human_icon_path" : "images/icon-human.png",
-        "company_icon_path" : "images/icon-company.png",
-        "loading_icon_path" : "images/icon-processing.png"
+        "filepath": "/home/loic/streetfacteur_data/images/",
+        "keyboard_icon_path" : "icon-keyboard.png",
+        "camera_icon_path" : "icon-camera.png",
+        "valid_icon_path" : "icon-valid.png",
+        "invalid_icon_path" : "icon-invalid.png",
+        "warning_icon_path" : "icon-warning.png",
+        "shaking_camera_icon_path" : "icon-unstable-camera.png",
+        "human_icon_path" : "icon-human.png",
+        "company_icon_path" : "icon-company.png",
+        "loading_icon_path" : "icon-processing.png",
+        "coolworking_icon_path": "icon-coolworking.png"
     },
     "messages": {
         "keyboard_input_message": "Saisissez le nom recherché",

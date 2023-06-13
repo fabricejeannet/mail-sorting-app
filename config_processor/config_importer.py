@@ -15,8 +15,12 @@ class ConfigImporter:
             return config
 
 
-    def get_base_path(self):
-        return self.config["base_path"]
+    def get_icon_filepath(self):
+        return self.config["icons"]["filepath"]
+    
+    
+    def get_csv_file_path(self):
+        return self.config["csv"]["filepath"]
     
         
     def get_icons(self):
@@ -25,11 +29,7 @@ class ConfigImporter:
     
     def get_messages(self):
         return self.config["messages"]
-    
-    
-    def get_csv_file_path(self):
-        return self.get_base_path() + self.config["csv"]["filepath"]
-    
+        
     
     def get_csv_file_regex(self):
         return self.config["csv"]["regex"]
@@ -44,39 +44,39 @@ class ConfigImporter:
     
     
     def get_keyboard_icon_path(self):
-        return self.get_base_path() + self.get_icons()["keyboard_icon_path"]
+        return self.get_icon_filepath() + self.get_icons()["keyboard_icon_path"]
     
     
     def get_camera_icon_path(self):
-        return self.get_base_path() + self.get_icons()["camera_icon_path"]
+        return self.get_icon_filepath() + self.get_icons()["camera_icon_path"]
     
     
     def get_shaking_camera_icon_path(self):
-        return self.get_base_path() + self.get_icons()["shaking_camera_icon_path"]
+        return self.get_icon_filepath() + self.get_icons()["shaking_camera_icon_path"]
     
     
     def get_valid_icon_path(self):
-        return self.get_base_path() + self.get_icons()["valid_icon_path"]
+        return self.get_icon_filepath() + self.get_icons()["valid_icon_path"]
     
     
     def get_invalid_icon_path(self):
-        return self.get_base_path() + self.get_icons()["invalid_icon_path"]
+        return self.get_icon_filepath() + self.get_icons()["invalid_icon_path"]
     
     
     def get_warning_icon_path(self):
-        return self.get_base_path() + self.get_icons()["warning_icon_path"]
+        return self.get_icon_filepath() + self.get_icons()["warning_icon_path"]
     
     
     def get_human_icon_path(self):
-        return self.get_base_path() + self.get_icons()["human_icon_path"]
+        return self.get_icon_filepath() + self.get_icons()["human_icon_path"]
     
     
     def get_company_icon_path(self):
-        return self.get_base_path() + self.get_icons()["company_icon_path"]
+        return self.get_icon_filepath() + self.get_icons()["company_icon_path"]
     
     
     def get_loading_icon_path(self):
-        return self.get_base_path() + self.get_icons()["loading_icon_path"]
+        return self.get_icon_filepath() + self.get_icons()["loading_icon_path"]
     
     
     def get_welcome_message(self):
@@ -121,5 +121,9 @@ class ConfigImporter:
     
     def get_camera_input_message(self):
         return self.get_messages()["camera_input_message"]
+    
+    
+    def get_coolworking_icon_path(self):
+        return self.get_icon_filepath() + self.get_icons()["coolworking_icon_path"]
     
     
