@@ -1,5 +1,4 @@
 {
-    "base_path": "/home/loic/streetfacteur_data/",
     "csv": {
         "filepath": "/home/loic/streetfacteur_data/csv/",
         "regex": "Clients(\\s\\(\\d*\\))?\\.csv"
