@@ -13,10 +13,22 @@ class ConfigImporter:
         with open(self.config_file_path) as config_file:
             config = json.load(config_file)
             return config
+
+
+    def get_base_path(self):
+        return self.config["base_path"]
+    
         
+    def get_icons(self):
+        return self.config["icons"]
+    
+    
+    def get_messages(self):
+        return self.config["messages"]
+    
     
     def get_csv_file_path(self):
-        return self.config["csv"]["filepath"]
+        return self.get_base_path() + self.config["csv"]["filepath"]
     
     
     def get_csv_file_regex(self):
@@ -32,69 +44,82 @@ class ConfigImporter:
     
     
     def get_keyboard_icon_path(self):
-        return self.config["icons"]["keyboard_icon_path"]
+        return self.get_base_path() + self.get_icons()["keyboard_icon_path"]
     
     
     def get_camera_icon_path(self):
-        return self.config["icons"]["camera_icon_path"]
+        return self.get_base_path() + self.get_icons()["camera_icon_path"]
     
     
     def get_shaking_camera_icon_path(self):
-        return self.config["icons"]["shaking_camera_icon_path"]
+        return self.get_base_path() + self.get_icons()["shaking_camera_icon_path"]
     
     
     def get_valid_icon_path(self):
-        return self.config["icons"]["valid_icon_path"]
+        return self.get_base_path() + self.get_icons()["valid_icon_path"]
     
     
     def get_invalid_icon_path(self):
-        return self.config["icons"]["invalid_icon_path"]
+        return self.get_base_path() + self.get_icons()["invalid_icon_path"]
     
     
     def get_warning_icon_path(self):
-        return self.config["icons"]["warning_icon_path"]
+        return self.get_base_path() + self.get_icons()["warning_icon_path"]
     
     
     def get_human_icon_path(self):
-        return self.config["icons"]["human_icon_path"]
+        return self.get_base_path() + self.get_icons()["human_icon_path"]
     
     
     def get_company_icon_path(self):
-        return self.config["icons"]["company_icon_path"]
+        return self.get_base_path() + self.get_icons()["company_icon_path"]
+    
+    
+    def get_loading_icon_path(self):
+        return self.get_base_path() + self.get_icons()["loading_icon_path"]
     
     
     def get_welcome_message(self):
-        return self.config["messages"]["welcome_message"]
+        return self.get_messages()["welcome_message"]
     
     
     def get_valid_message(self):
-        return self.config["messages"]["valid_message"]
+        return self.get_messages()["valid_message"]
     
     
     def get_invalid_unsubscribed_message(self):
-        return self.config["messages"]["invalid_unsubscribed_message"]
+        return self.get_messages()["invalid_unsubscribed_message"]
     
     
     def get_invalid_not_found_message(self):
-        return self.config["messages"]["invalid_not_found_message"]
+        return self.get_messages()["invalid_not_found_message"]
     
     
     def get_warning_status_message(self):
-        return self.config["messages"]["warning_status_message"]
+        return self.get_messages()["warning_status_message"]
     
     
     def get_warning_ratio_message(self):
-        return self.config["messages"]["warning_ratio_message"]
+        return self.get_messages()["warning_ratio_message"]
     
     
     def get_movement_detected_message(self):
-        return self.config["messages"]["movement_detected_message"]
+        return self.get_messages()["movement_detected_message"]
     
     
     def get_analysing_message(self):
-        return self.config["messages"]["analysing_message"]
+        return self.get_messages()["analysing_message"]
+    
     
     def get_no_text_found_message(self):
-        return self.config["messages"]["no_text_found_message"]
+        return self.get_messages()["no_text_found_message"]
+    
+    
+    def get_keyboard_input_message(self):
+        return self.get_messages()["keyboard_input_message"]
+    
+    
+    def get_camera_input_message(self):
+        return self.get_messages()["camera_input_message"]
     
     

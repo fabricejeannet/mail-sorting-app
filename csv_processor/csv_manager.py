@@ -13,6 +13,7 @@ class CsvManager:
         self.dataframe = pandas.DataFrame()
         self.config_importer = ConfigImporter()
         self.csv_file_path = self.config_importer.get_csv_file_path()
+        logging.info("csv_file_path: " + self.csv_file_path)
         self.csv_file_regex = self.config_importer.get_csv_file_regex()
         
         

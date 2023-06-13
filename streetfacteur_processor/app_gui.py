@@ -171,8 +171,11 @@ class AppGui:
         self.result_analyser_icon = Label(self.result_analyser_frame, image=self.camera_icon)
         self.result_analyser_icon.pack(side=LEFT)
 
-        # Création du champ de texte en lecture seule à droite
-        text = self.config_importer.get_welcome_message()
+        if self.is_keyboard_mode:
+            text = self.config_importer.get_keyboard_input_message()
+        else:
+            text = self.config_importer.get_camera_input_message()
+            
         self.result_analyser_text = Label(self.result_analyser_frame, text=text, justify=LEFT, font=('Helvetica', 16), wraplength=420)
         self.result_analyser_text.pack(side=RIGHT, fill=BOTH, expand=True)
                 
@@ -303,7 +306,7 @@ class AppGui:
 
 
     def show_loading_image(self):
-        image = Image.open(LOADING_IMAGE_PATH)
+        image = Image.open(self.config_importer.get_loading_icon_path())
         resized_image = image.resize((55, 55))
         self.update_result_logo_image(resized_image)
 
