@@ -257,5 +257,3 @@ def test_check_if_the_first_result_is_a_perfect_match():
     street_facteur.matching_results = [client1]
     assert street_facteur.check_if_the_first_result_is_a_perfect_match() == False
     
-    
-    

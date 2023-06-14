@@ -99,3 +99,13 @@ def test_mp():
     match_analyser.find_the_best_results("mp")
     assert len(match_analyser.get_matching_results()) == 1
     assert match_analyser.get_matching_results()[0].matching_company == "mp emergence"
+    
+    
+def test_create_company_and_person_result_if_same_client():
+    mock_clients = csv_manager.get_clients_data_dictionnary()
+    match_analyser = MatchAnalyser(mock_clients)
+    match_analyser.reset_match_results()
+    match_analyser.find_the_best_results("Société 3")
+    match_analyser.find_the_best_results("Dupont")
+    assert match_analyser.get_matching_results()[0].matching_person == "dupont"
+    assert match_analyser.get_matching_results()[0].matching_company == "société 3"

@@ -1,6 +1,5 @@
 import traceback
 import cv2
-import threading
 import time
 import numpy as np
 import logging
@@ -145,21 +144,12 @@ class AppBack:
     
     def add_matching_results_from_cleaned_lines(self, cleaned_lines_array):
         logging.info("Total cleaned text : " + str(cleaned_lines_array))
-
-        matching_result_threads = []
-        
+                
         self.match_analyser.reset_match_results()
 
         for line in cleaned_lines_array:
-            thread_line_matching = threading.Thread(target=self.match_analyser.find_the_best_results, args=(line,))
-            thread_line_matching.start()
-            matching_result_threads.append(thread_line_matching)
+            self.match_analyser.find_the_best_results(line)
 
-        # Wait for all threads to complete
-        for thread in matching_result_threads:
-            thread.join()
-
-            
         self.matching_results = self.match_analyser.get_matching_results()
         logging.info("Total matching results : " + str(self.matching_results))
             
