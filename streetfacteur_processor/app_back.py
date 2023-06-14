@@ -5,6 +5,7 @@ import time
 import numpy as np
 import logging
 import pytesseract
+
 from streetfacteur_processor.app_constants import *
 from text_processor.text_cleaner import TextCleaner
 from match_processor.match_analyser import MatchAnalyser
@@ -26,6 +27,7 @@ class AppBack:
         self.image_acquisition = ImageAcquisition()
         self.image_formatter = ImageFormatter()
         self.text_cleaner = TextCleaner()
+        self.match_analyser = MatchAnalyser({})
         self.matching_results = []
         self.valid_lines_found = False
         self.show_csv_popup = False
@@ -50,7 +52,6 @@ class AppBack:
 
         except NoCsvFileFound:
             self.show_csv_popup = PopupStatus.NO_CSV_FILE_POPUP
-            self.match_analyser = MatchAnalyser({})
             logging.error("No csv file found")
         
         except FileNotFoundError:
@@ -125,15 +126,12 @@ class AppBack:
             
 
     def client_match_found(self):
-        if(self.matching_results != [] and len(self.matching_results) > 0):
-            return True
-        return False
+        return(bool(self.matching_results))
     
                 
     def first_result_have_valid_match_ratio(self):
-        if(self.matching_results):
-            if(self.get_first_result().get_max_match_ratio() >= self.config_importer.get_image_valid_threshold()):
-                return True
+        if self.matching_results:
+            return self.get_first_result().get_max_match_ratio() >= self.config_importer.get_image_valid_threshold()
         return False
 
             
@@ -167,14 +165,13 @@ class AppBack:
             
     
     def reorder_results_to_show_the_most_corresponding_result_first(self):
-        if(self.matching_results != []):
+        if(self.matching_results):
             self.matching_results.sort(key=lambda x: x.get_max_match_ratio(), reverse=True)
 
 
     def check_if_the_first_result_is_a_perfect_match(self):
-        if(self.matching_results):
-            if(self.get_first_result().get_max_match_ratio() == 100):
-                return True
+        if self.matching_results:
+            return self.get_first_result().get_max_match_ratio() == 100
         return False
             
             
@@ -276,13 +273,11 @@ class AppBack:
                     if cleaned_searched_text != "":
                         self.valid_lines_found = True
                     self.show_the_results_from_cleaned_lines([cleaned_searched_text])
-                    self.valid_lines_found = False
                     self.app_gui.text_need_to_be_processed = False
 
                 except:
                     logging.info("Erreur lors de l'analyse !")
                     logging.error("Unexpected error:" + str(traceback.format_exc()))
-                    logging.info("Image has been analysed = " + str(image_has_been_analysed))
                 
 
             # Update the window to show the new image

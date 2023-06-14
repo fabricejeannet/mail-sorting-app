@@ -50,31 +50,26 @@ class MatchAnalyser:
         cleaned_trade_marks = [self.text_cleaner.clean_text_without_checking_validity(str(trade_mark)) for trade_mark in trade_marks]
 
         for index, (company_name, trade_mark) in enumerate(zip(cleaned_companies, cleaned_trade_marks)):
-            
             client_id = self.clients_data_dictionary[ID][index]
             company_name_match_ratio = self.get_average_match_ratio(line, company_name)
-            
-            if trade_mark == "nan":
-                max_match_ratio = company_name_match_ratio
-                most_corresponding_name = company_name
-            else:
+            if trade_mark:
                 trade_mark_match_ratio = self.get_average_match_ratio(line, trade_mark)
-
                 max_match_ratio = max(company_name_match_ratio, trade_mark_match_ratio)
                 most_corresponding_name = company_name if company_name_match_ratio > trade_mark_match_ratio else trade_mark
+            else:
+                max_match_ratio = company_name_match_ratio
+                most_corresponding_name = company_name
 
             if max_match_ratio >= self.threshold:
-                
                 result = self.result_dictionnary.get(client_id)
-                
+
                 if not result:
                     self.result_dictionnary[client_id] = MatchingResult(matching_company=most_corresponding_name,company_match_ratio=max_match_ratio, status=self.clients_data_dictionary[STATUS][index])
 
                 elif not result.company_match_ratio or result.company_match_ratio < max_match_ratio:
                     result.company_match_ratio = max_match_ratio
                     result.matching_company = most_corresponding_name
-
-
+                    
 
     def get_matching_directors_names(self, line):
         director_names = self.clients_data_dictionary[DIRECTOR_NAME]
@@ -99,4 +94,3 @@ class MatchAnalyser:
                 elif not result.person_match_ratio or result.person_match_ratio < max_match_ratio:
                     result.person_match_ratio = max_match_ratio
                     result.matching_person = most_corresponding_name
-
