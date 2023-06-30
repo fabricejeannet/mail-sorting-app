@@ -1,6 +1,6 @@
 {
     "csv": {
-        "filepath": "/home/loic/streetfacteur_data/csv/",
+        "filepath": "/home/fabrice/Public/csv/",
         "regex": "Clients(\\s\\(\\d*\\))?\\.csv"
     },
     "image": {
