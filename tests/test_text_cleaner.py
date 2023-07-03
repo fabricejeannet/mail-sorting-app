@@ -56,15 +56,15 @@ def test_removes_invalid_lines():
     
     
 def test_remove_full_legal_status_and_points():
-    assert text_cleaner.remove_legal_status("My company S.A.R.L. S.A.S. S.A.S.U. E.U.R.L. S.C.I. S.N.C. E.I. E.I.R.L.") == "My company"
+    assert text_cleaner.remove_legal_status("My company S.A.R.L. S.A.S. S.A.S.U. E.U.R.L. S.C.I. S.N.C. E.I. E.I.R.L. S.E.L.A.R.L") == "My company"
     
     
 def test_removes_legal_status():
-    assert text_cleaner.remove_legal_status("My company SARL SAS SASU EURL SCI SNC EI EIRL") == "My company"
+    assert text_cleaner.remove_legal_status("My company SARL SAS SASU EURL SCI SNC EI EIRL SELARL") == "My company"
     
 
 def test_removes_legal_status_and_points():
-    assert text_cleaner.remove_legal_status("My company SARL. SAS. SASU. EURL. SCI. SNC. EI. EIRL.") == "My company"
+    assert text_cleaner.remove_legal_status("My company SARL. SAS. SASU. EURL. SCI. SNC. EI. EIRL. SELARL.") == "My company"
     
     
 def test_dont_remove_legal_status_in_words():
