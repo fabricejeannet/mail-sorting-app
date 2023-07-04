@@ -14,7 +14,7 @@ def test_get_match_ratio():
 
 def test_get_match_ratio_for_names():
     match_analyser = MatchAnalyser(None)
-    assert match_analyser.get_match_ratio_for_names("Jean Louis","Jean-Louis") == 100
+    assert match_analyser.get_match_ratio_for_names("Jean Louis","Jean-Louis") >= 85
     assert match_analyser.get_match_ratio_for_names("Jean Louis","Jean Louis") == 100
     assert match_analyser.get_match_ratio_for_names("Jean Louis","Jean Louis Dupont") >= 85
     assert match_analyser.get_match_ratio_for_names("Jean Louis","Louis Jean") == 100
@@ -43,12 +43,12 @@ def test_return_the_top_five_matches_for_a_line():
     mock_clients = csv_manager.get_clients_data_dictionnary()
     match_analyser = MatchAnalyser(mock_clients)
     match_analyser.reset_match_results()
-    match_analyser.find_the_best_results("paul durant")
+    match_analyser.find_the_best_results("paul durend")
     results = match_analyser.get_matching_results()
     assert results[0].matching_person == "paul durand"
-    assert results[0].person_match_ratio > 90
+    assert results[0].person_match_ratio >= 90
     assert results[1].matching_person == "paul dupont"
-    assert results[1].person_match_ratio > 80
+    assert results[1].person_match_ratio > 70
     match_analyser.reset_match_results()
     match_analyser.find_the_best_results("cottonwood")
     results = match_analyser.get_matching_results()

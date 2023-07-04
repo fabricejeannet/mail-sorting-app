@@ -1,4 +1,4 @@
-from fuzzywuzzy.fuzz import ratio, token_set_ratio, token_sort_ratio, partial_ratio
+from rapidfuzz.fuzz import ratio, token_set_ratio, token_sort_ratio, partial_ratio
 from match_processor.matching_result import MatchingResult
 from text_processor.text_cleaner import TextCleaner
 from csv_processor.csv_constants import COMPANY_NAME, ID, STATUS, TRADEMARK_NAME, DIRECTOR_NAME, LEGAL_REPRESENTATIVE

@@ -4,8 +4,8 @@
         "regex": "Clients(\\s\\(\\d*\\))?\\.csv"
     },
     "image": {
-        "valid_ratio_threshold": 85,
-        "minimum_valid_ratio_threshold": 70
+        "valid_ratio_threshold": 80,
+        "minimum_valid_ratio_threshold": 67
     },
     "icons": {
         "filepath": "./assets/img/",
