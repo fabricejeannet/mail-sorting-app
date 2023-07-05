@@ -1,9 +1,16 @@
 from csv_processor.csv_manager import CsvManager
 from csv_processor.csv_constants import *
+from config_processor.config_importer import ConfigImporter
 from exceptions.custom_exceptions import *
 import pandas
 import pytest
 csv_manager = CsvManager()
+config_importer = ConfigImporter()
+
+ID = config_importer.get_csv_id_column()
+COMPANY_NAME = config_importer.get_csv_company_name_column()
+LEGAL_REPRESENTATIVE = config_importer.get_csv_owner_column()
+STATUS = config_importer.get_csv_status_column()
 
 def test_check_if_file_is_a_csv():
     assert csv_manager.is_a_csv_file("test.csv") == True
@@ -77,36 +84,11 @@ def test_get_subscription_status_on_missing_column_raise_error():
     assert exception_info.value.message == STATUS + COLUMN_IS_MISSING
     
     
-def test_get_director_names():
-    csv_manager.dataframe = pandas.DataFrame({DIRECTOR_NAME:["Jean Jacques","b","c"]})
-    assert csv_manager.get_director_names().equals(pandas.Series(["Jean Jacques","b","c"]))
-    
-
-def test_get_director_names_on_missing_column_raise_error():
-    csv_manager.dataframe = pandas.DataFrame()
-    with pytest.raises(MissingColumnException) as exception_info:
-        csv_manager.get_director_names()
-    assert exception_info.value.message == DIRECTOR_NAME + COLUMN_IS_MISSING
-    
-    
-def test_get_trademark_names():
-    csv_manager.dataframe = pandas.DataFrame({TRADEMARK_NAME:["My company","b","c"]})
-    assert csv_manager.get_trademark_names().equals(pandas.Series(["My company","b","c"]))
-    
-    
-def test_get_trademark_names_on_missing_column_raise_error():
-    csv_manager.dataframe = pandas.DataFrame()
-    with pytest.raises(MissingColumnException) as exception_info:
-        csv_manager.get_trademark_names()
-    assert exception_info.value.message == TRADEMARK_NAME + COLUMN_IS_MISSING
-    
     
 def test_get_clients_data_dictionnary():
-    mock_data = {DIRECTOR_NAME:["Jean Jacques","b","c"], TRADEMARK_NAME:["My company","b","c"], ID:[1,2,3], COMPANY_NAME:["a","b","c"], LEGAL_REPRESENTATIVE:["Jean Jacques","b","c"], STATUS:["ABONNE","DESABONNE","RADIE"]}
-    csv_manager.dataframe = pandas.DataFrame({DIRECTOR_NAME:["Jean Jacques","b","c"], TRADEMARK_NAME:["My company","b","c"], ID:[1,2,3], COMPANY_NAME:["a","b","c"], LEGAL_REPRESENTATIVE:["Jean Jacques","b","c"], STATUS:["ABONNE","DESABONNE","RADIE"]}) 
+    mock_data = {ID:[1,2,3], COMPANY_NAME:["a","b","c"], LEGAL_REPRESENTATIVE:["Jean Jacques","b","c"], STATUS:["ABONNE","DESABONNE","RADIE"]}
+    csv_manager.dataframe = pandas.DataFrame({ID:[1,2,3], COMPANY_NAME:["a","b","c"], LEGAL_REPRESENTATIVE:["Jean Jacques","b","c"], STATUS:["ABONNE","DESABONNE","RADIE"]}) 
     for index in range(len(csv_manager.dataframe)):
-        assert csv_manager.get_clients_data_dictionnary()[DIRECTOR_NAME][index] == mock_data[DIRECTOR_NAME][index]
-        assert csv_manager.get_clients_data_dictionnary()[TRADEMARK_NAME][index] == mock_data[TRADEMARK_NAME][index]
         assert csv_manager.get_clients_data_dictionnary()[ID][index] == mock_data[ID][index]
         assert csv_manager.get_clients_data_dictionnary()[COMPANY_NAME][index] == mock_data[COMPANY_NAME][index]
         assert csv_manager.get_clients_data_dictionnary()[LEGAL_REPRESENTATIVE][index] == mock_data[LEGAL_REPRESENTATIVE][index]

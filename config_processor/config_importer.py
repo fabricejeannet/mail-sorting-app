@@ -35,6 +35,22 @@ class ConfigImporter:
         return self.config["csv"]["regex"]
     
     
+    def get_csv_company_name_column(self):
+        return self.config["csv"]["client_company_column"]
+    
+    
+    def get_csv_owner_column(self):
+        return self.config["csv"]["client_owner_column"]
+    
+    
+    def get_csv_id_column(self):
+        return self.config["csv"]["client_id_column"]
+    
+    
+    def get_csv_status_column(self):
+        return self.config["csv"]["client_status_column"]
+    
+    
     def get_image_valid_threshold(self):
         return self.config["image"]["valid_ratio_threshold"]
     

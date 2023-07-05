@@ -1,7 +1,11 @@
 {
     "csv": {
         "filepath": "/home/fabrice/Public/csv/",
-        "regex": "Clients(\\s\\(\\d*\\))?\\.csv"
+        "regex": "Clients(\\s\\(\\d*\\))?\\.csv",
+        "client_company_column": "Dénomination sociale",
+        "client_id_column": "id",
+        "client_owner_column": "A l'attention de",
+        "client_status_column": "Statut Abonnement"
     },
     "image": {
         "valid_ratio_threshold": 80,

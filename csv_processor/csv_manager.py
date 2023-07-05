@@ -11,11 +11,14 @@ class CsvManager:
     
     def __init__(self):
         self.dataframe = pandas.DataFrame()
-        self.config_importer = ConfigImporter()
-        self.csv_file_path = self.config_importer.get_csv_file_path()
+        config_importer = ConfigImporter()
+        self.csv_file_path = config_importer.get_csv_file_path()
         logging.info("csv_file_path: " + self.csv_file_path)
-        self.csv_file_regex = self.config_importer.get_csv_file_regex()
-        
+        self.csv_file_regex = config_importer.get_csv_file_regex()
+        self.ID = config_importer.get_csv_id_column()
+        self.COMPANY_NAME = config_importer.get_csv_company_name_column()
+        self.LEGAL_REPRESENTATIVE = config_importer.get_csv_owner_column()
+        self.STATUS = config_importer.get_csv_status_column()
         
     def is_a_csv_file(self,file_name):
         return file_name.lower().endswith(".csv")
@@ -58,81 +61,55 @@ class CsvManager:
     
     def get_ids(self):
         try :
-            dataframe_ids = self.dataframe[ID]
+            dataframe_ids = self.dataframe[self.ID]
         except KeyError:
-            raise MissingColumnException(ID)
+            raise MissingColumnException(self.ID)
         return dataframe_ids
     
     
     def get_company_names(self):
         try :
-            dataframe_company_names = self.dataframe[COMPANY_NAME]
+            dataframe_company_names = self.dataframe[self.COMPANY_NAME]
         except KeyError:
-            raise MissingColumnException(COMPANY_NAME)
+            raise MissingColumnException(self.COMPANY_NAME)
         return dataframe_company_names
     
     
     def get_legal_representatives(self):
         try :
-            dataframe_legal_representatives = self.dataframe[LEGAL_REPRESENTATIVE]
+            dataframe_legal_representatives = self.dataframe[self.LEGAL_REPRESENTATIVE]
         except KeyError:
-            raise MissingColumnException(LEGAL_REPRESENTATIVE)
+            raise MissingColumnException(self.LEGAL_REPRESENTATIVE)
         return dataframe_legal_representatives
     
     
     def get_subscription_status(self):
         try :
-            dataframe_subscription_status = self.dataframe[STATUS]
+            dataframe_subscription_status = self.dataframe[self.STATUS]
         except KeyError:
-            raise MissingColumnException(STATUS)
+            raise MissingColumnException(self.STATUS)
         return dataframe_subscription_status
-    
-    
-    def get_director_names(self):
-        try :
-            dataframe_director_names = self.dataframe[DIRECTOR_NAME]
-        except KeyError:
-            raise MissingColumnException(DIRECTOR_NAME)
-        return dataframe_director_names
-    
-    
-    def get_trademark_names(self):
-        try :
-            dataframe_trademark_names = self.dataframe[TRADEMARK_NAME]
-        except KeyError:
-            raise MissingColumnException(TRADEMARK_NAME)
-        return dataframe_trademark_names
-    
+        
     
     def get_id_from_index(self,index):
-        return self.dataframe.loc[index,ID]
+        return self.dataframe.loc[index,self.ID]
     
     def get_company_name_from_index(self,index):
-        return self.dataframe.loc[index,COMPANY_NAME]
+        return self.dataframe.loc[index,self.COMPANY_NAME]
     
     
     def get_legal_representative_from_index(self,index):
-        return self.dataframe.loc[index,LEGAL_REPRESENTATIVE]
+        return self.dataframe.loc[index,self.LEGAL_REPRESENTATIVE]
     
     
     def get_subscription_status_from_index(self,index):
-        return self.dataframe.loc[index,STATUS]
-    
-    
-    def get_director_name_from_index(self,index):
-        return self.dataframe.loc[index,DIRECTOR_NAME]
-    
-    
-    def get_trademark_name_from_index(self,index):
-        return self.dataframe.loc[index,TRADEMARK_NAME]
-    
+        return self.dataframe.loc[index,self.STATUS]
+        
     
     def get_clients_data_dictionnary(self):
         clients_data_dictionnary = {}
-        clients_data_dictionnary[ID] = self.get_ids()
-        clients_data_dictionnary[COMPANY_NAME] = self.get_company_names()
-        clients_data_dictionnary[STATUS] = self.get_subscription_status()
-        clients_data_dictionnary[DIRECTOR_NAME] = self.get_director_names()
-        clients_data_dictionnary[TRADEMARK_NAME] = self.get_trademark_names()
-        clients_data_dictionnary[LEGAL_REPRESENTATIVE] = self.get_legal_representatives()
+        clients_data_dictionnary[self.ID] = self.get_ids()
+        clients_data_dictionnary[self.COMPANY_NAME] = self.get_company_names()
+        clients_data_dictionnary[self.STATUS] = self.get_subscription_status()
+        clients_data_dictionnary[self.LEGAL_REPRESENTATIVE] = self.get_legal_representatives()
         return clients_data_dictionnary
