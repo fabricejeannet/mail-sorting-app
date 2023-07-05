@@ -166,8 +166,6 @@ class AppGui:
         
         
     def create_the_result_analyser_widgets(self):
-        
-        
         self.result_analyser_icon = Label(self.result_analyser_frame, image=self.coolworking_icon)
         self.result_analyser_icon.pack(side=LEFT)
 

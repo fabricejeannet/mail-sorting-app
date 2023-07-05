@@ -2,9 +2,10 @@
 
 class MatchingResult:
 
-    def __init__(self, status, company_match_ratio = None, person_match_ratio = None, matching_company = None, matching_person = None):
+    def __init__(self, status, company_match_ratio = None, person_match_ratio = None, matching_company = None, matching_person = None, domiciliation_agent = None):
         self.matching_company = matching_company
         self.matching_person = matching_person
+        self.domiciliation_agent = domiciliation_agent
         self.company_match_ratio = company_match_ratio
         self.person_match_ratio = person_match_ratio
         self.status = status
