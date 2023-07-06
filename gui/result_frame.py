@@ -35,7 +35,8 @@ class ResultFrame:
         else:
             self.result_frame = Frame(matching_result_widget, bg="red", border=1, relief="solid", width=200, height=80, pady=4)
         
-        domiciliation_agent_label = Label(self.result_frame, text=client_match_result.domiciliation_agent, font=("TkDefaultFont", 12, "bold"), bg=self.result_frame['bg'])
+        domiciliation_agent_label = Label(self.result_frame, text=client_match_result.domiciliation_agent, font=("TkDefaultFont", 12), bg=self.result_frame['bg'], fg="blue")
+        domiciliation_agent_label.pack(side=TOP)
         
         #Image de personnage à gauche du texte prenant environ 1/5 de la largeur
         result_icon = Label(self.result_frame, image=None, bg=self.result_frame['bg'])
@@ -72,8 +73,9 @@ class ResultFrame:
         else:
             self.result_frame = Frame(matching_result_widget, bg="red", border=1, relief="solid", width=200, height=80, pady=4)
             
-        domiciliation_agent_label = Label(self.result_frame, text=client_match_result.domiciliation_agent, font=("TkDefaultFont", 12, "bold"), bg=self.result_frame['bg'])
-            
+        domiciliation_agent_label = Label(self.result_frame, text=client_match_result.domiciliation_agent, font=("TkDefaultFont", 12), bg=self.result_frame['bg'], fg="blue")
+        domiciliation_agent_label.pack(side=TOP)
+        
         # Première ligne pour la compagnie
         company_frame = Frame(self.result_frame, bg=self.result_frame['bg'])
         company_frame.pack(side=TOP, fill=X)

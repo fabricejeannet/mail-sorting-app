@@ -191,9 +191,7 @@ class AppGui:
     def create_the_text_result_widget(self):
         self.matching_result_widget = Frame(self.text_frame)
         self.matching_result_widget.pack(expand=True, fill=BOTH)
-        vertical_scrollbar = Scrollbar(self.matching_result_widget)
-        vertical_scrollbar.pack(side=RIGHT, fill=Y)
-
+          
 
     def csv_popup_message(self, popup_status):
         self.close_popup_message()

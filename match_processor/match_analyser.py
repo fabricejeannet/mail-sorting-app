@@ -15,6 +15,7 @@ class MatchAnalyser:
         self.COMPANY_NAME = config_importer.get_csv_company_name_column()
         self.LEGAL_REPRESENTATIVE = config_importer.get_csv_owner_column()
         self.STATUS = config_importer.get_csv_status_column()
+        self.DOMICILIATION_AGENT = config_importer.get_csv_domiciliation_agent_column()
         
 
     def reset_match_results(self):
@@ -69,7 +70,7 @@ class MatchAnalyser:
                 result = self.result_dictionnary.get(client_id)
 
                 if not result:
-                    self.result_dictionnary[client_id] = MatchingResult(matching_company=most_corresponding_name,company_match_ratio=max_match_ratio, status=self.clients_data_dictionary[self.STATUS][index])
+                    self.result_dictionnary[client_id] = MatchingResult(matching_company=most_corresponding_name,company_match_ratio=max_match_ratio, status=self.clients_data_dictionary[self.STATUS][index], domiciliation_agent=self.clients_data_dictionary[self.DOMICILIATION_AGENT][index])
 
                 elif not result.company_match_ratio or result.company_match_ratio < max_match_ratio:
                     result.company_match_ratio = max_match_ratio
@@ -101,7 +102,7 @@ class MatchAnalyser:
             if max_match_ratio > self.threshold:
                 result = self.result_dictionnary.get(client_id)
                 if not result:
-                    self.result_dictionnary[client_id] = MatchingResult(matching_person=most_corresponding_name,person_match_ratio=max_match_ratio, status=self.clients_data_dictionary[self.STATUS][index])
+                    self.result_dictionnary[client_id] = MatchingResult(matching_person=most_corresponding_name,person_match_ratio=max_match_ratio, status=self.clients_data_dictionary[self.STATUS][index],domiciliation_agent=self.clients_data_dictionary[self.DOMICILIATION_AGENT][index])
 
                 elif not result.person_match_ratio or result.person_match_ratio < max_match_ratio:
                     result.person_match_ratio = max_match_ratio

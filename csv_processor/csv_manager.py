@@ -19,6 +19,7 @@ class CsvManager:
         self.COMPANY_NAME = config_importer.get_csv_company_name_column()
         self.LEGAL_REPRESENTATIVE = config_importer.get_csv_owner_column()
         self.STATUS = config_importer.get_csv_status_column()
+        self.DOMICILIATION_AGENT = config_importer.get_csv_domiciliation_agent_column()
         
     def is_a_csv_file(self,file_name):
         return file_name.lower().endswith(".csv")
@@ -89,6 +90,14 @@ class CsvManager:
         except KeyError:
             raise MissingColumnException(self.STATUS)
         return dataframe_subscription_status
+    
+    
+    def get_domiciliation_agents(self):
+        try:
+            dataframe_domiciliation_agents = self.dataframe[self.DOMICILIATION_AGENT]
+        except KeyError:
+            raise MissingColumnException(self.DOMICILIATION_AGENT)
+        return dataframe_domiciliation_agents
         
     
     def get_id_from_index(self,index):
@@ -112,4 +121,5 @@ class CsvManager:
         clients_data_dictionnary[self.COMPANY_NAME] = self.get_company_names()
         clients_data_dictionnary[self.STATUS] = self.get_subscription_status()
         clients_data_dictionnary[self.LEGAL_REPRESENTATIVE] = self.get_legal_representatives()
+        clients_data_dictionnary[self.DOMICILIATION_AGENT] = self.get_domiciliation_agents()
         return clients_data_dictionnary

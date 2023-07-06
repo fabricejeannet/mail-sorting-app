@@ -51,6 +51,10 @@ class ConfigImporter:
         return self.config["csv"]["client_status_column"]
     
     
+    def get_csv_domiciliation_agent_column(self):
+        return self.config["csv"]["client_domiciliation_column"]
+    
+    
     def get_image_valid_threshold(self):
         return self.config["image"]["valid_ratio_threshold"]
     

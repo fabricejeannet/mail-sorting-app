@@ -69,5 +69,6 @@ class TextCleaner:
     def remove_gender_markers(self, line):
         return re.sub(REGEX_GENDER_MARKERS, "", line).strip()
     
+    
     def replace_ampersand_by_et(self, line):
         return line.replace("&", "et")
