@@ -90,6 +90,52 @@ def test_removes_lines_containing_banned_words():
     for index in range(len(BANNED_WORDS_LIST)):
         cleaned_text = text_cleaner.clean_text(BANNED_WORDS_LIST[index])
         assert len(cleaned_text) == 0
+        
+        
+def test_remove_special_characters():
+    cleaned_text = text_cleaner.remove_special_characters("my company !")
+    assert len(cleaned_text) != 0
+    assert cleaned_text == "my company"
+    cleaned_text = text_cleaner.remove_special_characters("my company ?")
+    assert len(cleaned_text) != 0
+    assert cleaned_text == "my company"
+    cleaned_text = text_cleaner.remove_special_characters("my company ,")
+    assert len(cleaned_text) != 0
+    assert cleaned_text == "my company"
+    cleaned_text = text_cleaner.remove_special_characters("my company :")
+    assert len(cleaned_text) != 0
+    assert cleaned_text == "my company"
+    cleaned_text = text_cleaner.remove_special_characters("my company .")
+    assert len(cleaned_text) != 0
+    assert cleaned_text == "my company"
+    cleaned_text = text_cleaner.remove_special_characters("my company -")
+    assert len(cleaned_text) != 0
+    assert cleaned_text == "my company"
+    cleaned_text = text_cleaner.remove_special_characters("my company _")
+    assert len(cleaned_text) != 0
+    assert cleaned_text == "my company"
+    cleaned_text = text_cleaner.remove_special_characters("my company /")
+    assert len(cleaned_text) != 0
+    assert cleaned_text == "my company"
+    cleaned_text = text_cleaner.remove_special_characters("my company \\")
+    assert len(cleaned_text) != 0
+    assert cleaned_text == "my company"
+    cleaned_text = text_cleaner.remove_special_characters("my company (")
+    assert len(cleaned_text) != 0
+    assert cleaned_text == "my company"
+    cleaned_text = text_cleaner.remove_special_characters("my company )")
+    assert len(cleaned_text) != 0
+    assert cleaned_text == "my company"
+    cleaned_text = text_cleaner.remove_special_characters("my company [")
+    assert len(cleaned_text) != 0
+    assert cleaned_text == "my company"
+    cleaned_text = text_cleaner.remove_special_characters("my company ]")
+    assert len(cleaned_text) != 0
+    assert cleaned_text == "my company"
+    cleaned_text = text_cleaner.remove_special_characters("my company {")
+    assert len(cleaned_text) != 0
+    assert cleaned_text == "my company"
+    
                 
     
 def test_remove_bordeaux_line():
@@ -115,12 +161,12 @@ def test_remove_france_but_not_company_name_with_france():
 
 
 def test_remove_duplicated_lines():
-    unique_lines = text_cleaner.remove_duplicated_lines_from_list(["My company", "My company", "My company"])
+    unique_lines = text_cleaner.remove_duplicated_lines_from_list(["my company", "my company", "my company"])
     assert len(unique_lines) == 1
-    assert unique_lines[0] == "My company"
-    unique_lines = text_cleaner.remove_duplicated_lines_from_list(["My company", "My company", "My company", "My company"])
+    assert unique_lines[0] == "my company"
+    unique_lines = text_cleaner.remove_duplicated_lines_from_list(["my company", "my company", "my company", "my company"])
     assert len(unique_lines) == 1
-    assert unique_lines[0] == "My company"
-    unique_lines = text_cleaner.remove_duplicated_lines_from_list(["My company"])
+    assert unique_lines[0] == "my company"
+    unique_lines = text_cleaner.remove_duplicated_lines_from_list(["my company"])
     assert len(unique_lines) == 1
-    assert unique_lines[0] == "My company"
+    assert unique_lines[0] == "my company"

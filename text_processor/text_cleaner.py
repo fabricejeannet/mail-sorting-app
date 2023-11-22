@@ -42,6 +42,7 @@ class TextCleaner:
         line = line.strip().lower()
         line = self.replace_ampersand_by_et(line)
         if self.is_valid_line(line):
+            line = self.remove_special_characters(line)
             line = self.remove_legal_status(line)
             line = self.remove_gender_markers(line)
             return line
@@ -54,6 +55,7 @@ class TextCleaner:
     
     def clean_text_without_checking_validity(self, line):
         line = line.strip().lower()
+        line = self.remove_special_characters(line)
         line = self.remove_legal_status(line)
         line = self.remove_gender_markers(line)
         line = self.replace_ampersand_by_et(line)
@@ -72,3 +74,7 @@ class TextCleaner:
     
     def replace_ampersand_by_et(self, line):
         return line.replace("&", "et")
+
+
+    def remove_special_characters(self, line):
+        return re.sub(REGEX_SPECIAL_CHARACTERS, "", line).strip()
