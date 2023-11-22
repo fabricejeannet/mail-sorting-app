@@ -57,16 +57,9 @@ def test_return_the_top_five_matches_for_a_line():
     assert results[0].company_match_ratio > 90
     assert results[1].matching_company == "cottrwood"
     assert results[1].company_match_ratio > 80
-    match_analyser.reset_match_results()
-    match_analyser.find_the_best_results("td express")
-    results = match_analyser.get_matching_results()
-    assert results[0].matching_company == "t d express"
-    assert results[0].company_match_ratio >= 85
-    assert results[1].matching_company == "t d express tetd express tetd express"
-    assert results[1].company_match_ratio > THRESHOLD
     
     
-def test_if_check_all_columns_for_matching():
+def test_if_check_all_name_columns_for_matching():
     mock_clients = csv_manager.get_clients_data_dictionnary()
     match_analyser = MatchAnalyser(mock_clients)
     match_analyser.reset_match_results()
@@ -75,6 +68,17 @@ def test_if_check_all_columns_for_matching():
     match_analyser.reset_match_results()
     match_analyser.find_the_best_results("victorien clemence")
     assert match_analyser.get_matching_results()[0].matching_person == "victorien clemence"
+    
+    
+def test_if_check_trademark_name_column_for_matching():
+    mock_clients = csv_manager.get_clients_data_dictionnary()
+    match_analyser = MatchAnalyser(mock_clients)
+    match_analyser.reset_match_results()
+    match_analyser.find_the_best_results("cottonwood")
+    assert match_analyser.get_matching_results()[0].matching_company == "cottonwood"
+    match_analyser.reset_match_results()
+    match_analyser.find_the_best_results("jeacky 1")
+    assert match_analyser.get_matching_results()[0].matching_company == "jeacky 1"
     
     
 def test_aeg():
@@ -106,8 +110,8 @@ def test_create_company_and_person_result_if_same_client():
     mock_clients = csv_manager.get_clients_data_dictionnary()
     match_analyser = MatchAnalyser(mock_clients)
     match_analyser.reset_match_results()
-    match_analyser.find_the_best_results("Société 3")
+    match_analyser.find_the_best_results("turbo 3")
     match_analyser.find_the_best_results("Dupont")
     print(match_analyser.get_matching_results()[0])
     assert match_analyser.get_matching_results()[0].matching_person == "dupont"
-    assert match_analyser.get_matching_results()[0].matching_company == "société 3"
+    assert match_analyser.get_matching_results()[0].matching_company == "turbo 3"

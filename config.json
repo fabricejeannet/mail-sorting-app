@@ -6,7 +6,8 @@
         "client_id_column": "id",
         "client_owner_column": "owner",
         "client_status_column": "status",
-        "client_domiciliation_column": "domiciliary"
+        "client_domiciliation_column": "domiciliary",
+        "client_trademark_column": "trademark"
     },
     "image": {
         "valid_ratio_threshold": 80,

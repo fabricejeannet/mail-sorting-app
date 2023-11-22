@@ -20,6 +20,7 @@ class CsvManager:
         self.LEGAL_REPRESENTATIVE = config_importer.get_csv_owner_column()
         self.STATUS = config_importer.get_csv_status_column()
         self.DOMICILIATION_AGENT = config_importer.get_csv_domiciliation_agent_column()
+        self.TRADEMARK = config_importer.get_csv_trademark_column()
         
     def is_a_csv_file(self,file_name):
         return file_name.lower().endswith(".csv")
@@ -99,21 +100,14 @@ class CsvManager:
             raise MissingColumnException(self.DOMICILIATION_AGENT)
         return dataframe_domiciliation_agents
         
-    
-    def get_id_from_index(self,index):
-        return self.dataframe.loc[index,self.ID]
-    
-    def get_company_name_from_index(self,index):
-        return self.dataframe.loc[index,self.COMPANY_NAME]
-    
-    
-    def get_legal_representative_from_index(self,index):
-        return self.dataframe.loc[index,self.LEGAL_REPRESENTATIVE]
-    
-    
-    def get_subscription_status_from_index(self,index):
-        return self.dataframe.loc[index,self.STATUS]
         
+    def get_trademarks(self):
+        try:
+            dataframe_trademarks = self.dataframe[self.TRADEMARK]
+        except KeyError:
+            raise MissingColumnException(self.TRADEMARK)
+        return dataframe_trademarks
+
     
     def get_clients_data_dictionnary(self):
         clients_data_dictionnary = {}
@@ -122,4 +116,5 @@ class CsvManager:
         clients_data_dictionnary[self.STATUS] = self.get_subscription_status()
         clients_data_dictionnary[self.LEGAL_REPRESENTATIVE] = self.get_legal_representatives()
         clients_data_dictionnary[self.DOMICILIATION_AGENT] = self.get_domiciliation_agents()
+        clients_data_dictionnary[self.TRADEMARK] = self.get_trademarks()
         return clients_data_dictionnary

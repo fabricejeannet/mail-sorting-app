@@ -39,6 +39,10 @@ class ConfigImporter:
         return self.config["csv"]["client_company_column"]
     
     
+    def get_csv_trademark_column(self):
+        return self.config["csv"]["client_trademark_column"]
+    
+    
     def get_csv_owner_column(self):
         return self.config["csv"]["client_owner_column"]
     

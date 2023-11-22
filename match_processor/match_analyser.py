@@ -16,6 +16,7 @@ class MatchAnalyser:
         self.LEGAL_REPRESENTATIVE = config_importer.get_csv_owner_column()
         self.STATUS = config_importer.get_csv_status_column()
         self.DOMICILIATION_AGENT = config_importer.get_csv_domiciliation_agent_column()
+        self.TRADEMARK = config_importer.get_csv_trademark_column()
         
 
     def reset_match_results(self):
@@ -48,9 +49,12 @@ class MatchAnalyser:
 
     def get_matching_companies(self, line):
         companies = self.clients_data_dictionary[self.COMPANY_NAME]
+        trademarks = self.clients_data_dictionary[self.TRADEMARK]
+        
+        clients_names = [companies[i] + ";" + trademarks[i] for i in range(len(companies))]
 
-        #Boucle qui parcourt les noms de chaque clients
-        for index, (company_names) in enumerate(companies):
+        #Boucle qui parcourt les noms de chaque clients ainsi que leur trademark
+        for index, (company_names) in enumerate(clients_names):
             
             company_names = company_names.split(";")
             cleaned_companies = [self.text_cleaner.clean_text_without_checking_validity(str(company)) for company in company_names]
