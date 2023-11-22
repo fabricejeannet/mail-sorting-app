@@ -4,7 +4,7 @@ from config_processor.config_importer import ConfigImporter
 
 THRESHOLD = ConfigImporter().get_image_minimum_threshold()
 csv_manager = CsvManager()
-csv_manager.open_csv_file("tests/clients.csv")
+csv_manager.open_csv_file("tests/test.csv")
 
 
 def test_get_match_ratio():
