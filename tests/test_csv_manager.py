@@ -12,6 +12,7 @@ COMPANY_NAME = config_importer.get_csv_company_name_column()
 LEGAL_REPRESENTATIVE = config_importer.get_csv_owner_column()
 STATUS = config_importer.get_csv_status_column()
 DOMICILIATION_AGENT = config_importer.get_csv_domiciliation_agent_column()
+TRADEMARK = config_importer.get_csv_trademark_column()
 
 def test_check_if_file_is_a_csv():
     assert csv_manager.is_a_csv_file("test.csv") == True
@@ -87,10 +88,12 @@ def test_get_subscription_status_on_missing_column_raise_error():
     
     
 def test_get_clients_data_dictionnary():
-    mock_data = {ID:[1,2,3], COMPANY_NAME:["a","b","c"], LEGAL_REPRESENTATIVE:["Jean Jacques","b","c"], STATUS:["ABONNE","DESABONNE","RADIE"], DOMICILIATION_AGENT:["a","b","c"]}
+    mock_data = {ID:[1,2,3], COMPANY_NAME:["a","b","c"], LEGAL_REPRESENTATIVE:["Jean Jacques","b","c"], STATUS:["ABONNE","DESABONNE","RADIE"], DOMICILIATION_AGENT:["a","b","c"], TRADEMARK:["a","b","c"]}
     csv_manager.dataframe = pandas.DataFrame(mock_data) 
     for index in range(len(csv_manager.dataframe)):
         assert csv_manager.get_clients_data_dictionnary()[ID][index] == mock_data[ID][index]
         assert csv_manager.get_clients_data_dictionnary()[COMPANY_NAME][index] == mock_data[COMPANY_NAME][index]
         assert csv_manager.get_clients_data_dictionnary()[LEGAL_REPRESENTATIVE][index] == mock_data[LEGAL_REPRESENTATIVE][index]
         assert csv_manager.get_clients_data_dictionnary()[STATUS][index] == mock_data[STATUS][index]
+        assert csv_manager.get_clients_data_dictionnary()[DOMICILIATION_AGENT][index] == mock_data[DOMICILIATION_AGENT][index]
+        assert csv_manager.get_clients_data_dictionnary()[TRADEMARK][index] == mock_data[TRADEMARK][index]

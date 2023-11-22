@@ -88,6 +88,7 @@ class MatchAnalyser:
         #Boucle qui parcoure chaque client
         for index, (client_legal_representatives) in enumerate(legal_representatives):
 
+            print(client_legal_representatives)
             client_legal_representatives = client_legal_representatives.split(";")
             cleaned_legal_representatives = [self.text_cleaner.clean_text_without_checking_validity(str(legal_representative)) for legal_representative in client_legal_representatives]
 
