@@ -170,3 +170,8 @@ def test_remove_duplicated_lines():
     unique_lines = text_cleaner.remove_duplicated_lines_from_list(["my company"])
     assert len(unique_lines) == 1
     assert unique_lines[0] == "my company"
+
+
+def test_remove_accent_from_text(): 
+    assert text_cleaner.clean_text("éèêëàâä") == "eeeeaaa"
+    assert text_cleaner.clean_text("éèêëàâä") != "éèêëàâä"

@@ -1,4 +1,5 @@
 import re
+import unidecode
 from fuzzywuzzy import fuzz
 from text_processor.text_constants import *
 
@@ -42,6 +43,7 @@ class TextCleaner:
         line = line.strip().lower()
         line = self.replace_ampersand_by_et(line)
         if self.is_valid_line(line):
+            line = self.remove_accents(line)
             line = self.remove_special_characters(line)
             line = self.remove_legal_status(line)
             line = self.remove_gender_markers(line)
@@ -55,6 +57,7 @@ class TextCleaner:
     
     def clean_text_without_checking_validity(self, line):
         line = line.strip().lower()
+        line = self.remove_accents(line)
         line = self.remove_special_characters(line)
         line = self.remove_legal_status(line)
         line = self.remove_gender_markers(line)
@@ -66,6 +69,10 @@ class TextCleaner:
         for legal_status in LEGAL_STATUS:
             line = re.sub(legal_status, "", line)    
         return line.strip()
+    
+    
+    def remove_accents(self, line): 
+        return unidecode.unidecode(line)
     
     
     def remove_gender_markers(self, line):
