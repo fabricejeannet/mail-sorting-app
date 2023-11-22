@@ -135,6 +135,9 @@ def test_remove_special_characters():
     cleaned_text = text_cleaner.remove_special_characters("my company {")
     assert len(cleaned_text) != 0
     assert cleaned_text == "my company"
+    cleaned_text = text_cleaner.remove_special_characters("my company'")
+    assert len(cleaned_text) != 0
+    assert cleaned_text == "my company"
     
                 
     

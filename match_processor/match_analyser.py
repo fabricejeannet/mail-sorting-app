@@ -57,12 +57,12 @@ class MatchAnalyser:
         for index, (company_names) in enumerate(clients_names):
             
             company_names = company_names.split(";")
-            cleaned_companies = [self.text_cleaner.clean_text_without_checking_validity(str(company)) for company in company_names]
 
             max_match_ratio = 0
             #Boucle qui parcourt tous les noms du client
-            for company_name in cleaned_companies:
+            for company_name in company_names:
         
+                company_name = company_name.strip()
                 client_id = self.clients_data_dictionary[self.ID][index]
                 company_match_ratio = self.get_average_match_ratio(line, company_name)
                 
@@ -90,12 +90,13 @@ class MatchAnalyser:
 
             print(client_legal_representatives)
             client_legal_representatives = client_legal_representatives.split(";")
-            cleaned_legal_representatives = [self.text_cleaner.clean_text_without_checking_validity(str(legal_representative)) for legal_representative in client_legal_representatives]
 
             max_match_ratio = 0
 
             #Boucle qui parcoure chaque nom possibles du client
-            for legal_representative in cleaned_legal_representatives:
+            for legal_representative in client_legal_representatives:
+                
+                legal_representative = legal_representative.strip()
                 legal_representative_match_ratio = self.get_match_ratio_for_names(line, legal_representative)
 
                 if legal_representative_match_ratio > max_match_ratio:

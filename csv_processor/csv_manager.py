@@ -4,6 +4,7 @@ import pathlib
 import re
 import logging
 from exceptions.custom_exceptions import *
+from text_processor.text_cleaner import TextCleaner
 from csv_processor.csv_constants import *
 from config_processor.config_importer import ConfigImporter
 
@@ -12,6 +13,7 @@ class CsvManager:
     def __init__(self):
         self.dataframe = pandas.DataFrame()
         config_importer = ConfigImporter()
+        self.text_cleaner = TextCleaner()
         self.csv_file_path = config_importer.get_csv_file_path()
         logging.info("csv_file_path: " + self.csv_file_path)
         self.csv_file_regex = config_importer.get_csv_file_regex()
@@ -72,6 +74,9 @@ class CsvManager:
     def get_company_names(self):
         try :
             dataframe_company_names = self.dataframe[self.COMPANY_NAME]
+            for index in range(len(dataframe_company_names)):
+                cleaned_name = self.text_cleaner.clean_text_without_checking_validity(dataframe_company_names[index])
+                dataframe_company_names[index] = cleaned_name
         except KeyError:
             raise MissingColumnException(self.COMPANY_NAME)
         return dataframe_company_names
@@ -80,6 +85,9 @@ class CsvManager:
     def get_legal_representatives(self):
         try :
             dataframe_legal_representatives = self.dataframe[self.LEGAL_REPRESENTATIVE]
+            for index in range(len(dataframe_legal_representatives)):
+                cleaned_name = self.text_cleaner.clean_text_without_checking_validity(dataframe_legal_representatives[index])
+                dataframe_legal_representatives[index] = cleaned_name
         except KeyError:
             raise MissingColumnException(self.LEGAL_REPRESENTATIVE)
         return dataframe_legal_representatives
@@ -104,6 +112,9 @@ class CsvManager:
     def get_trademarks(self):
         try:
             dataframe_trademarks = self.dataframe[self.TRADEMARK]
+            for index in range(len(dataframe_trademarks)):
+                cleaned_name = self.text_cleaner.clean_text_without_checking_validity(dataframe_trademarks[index])
+                dataframe_trademarks[index] = cleaned_name
         except KeyError:
             raise MissingColumnException(self.TRADEMARK)
         return dataframe_trademarks
