@@ -80,7 +80,7 @@ class TextCleaner:
     
     
     def replace_ampersand_by_et(self, line):
-        return line.replace("&", "et")
+        return line.replace("&", " et ")
 
 
     def remove_special_characters(self, line):

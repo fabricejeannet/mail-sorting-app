@@ -100,7 +100,6 @@ class ImageAcquisition:
 
                 contours, _ = cv2.findContours(image=thresh_frame, mode=cv2.RETR_EXTERNAL, method=cv2.CHAIN_APPROX_SIMPLE)
 
-                contours, _ = cv2.findContours(image=thresh_frame, mode=cv2.RETR_EXTERNAL, method=cv2.CHAIN_APPROX_SIMPLE)
                 for contour in contours:
                     if cv2.contourArea(contour) < 50:
                         # too small: skip!
