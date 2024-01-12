@@ -21,7 +21,7 @@ REGEX_GROUPE = r'\b[gG][rR][oO][uU][pP][eE]?\b'
 REGEX_GENDER_MARKERS = r'\b(m\b\.?|mme\b\.?|mr\b\.?|madame\b|monsieur\b|mmemr\b|m\(me\)\b)'
 REGEX_SPECIAL_CHARACTERS = r'[\[\]\(\)\{\}\^\,\$\.\|\?\*\+\-\\\/\!\#\%\:\<\'\>\=\_]'
 
-BANNED_WORDS_LIST = ["bordeaux", "33000 bordeaux", "recommande","9 rue de conde bureau 3", "societe en formation", "3eme etage","le directeur","la directrice","france","adresse de livraison", "le representant legal","9 r de condé", "9 rue de condé" ,"coolworking","representant legal", "le dirigeant de l'entreprise","9 r de conde", "rue de conde","9 rue conde","titulaire du compte", "representant legal", "retour à", "a l'attention du dirigeant" ,"bureau 3", "destinataire", "ecopli", "etage 3", "numero de ", "\\x0c"]
+BANNED_WORDS_LIST = ["bordeaux", "33000 bordeaux", "recommande","9 rue de conde bureau 3", "societe en formation", "3eme etage","le directeur","la directrice","france","adresse de livraison", "le representant legal","9 r de condé", "9 rue de condé" ,"coolworking","representant legal", "le dirigeant de l'entreprise","9 r de conde", "rue de conde","9 rue conde","titulaire du compte", "representant legal", "retour à", "a l'attention du dirigeant" ,"bureau 3", "destinataire", "ecopli", "etage 3", "numero de ", "\\x0c", "cbt", "facturation"]
 
 # Put the substrings regex at the end of the list to avoid matching a substring before the full string
 LEGAL_STATUS = [REGEX_SARLU, REGEX_SARL,REGEX_ASSOCIATION, REGEX_SELARL ,REGEX_SASU, REGEX_EURL, REGEX_SCI, REGEX_SNC,REGEX_GROUPE, REGEX_EIRL, REGEX_CABINET, REGEX_STE, REGEX_SOCIETE, REGEX_ENTREPRISE, REGEX_SAS, REGEX_EI, REGEX_CIE]
